@@ -414,9 +414,27 @@ namespace WaterNut.DataSpace
                 return new TemplateSpecification
                 {
                     DocumentType = documentType,
-                    RequiredEntityTypes = new List<string> { "Invoice", "InvoiceDetails", "ShipmentBL", "PurchaseOrders" },
+                    RequiredEntityTypes = GetEntityTypesForDocument(documentType),
                     RequiredFields = new List<string> { "field", "mapping", "data type", "pattern", "optimization" },
                     RequiredCategories = new List<string> { "Template Optimization", "Field Mapping", "Pattern Quality" }
+                };
+            }
+
+            /// <summary>
+            /// Gets the relevant EntityTypes for a specific document type
+            /// Based on Template_Specifications.md EntityType mapping
+            /// </summary>
+            private static List<string> GetEntityTypesForDocument(string documentType)
+            {
+                return documentType.ToLower() switch
+                {
+                    "invoice" => new List<string> { "Invoice", "InvoiceDetails", "EntryData", "EntryDataDetails" },
+                    "shipmentbl" or "billoflading" => new List<string> { "ShipmentBL", "ShipmentBLDetails" },
+                    "freight" => new List<string> { "ShipmentFreight", "ShipmentFreightDetails" },
+                    "manifest" => new List<string> { "ShipmentManifest" },
+                    "rider" => new List<string> { "ShipmentRider", "ShipmentRiderDetails" },
+                    "purchaseorder" => new List<string> { "PurchaseOrders", "PurchaseOrderDetails" },
+                    _ => new List<string> { "Invoice", "InvoiceDetails", "EntryData", "EntryDataDetails" } // Default fallback
                 };
             }
 
