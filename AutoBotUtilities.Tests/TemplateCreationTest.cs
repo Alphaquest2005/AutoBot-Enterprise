@@ -60,10 +60,10 @@ namespace AutoBotUtilities.Tests
 
             // **STEP 2**: Create template using the consolidated production method
             _logger.Information("🚀 **TEMPLATE_CREATION_START**: Creating MANGO template from DeepSeek analysis");
-            var template = await _ocrService.CreateInvoiceTemplateAsync(mangoOcrText, mangoTextPath).ConfigureAwait(false);
+            var templates = await _ocrService.CreateInvoiceTemplateAsync(mangoOcrText, mangoTextPath).ConfigureAwait(false);
 
             // **STEP 3**: Verify results and log comprehensive details
-            if (template != null)
+            if (templates != null && templates.Any())
             {
                 _logger.Information("✅ **VERIFICATION_SUCCESS**: Template created successfully");
                 _logger.Information("   - Template ID: {TemplateId}", template.OcrTemplates?.Id);
