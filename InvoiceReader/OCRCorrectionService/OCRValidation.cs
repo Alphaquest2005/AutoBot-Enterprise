@@ -352,6 +352,49 @@ namespace WaterNut.DataSpace
         }
 
         /// <summary>
+        /// Helper method to validate business rules from database against InvoiceDetail
+        /// </summary>
+        /// <param name="detail">InvoiceDetail object</param>
+        /// <param name="businessRules">Business rules from database</param>
+        /// <returns>True if all business rules are satisfied</returns>
+        private static bool ValidateBusinessRulesForInvoiceDetail(object detail, Dictionary<string, Dictionary<string, object>> businessRules)
+        {
+            if (detail == null || businessRules == null || !businessRules.Any()) return true;
+            
+            try
+            {
+                foreach (var rule in businessRules)
+                {
+                    string fieldName = rule.Key;
+                    var constraints = rule.Value;
+                    
+                    var fieldValue = GetInvoiceDetailFieldValue(detail, fieldName);
+                    if (fieldValue == null) continue;
+                    
+                    // Apply numeric constraints
+                    if (constraints.ContainsKey("min") && fieldValue is IComparable)
+                    {
+                        double minValue = Convert.ToDouble(constraints["min"]);
+                        double actualValue = Convert.ToDouble(fieldValue);
+                        if (actualValue < minValue) return false;
+                    }
+                    
+                    if (constraints.ContainsKey("max") && fieldValue is IComparable)
+                    {
+                        double maxValue = Convert.ToDouble(constraints["max"]);
+                        double actualValue = Convert.ToDouble(fieldValue);
+                        if (actualValue > maxValue) return false;
+                    }
+                }
+                return true;
+            }
+            catch
+            {
+                return false; // If validation fails, assume business rule violation
+            }
+        }
+
+        /// <summary>
         /// **🧠 ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v4.2**: Cross-field consistency validation with LLM diagnostic workflow and business success criteria
         /// 
         /// **MANDATORY LLM BEHAVIOR RULES**: LOG PRESERVATION + LOG-FIRST ANALYSIS + CONTINUOUS LOG ENHANCEMENT + SUCCESS CRITERIA VALIDATION
