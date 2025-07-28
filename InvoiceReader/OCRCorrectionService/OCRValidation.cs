@@ -87,14 +87,11 @@ namespace WaterNut.DataSpace
                 invoice.InvoiceNo, invoice.InvoiceDetails?.Count ?? 0);
             _logger.Error("🔍 **PATTERN_ANALYSIS**: Input validation successful, enabling mathematical calculation verification");
             
+            // **v4.2 MATHEMATICAL PROCESSING**: Enhanced mathematical validation with comprehensive tracking
+            _logger.Error("🧮 **MATHEMATICAL_PROCESSING_START**: Beginning line item mathematical validation");
+            _logger.Error("📊 **LOGGING_ENHANCEMENTS**: Enhanced processing with calculation tracking and error detection");
+            
             try
-            {
-
-                // **v4.2 MATHEMATICAL PROCESSING**: Enhanced mathematical validation with comprehensive tracking
-                _logger.Error("🧮 **MATHEMATICAL_PROCESSING_START**: Beginning line item mathematical validation");
-                _logger.Error("📊 **LOGGING_ENHANCEMENTS**: Enhanced processing with calculation tracking and error detection");
-                    
-                    try
                     {
                         if (invoice.InvoiceDetails != null && invoice.InvoiceDetails.Any())
                         {
