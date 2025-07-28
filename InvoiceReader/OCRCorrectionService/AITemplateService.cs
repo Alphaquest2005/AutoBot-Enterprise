@@ -418,6 +418,187 @@ namespace WaterNut.DataSpace
 
         #endregion
 
+        #region Template Specification Validation Framework
+
+        /// <summary>
+        /// Template specification object containing validation rules for a specific document type
+        /// </summary>
+        public class TemplateSpecification
+        {
+            public string DocumentType { get; set; }
+            public List<string> RequiredEntityTypes { get; set; } = new List<string>();
+            public List<string> RequiredFields { get; set; } = new List<string>();
+            public List<string> RequiredCategories { get; set; } = new List<string>();
+            public List<TemplateValidationResult> ValidationResults { get; set; } = new List<TemplateValidationResult>();
+            public bool IsValid => ValidationResults.All(r => r.IsSuccess);
+            public bool HasFailure => ValidationResults.Any(r => !r.IsSuccess);
+
+            public static TemplateSpecification CreateForRecommendations(string documentType = "Invoice")
+            {
+                return new TemplateSpecification
+                {
+                    DocumentType = documentType,
+                    RequiredEntityTypes = new List<string> { "Invoice", "InvoiceDetails", "ShipmentBL", "PurchaseOrders" },
+                    RequiredFields = new List<string> { "field", "mapping", "data type", "pattern", "optimization" },
+                    RequiredCategories = new List<string> { "Template Optimization", "Field Mapping", "Pattern Quality" }
+                };
+            }
+
+            public void LogValidationResults(ILogger logger)
+            {
+                logger.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: {DocumentType} template specification compliance analysis", DocumentType);
+                
+                foreach (var result in ValidationResults)
+                {
+                    logger.Error((result.IsSuccess ? "✅" : "❌") + " **{CriteriaName}**: {Message}", 
+                        result.CriteriaName, result.Message);
+                }
+
+                var overallSuccess = IsValid;
+                logger.Error(overallSuccess ? "🏆 **TEMPLATE_SPECIFICATION_SUCCESS**: ✅ PASS" : "🏆 **TEMPLATE_SPECIFICATION_SUCCESS**: ❌ FAIL" + 
+                    " - Template specification validation " + (overallSuccess ? "completed successfully" : "failed validation criteria"));
+            }
+        }
+
+        /// <summary>
+        /// Individual template validation result
+        /// </summary>
+        public class TemplateValidationResult
+        {
+            public string CriteriaName { get; set; }
+            public bool IsSuccess { get; set; }
+            public string Message { get; set; }
+            public int Count { get; set; }
+            public string Evidence { get; set; }
+
+            public static TemplateValidationResult Success(string criteriaName, string message, int count = 0, string evidence = "")
+            {
+                return new TemplateValidationResult { CriteriaName = criteriaName, IsSuccess = true, Message = message, Count = count, Evidence = evidence };
+            }
+
+            public static TemplateValidationResult Failure(string criteriaName, string message, string evidence = "")
+            {
+                return new TemplateValidationResult { CriteriaName = criteriaName, IsSuccess = false, Message = message, Evidence = evidence };
+            }
+        }
+
+        #endregion
+
+        #region Template Specification Extension Methods
+
+        /// <summary>
+        /// Extension methods for fluent template specification validation with short-circuiting
+        /// </summary>
+        public static class TemplateSpecificationExtensions
+        {
+            public static TemplateSpecification ValidateEntityTypeAwareness(this TemplateSpecification spec, List<PromptRecommendation> recommendations)
+            {
+                if (spec.HasFailure) return spec; // Short-circuit if already failed
+
+                var entityTypeRecommendations = recommendations?.Where(r => 
+                    spec.RequiredEntityTypes.Any(et => r.Description.Contains(et)) || 
+                    r.Reasoning.Contains("EntityType")).ToList() ?? new List<PromptRecommendation>();
+                
+                bool success = entityTypeRecommendations.Any() || (recommendations?.Count ?? 0) == 0;
+                
+                var result = success 
+                    ? TemplateValidationResult.Success("TEMPLATE_SPEC_ENTITYTYPE_AWARENESS", 
+                        $"Generated {entityTypeRecommendations.Count} EntityType-aware recommendations", 
+                        entityTypeRecommendations.Count)
+                    : TemplateValidationResult.Failure("TEMPLATE_SPEC_ENTITYTYPE_AWARENESS", 
+                        "No EntityType-aware recommendations detected - may lack template specification context");
+                
+                spec.ValidationResults.Add(result);
+                return spec;
+            }
+
+            public static TemplateSpecification ValidateFieldMappingEnhancement(this TemplateSpecification spec, List<PromptRecommendation> recommendations)
+            {
+                if (spec.HasFailure) return spec; // Short-circuit if already failed
+
+                var fieldMappingRecommendations = recommendations?.Where(r => 
+                    r.Description.Contains("field") || r.Description.Contains("mapping") || 
+                    r.Category == "Field Mapping").ToList() ?? new List<PromptRecommendation>();
+                
+                bool success = fieldMappingRecommendations.Any() || (recommendations?.Count ?? 0) == 0;
+                
+                var result = success 
+                    ? TemplateValidationResult.Success("TEMPLATE_SPEC_FIELD_MAPPING", 
+                        $"Generated {fieldMappingRecommendations.Count} field mapping enhancement recommendations", 
+                        fieldMappingRecommendations.Count)
+                    : TemplateValidationResult.Failure("TEMPLATE_SPEC_FIELD_MAPPING", 
+                        "No field mapping recommendations detected - may miss critical template improvement opportunities");
+                
+                spec.ValidationResults.Add(result);
+                return spec;
+            }
+
+            public static TemplateSpecification ValidateDataTypeRecommendations(this TemplateSpecification spec, List<PromptRecommendation> recommendations)
+            {
+                if (spec.HasFailure) return spec; // Short-circuit if already failed
+
+                var dataTypeRecommendations = recommendations?.Where(r => 
+                    r.Description.Contains("data type") || r.Description.Contains("validation") || 
+                    r.Description.Contains("decimal") || r.Description.Contains("date")).ToList() ?? new List<PromptRecommendation>();
+                
+                bool success = dataTypeRecommendations.Any() || (recommendations?.Count ?? 0) == 0;
+                
+                var result = success 
+                    ? TemplateValidationResult.Success("TEMPLATE_SPEC_DATATYPE_RECOMMENDATIONS", 
+                        $"Generated {dataTypeRecommendations.Count} data type validation recommendations", 
+                        dataTypeRecommendations.Count)
+                    : TemplateValidationResult.Failure("TEMPLATE_SPEC_DATATYPE_RECOMMENDATIONS", 
+                        "No data type validation recommendations - may miss type safety improvements");
+                
+                spec.ValidationResults.Add(result);
+                return spec;
+            }
+
+            public static TemplateSpecification ValidatePatternQuality(this TemplateSpecification spec, List<PromptRecommendation> recommendations)
+            {
+                if (spec.HasFailure) return spec; // Short-circuit if already failed
+
+                var patternQualityRecommendations = recommendations?.Where(r => 
+                    r.Description.Contains("regex") || r.Description.Contains("pattern") || 
+                    r.Category == "Pattern Quality").ToList() ?? new List<PromptRecommendation>();
+                
+                bool success = patternQualityRecommendations.Any() || (recommendations?.Count ?? 0) == 0;
+                
+                var result = success 
+                    ? TemplateValidationResult.Success("TEMPLATE_SPEC_PATTERN_QUALITY", 
+                        $"Generated {patternQualityRecommendations.Count} pattern quality enhancement recommendations", 
+                        patternQualityRecommendations.Count)
+                    : TemplateValidationResult.Failure("TEMPLATE_SPEC_PATTERN_QUALITY", 
+                        "No pattern quality recommendations - may miss regex and extraction improvements");
+                
+                spec.ValidationResults.Add(result);
+                return spec;
+            }
+
+            public static TemplateSpecification ValidateTemplateOptimization(this TemplateSpecification spec, List<PromptRecommendation> recommendations)
+            {
+                if (spec.HasFailure) return spec; // Short-circuit if already failed
+
+                var templateOptimizationRecommendations = recommendations?.Where(r => 
+                    r.Category == "Template Optimization" || r.Description.Contains("optimization") || 
+                    r.Description.Contains("performance")).ToList() ?? new List<PromptRecommendation>();
+                
+                bool success = templateOptimizationRecommendations.Any() || (recommendations?.Count ?? 0) == 0;
+                
+                var result = success 
+                    ? TemplateValidationResult.Success("TEMPLATE_SPEC_OPTIMIZATION", 
+                        $"Generated {templateOptimizationRecommendations.Count} template optimization recommendations", 
+                        templateOptimizationRecommendations.Count)
+                    : TemplateValidationResult.Failure("TEMPLATE_SPEC_OPTIMIZATION", 
+                        "No template optimization recommendations - may miss performance improvement opportunities");
+                
+                spec.ValidationResults.Add(result);
+                return spec;
+            }
+        }
+
+        #endregion
+
         #region Template Loading and Management
 
         private string LoadTemplateAsync(string provider, string templateType, string supplierName)
