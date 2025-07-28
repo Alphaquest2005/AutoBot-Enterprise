@@ -464,16 +464,18 @@ namespace WaterNut.DataSpace
         public async Task<List<Template>> CreateInvoiceTemplateAsync(string pdfText, string filePath)
         {
             // REMOVED LogLevelOverride to prevent singleton violations - caller controls logging level
-            _logger.Information("🚀 **TEMPLATE_CREATION_START**: Starting comprehensive template creation for file '{FilePath}'", filePath);
-            _logger.Information("   - **METHOD_PURPOSE**: Create complete database template with Parts, Lines, Fields via DeepSeek analysis");
+            _logger.Information("🚀 **MULTI_TEMPLATE_CREATION_START**: Starting AI-powered multi-template creation for file '{FilePath}'", filePath);
+            _logger.Information("   - **METHOD_PURPOSE**: Use AI document separator to detect document types and create separate templates");
             _logger.Information("   - **INPUT_TEXT_LENGTH**: {TextLength} characters of PDF content", pdfText?.Length ?? 0);
-            _logger.Information("   - **LOGGING_STRATEGY**: Respecting caller's LogLevelOverride for surgical debugging");
+            _logger.Information("   - **AI_APPROACH**: DeepSeek document detection → AI content separation → template creation per document type");
 
             if (string.IsNullOrEmpty(pdfText))
             {
                 _logger.Error("❌ **TEMPLATE_CREATION_EMPTY_INPUT**: PDF text is null or empty");
-                return null;
+                return new List<Template>();
             }
+
+            var createdTemplates = new List<Template>();
 
             try
             {

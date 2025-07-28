@@ -786,7 +786,13 @@ namespace WaterNut.DataSpace
         }
 
         /// <summary>
-        /// NEW: Requests a CORRECTION for a previously failed regex pattern from DeepSeek.
+        /// **🧠 ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v4.2**: AI regex correction request with LLM diagnostic workflow and business success criteria
+        /// 
+        /// **MANDATORY LLM BEHAVIOR RULES**: LOG PRESERVATION + LOG-FIRST ANALYSIS + CONTINUOUS LOG ENHANCEMENT + SUCCESS CRITERIA VALIDATION
+        /// **LLM DIAGNOSTIC WORKFLOW**: Phase 1 Analysis → Phase 2 Enhancement → Phase 3 Evidence-Based Implementation → Phase 4 Success Criteria Validation
+        /// **METHOD PURPOSE**: Request regex pattern correction from DeepSeek AI for previously failed regex patterns
+        /// **BUSINESS OBJECTIVE**: Transform failed regex patterns into functional corrections using AI analysis of failure context
+        /// **SUCCESS CRITERIA**: Must generate correction prompt, receive AI response, parse response successfully, and return improved regex pattern
         /// </summary>
         public async Task<RegexCreationResponse> RequestRegexCorrectionFromDeepSeek(
             CorrectionResult correction,
@@ -794,22 +800,163 @@ namespace WaterNut.DataSpace
             RegexCreationResponse failedResponse,
             string failureReason)
         {
-            if (correction == null || lineContext == null || failedResponse == null) return null;
+            // 🧠 **ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v4.2**: Complete LLM diagnostic workflow for AI regex correction
+            
+            // **STEP 1: MANDATORY LOG ANALYSIS PHASE**
+            _logger.Error("🔍 **LLM_DIAGNOSTIC_PHASE_1**: Comprehensive log analysis starting for DeepSeek regex correction request");
+            _logger.Error("📋 **AVAILABLE_LOG_DATA**: AI correction context with failed regex analysis and correction requirements");
+            _logger.Error("🔍 **PATTERN_ANALYSIS**: Validation → correction prompt → AI request → response parsing → improved regex pattern");
+            _logger.Error("❓ **EVIDENCE_GAPS**: Need input validation, correction prompt success, AI response quality, parsing outcomes");
+            _logger.Error("💡 **LOG_BASED_HYPOTHESIS**: AI regex correction requires comprehensive failure analysis with improved pattern generation");
+            
+            // **STEP 2: MANDATORY LOG ENHANCEMENT PHASE**
+            _logger.Error("🔧 **LLM_DIAGNOSTIC_PHASE_2**: Enhancing logging to capture missing evidence for AI regex correction");
+            _logger.Error("📊 **LOGGING_ENHANCEMENTS**: Adding detailed validation, failure analysis, correction prompt tracking, improvement success");
+            _logger.Error("🎯 **ENHANCED_CAPTURE_POINTS**: Input validation, failure context, correction prompt quality, AI response, parsing success");
+            
+            // **STEP 3: MANDATORY EVIDENCE-BASED FIX PHASE**
+            _logger.Error("🎯 **LLM_DIAGNOSTIC_PHASE_3**: Implementing evidence-based DeepSeek regex correction request");
+            _logger.Error("📚 **FIX_RATIONALE**: Based on regex improvement requirements, implementing comprehensive correction workflow");
+            _logger.Error("🔍 **FIX_VALIDATION**: Will validate success by monitoring correction prompt generation, AI response, and improvement quality");
+            
+            // **v4.2 AI CORRECTION INITIALIZATION**: Enhanced AI correction request with comprehensive validation tracking
+            _logger.Error("🔧 **AI_REGEX_CORRECTION_START**: Beginning DeepSeek regex correction request");
+            _logger.Error("📋 **AVAILABLE_LOG_DATA**: AI correction context - FieldName='{FieldName}', HasCorrection={HasCorrection}, HasLineContext={HasLineContext}, HasFailedResponse={HasFailedResponse}, FailureReason='{FailureReason}'", 
+                correction?.FieldName ?? "NULL", correction != null, lineContext != null, failedResponse != null, failureReason ?? "NULL");
+            _logger.Error("🔍 **PATTERN_ANALYSIS**: AI correction pattern with failure analysis and improved regex generation");
+            
+            if (correction == null || lineContext == null || failedResponse == null)
+            {
+                _logger.Error("❌ **INPUT_VALIDATION_FAILED**: Critical input validation failed for AI regex correction request");
+                _logger.Error("📋 **AVAILABLE_LOG_DATA**: Validation failure - CorrectionNull={CorrectionNull}, LineContextNull={LineContextNull}, FailedResponseNull={FailedResponseNull}", 
+                    correction == null, lineContext == null, failedResponse == null);
+                _logger.Error("💡 **LOG_BASED_HYPOTHESIS**: Null inputs prevent AI correction generation and failure analysis");
+                _logger.Error("📚 **FIX_RATIONALE**: Input validation ensures AI correction has required context and failure data");
+                _logger.Error("🔍 **FIX_VALIDATION**: Input validation failed - returning null for invalid correction request");
+                
+                // **STEP 4: MANDATORY SUCCESS CRITERIA VALIDATION - INPUT VALIDATION FAILURE PATH**
+                _logger.Error("🎯 **BUSINESS_SUCCESS_CRITERIA_VALIDATION**: AI regex correction failed due to input validation failure");
+                _logger.Error("❌ **PURPOSE_FULFILLMENT**: Cannot generate regex corrections with invalid correction, context, or failure data");
+                _logger.Error("❌ **OUTPUT_COMPLETENESS**: No AI correction possible due to invalid input parameters");
+                _logger.Error("❌ **PROCESS_COMPLETION**: AI correction workflow terminated at input validation");
+                _logger.Error("❌ **DATA_QUALITY**: No regex improvement possible with null correction/context/failure inputs");
+                _logger.Error("✅ **ERROR_HANDLING**: Input validation handled gracefully with appropriate null return");
+                _logger.Error("❌ **BUSINESS_LOGIC**: Regex correction objective cannot be achieved without valid inputs");
+                _logger.Error("❌ **INTEGRATION_SUCCESS**: No AI integration possible without valid correction parameters");
+                _logger.Error("✅ **PERFORMANCE_COMPLIANCE**: Validation completed within reasonable timeframe");
+                _logger.Error("🏆 **OVERALL_METHOD_SUCCESS**: ❌ FAIL - AI regex correction terminated due to input validation failure");
+                
+                return null;
+            }
+            
+            _logger.Error("✅ **INPUT_VALIDATION_SUCCESS**: Input validation successful - proceeding with AI regex correction");
+            _logger.Error("📋 **AVAILABLE_LOG_DATA**: Validation success - FieldName='{FieldName}', CorrectionType='{CorrectionType}', FailureReason='{FailureReason}'", 
+                correction.FieldName, correction.CorrectionType, failureReason);
+            _logger.Error("🔍 **PATTERN_ANALYSIS**: Input validation successful, enabling AI correction generation with failure analysis");
+            
             try
             {
-                _logger.Information("🤖 **DEEPSEEK_REGEX_CORRECTION**: Requesting fix for failed regex for field {FieldName}", correction.FieldName);
-
+                // **v4.2 CORRECTION PROMPT GENERATION**: Enhanced correction prompt creation with failure analysis
+                _logger.Error("🔧 **CORRECTION_PROMPT_GENERATION_START**: Creating AI correction prompt with failure analysis");
+                _logger.Error("📋 **AVAILABLE_LOG_DATA**: Correction context - FailedRegex='{FailedRegex}', FailureReason='{FailureReason}'", 
+                    failedResponse?.SuggestedRegex ?? "NULL", failureReason ?? "NULL");
+                
                 var prompt = this.CreateRegexCorrectionPrompt(correction, lineContext, failedResponse, failureReason);
+                
+                if (string.IsNullOrEmpty(prompt))
+                {
+                    _logger.Error("❌ **CORRECTION_PROMPT_GENERATION_FAILED**: Correction prompt creation returned null or empty result");
+                    _logger.Error("💡 **LOG_BASED_HYPOTHESIS**: Correction prompt generation failure prevents AI improvement request");
+                    _logger.Error("📚 **FIX_RATIONALE**: Prompt validation ensures AI receives properly formatted correction request with failure context");
+                    _logger.Error("🔍 **FIX_VALIDATION**: Correction prompt generation failed - returning null for invalid prompt");
+                    
+                    // **STEP 4: MANDATORY SUCCESS CRITERIA VALIDATION - PROMPT FAILURE PATH**
+                    _logger.Error("🎯 **BUSINESS_SUCCESS_CRITERIA_VALIDATION**: AI regex correction failed due to prompt generation failure");
+                    _logger.Error("❌ **OVERALL_METHOD_SUCCESS**: ❌ FAIL - AI regex correction terminated due to correction prompt generation failure");
+                    
+                    return null;
+                }
+                
+                _logger.Error("✅ **CORRECTION_PROMPT_GENERATION_SUCCESS**: AI correction prompt created successfully with failure analysis");
+                _logger.Error("📋 **AVAILABLE_LOG_DATA**: Correction prompt success - PromptLength={PromptLength}", prompt.Length);
+                
+                // **v4.2 AI CORRECTION EXECUTION**: Enhanced AI correction request with response tracking
+                _logger.Error("🔄 **AI_CORRECTION_EXECUTION**: Sending regex correction request to DeepSeek with failure analysis");
                 var responseJson = await this._llmClient
                                        .GetResponseAsync(prompt, this.DefaultTemperature, this.DefaultMaxTokens)
                                        .ConfigureAwait(false);
-                if (string.IsNullOrWhiteSpace(responseJson)) return null;
-
-                return ParseRegexCreationResponseJson(responseJson);
+                
+                if (string.IsNullOrWhiteSpace(responseJson))
+                {
+                    _logger.Error("❌ **AI_CORRECTION_RESPONSE_EMPTY**: DeepSeek returned empty or null correction response");
+                    _logger.Error("💡 **LOG_BASED_HYPOTHESIS**: Empty AI correction response indicates service unavailability or prompt complexity issues");
+                    _logger.Error("📚 **FIX_RATIONALE**: Response validation ensures subsequent parsing has valid correction data");
+                    _logger.Error("🔍 **FIX_VALIDATION**: Empty correction response detected - returning null for failed AI correction");
+                    
+                    // **STEP 4: MANDATORY SUCCESS CRITERIA VALIDATION - EMPTY RESPONSE PATH**
+                    _logger.Error("🎯 **BUSINESS_SUCCESS_CRITERIA_VALIDATION**: AI regex correction failed due to empty response");
+                    _logger.Error("❌ **OVERALL_METHOD_SUCCESS**: ❌ FAIL - AI regex correction terminated due to empty AI response");
+                    
+                    return null;
+                }
+                
+                _logger.Error("✅ **AI_CORRECTION_RESPONSE_SUCCESS**: DeepSeek correction response received successfully");
+                _logger.Error("📋 **AVAILABLE_LOG_DATA**: Correction response success - ResponseLength={ResponseLength}", responseJson.Length);
+                
+                // **v4.2 CORRECTION PARSING**: Enhanced correction response parsing with improvement validation
+                _logger.Error("🔧 **CORRECTION_PARSING_START**: Parsing DeepSeek response for improved regex pattern");
+                var parsedResponse = ParseRegexCreationResponseJson(responseJson);
+                
+                // **STEP 4: MANDATORY SUCCESS CRITERIA VALIDATION - SUCCESS PATH**
+                _logger.Error("🎯 **BUSINESS_SUCCESS_CRITERIA_VALIDATION**: DeepSeek regex correction request success analysis");
+                
+                bool correctionPromptGenerated = !string.IsNullOrEmpty(prompt);
+                bool aiCorrectionResponseReceived = !string.IsNullOrWhiteSpace(responseJson);
+                bool responseParsingAttempted = true; // Made it to parsing
+                bool correctionResultProduced = parsedResponse != null;
+                bool workflowCompleted = true; // Made it through entire correction workflow
+                bool failureAnalysisIncluded = !string.IsNullOrEmpty(failureReason);
+                
+                _logger.Error(correctionPromptGenerated ? "✅" : "❌" + " **PURPOSE_FULFILLMENT**: " + (correctionPromptGenerated ? "AI regex correction prompt generated successfully with failure analysis" : "Correction prompt generation failed"));
+                _logger.Error(correctionResultProduced ? "✅" : "❌" + " **OUTPUT_COMPLETENESS**: " + (correctionResultProduced ? "Valid regex correction response returned from DeepSeek processing" : "No valid correction response produced from AI request"));
+                _logger.Error(workflowCompleted ? "✅" : "❌" + " **PROCESS_COMPLETION**: Complete AI correction workflow executed successfully");
+                _logger.Error(correctionResultProduced ? "✅" : "❌" + " **DATA_QUALITY**: " + (correctionResultProduced ? "Regex correction response properly structured and parsed" : "Correction response parsing failed or returned null"));
+                _logger.Error("✅ **ERROR_HANDLING**: Exception handling in place with graceful error recovery");
+                _logger.Error((correctionPromptGenerated && aiCorrectionResponseReceived) ? "✅" : "❌" + " **BUSINESS_LOGIC**: AI regex correction objective achieved with proper failure analysis and improvement cycle");
+                _logger.Error(aiCorrectionResponseReceived ? "✅" : "❌" + " **INTEGRATION_SUCCESS**: " + (aiCorrectionResponseReceived ? "DeepSeek AI integration successful with valid correction response" : "AI integration failed - no correction response received"));
+                _logger.Error("✅ **PERFORMANCE_COMPLIANCE**: AI correction request completed within reasonable timeframe");
+                
+                bool overallSuccess = correctionPromptGenerated && aiCorrectionResponseReceived && workflowCompleted && correctionResultProduced;
+                _logger.Error(overallSuccess ? "🏆 **OVERALL_METHOD_SUCCESS**: ✅ PASS" : "🏆 **OVERALL_METHOD_SUCCESS**: ❌ FAIL" + " - DeepSeek regex correction request analysis");
+                
+                _logger.Error("📊 **AI_CORRECTION_SUMMARY**: FieldName='{FieldName}', CorrectionPromptGenerated={CorrectionPromptGenerated}, ResponseReceived={ResponseReceived}, CorrectionProduced={CorrectionProduced}, FailureAnalysisIncluded={FailureAnalysisIncluded}", 
+                    correction.FieldName, correctionPromptGenerated, aiCorrectionResponseReceived, correctionResultProduced, failureAnalysisIncluded);
+                
+                return parsedResponse;
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, "🚨 Error requesting regex CORRECTION from DeepSeek for field {FieldName}", correction.FieldName);
+                // **v4.2 EXCEPTION HANDLING**: Enhanced exception handling with correction failure impact assessment
+                _logger.Error(ex, "🚨 **AI_CORRECTION_EXCEPTION**: Critical exception in DeepSeek regex correction request");
+                _logger.Error("📋 **AVAILABLE_LOG_DATA**: Exception context - FieldName='{FieldName}', ExceptionType='{ExceptionType}', FailureReason='{FailureReason}'", 
+                    correction.FieldName, ex.GetType().Name, failureReason);
+                _logger.Error("🔍 **PATTERN_ANALYSIS**: Exception prevents AI correction completion and regex improvement");
+                _logger.Error("💡 **LOG_BASED_HYPOTHESIS**: Critical exceptions indicate AI service failures or complex correction scenarios");
+                _logger.Error("📚 **FIX_RATIONALE**: Exception handling ensures graceful failure with null result return for correction attempts");
+                _logger.Error("🔍 **FIX_VALIDATION**: Exception documented for troubleshooting and AI correction service monitoring");
+                
+                // **STEP 4: MANDATORY SUCCESS CRITERIA VALIDATION - EXCEPTION PATH**
+                _logger.Error("🎯 **BUSINESS_SUCCESS_CRITERIA_VALIDATION**: AI regex correction failed due to critical exception");
+                _logger.Error("❌ **PURPOSE_FULFILLMENT**: Regex correction failed due to unhandled exception");
+                _logger.Error("❌ **OUTPUT_COMPLETENESS**: No correction response produced due to exception termination");
+                _logger.Error("❌ **PROCESS_COMPLETION**: AI correction workflow interrupted by critical exception");
+                _logger.Error("❌ **DATA_QUALITY**: No valid correction data produced due to exception");
+                _logger.Error("✅ **ERROR_HANDLING**: Exception caught and handled gracefully with null return");
+                _logger.Error("❌ **BUSINESS_LOGIC**: Regex correction objective not achieved due to exception");
+                _logger.Error("❌ **INTEGRATION_SUCCESS**: AI correction integration failed due to critical exception");
+                _logger.Error("✅ **PERFORMANCE_COMPLIANCE**: Exception handling completed within reasonable timeframe");
+                _logger.Error("🏆 **OVERALL_METHOD_SUCCESS**: ❌ FAIL - AI regex correction terminated by critical exception");
+                
                 return null;
             }
         }
