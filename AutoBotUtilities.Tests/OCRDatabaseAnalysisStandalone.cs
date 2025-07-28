@@ -88,7 +88,7 @@ namespace AutoBotUtilities.Tests
 
                 await ExecuteSqlScript(columnExistsScript, "FileTypeId column existence check");
 
-                // 5. Check OCR-PartLineFields view for EntityType analysis
+                // 6. Check OCR-PartLineFields view for EntityType analysis
                 var entityTypeAnalysisScript = @"
                     IF OBJECT_ID('OCR-PartLineFields', 'V') IS NOT NULL OR OBJECT_ID('OCR-PartLineFields', 'U') IS NOT NULL
                     BEGIN
