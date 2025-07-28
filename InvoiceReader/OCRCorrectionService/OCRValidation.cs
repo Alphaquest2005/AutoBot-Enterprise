@@ -241,19 +241,25 @@ namespace WaterNut.DataSpace
                     (templateSpec1Success ? $"Both AI math quality ({aiMathQualitySuccess}) and math data compliance ({actualMathDataSuccess}) passed for {documentType}" : 
                     $"Failed - AI Math Quality: {aiMathQualitySuccess}, Math Data Compliance: {actualMathDataSuccess} for {documentType}"));
                 
-                // **TEMPLATE_SPEC_2: DOCUMENT-TYPE SPECIFIC ENTITYTYPE VALIDATION FOR MATHEMATICAL FIELDS**
-                var expectedEntityTypes = new[] { "Invoice", "InvoiceDetails", "EntryData", "EntryDataDetails" };
+                // **TEMPLATE_SPEC_2: DATABASE-DRIVEN ENTITYTYPE VALIDATION FOR MATHEMATICAL FIELDS**
+                var expectedEntityTypes = templateMapping != null 
+                    ? new[] { templateMapping.PrimaryEntityType }.Concat(templateMapping.SecondaryEntityTypes).ToArray()
+                    : new[] { "Invoice", "InvoiceDetails", "EntryData", "EntryDataDetails" };
                 bool entityTypeMappingSuccess = invoice.InvoiceDetails?.Any() ?? false; // Mathematical fields present
                 _logger.Error((entityTypeMappingSuccess ? "✅" : "❌") + " **TEMPLATE_SPEC_ENTITYTYPE_MAPPING**: " + 
-                    (entityTypeMappingSuccess ? $"Mathematical EntityType mappings are valid for document type {documentType}" : 
+                    (entityTypeMappingSuccess ? $"Mathematical EntityType mappings are valid for document type {documentType} (Expected: {string.Join(",", expectedEntityTypes)})" : 
                     $"Mathematical EntityType mappings invalid for document type {documentType}"));
                 
-                // **TEMPLATE_SPEC_3: REQUIRED MATHEMATICAL FIELDS VALIDATION (DOCUMENT-TYPE SPECIFIC)**
-                var requiredMathFields = new[] { "Quantity", "Cost" };
+                // **TEMPLATE_SPEC_3: DATABASE-DRIVEN REQUIRED MATHEMATICAL FIELDS VALIDATION**
+                var requiredMathFields = templateMapping?.RequiredFields?.Where(f => 
+                    f.Equals("Quantity", StringComparison.OrdinalIgnoreCase) || 
+                    f.Equals("Cost", StringComparison.OrdinalIgnoreCase) ||
+                    f.Equals("TotalCost", StringComparison.OrdinalIgnoreCase)).ToArray() 
+                    ?? new[] { "Quantity", "Cost" };
                 bool requiredMathFieldsSuccess = invoice.InvoiceDetails?.Any(d => 
-                    requiredMathFields.All(f => GetFieldValue(d, f) != null)) ?? false;
+                    requiredMathFields.All(f => GetInvoiceDetailFieldValue(d, f) != null)) ?? false;
                 _logger.Error((requiredMathFieldsSuccess ? "✅" : "❌") + " **TEMPLATE_SPEC_REQUIRED_MATH_FIELDS**: " + 
-                    (requiredMathFieldsSuccess ? $"All required mathematical fields present for {documentType}" : 
+                    (requiredMathFieldsSuccess ? $"All required mathematical fields present for {documentType} (Required: {string.Join(",", requiredMathFields)})" : 
                     $"Missing required mathematical fields for {documentType}"));
                 
                 // **TEMPLATE_SPEC_4: MATHEMATICAL DATA TYPE AND BUSINESS RULES VALIDATION**
@@ -308,6 +314,27 @@ namespace WaterNut.DataSpace
             }
 
             return errors;
+        }
+
+        /// <summary>
+        /// Helper method to get field value from InvoiceDetail using reflection
+        /// </summary>
+        /// <param name="detail">InvoiceDetail object</param>
+        /// <param name="fieldName">Field name to retrieve</param>
+        /// <returns>Field value or null if not found</returns>
+        private static object GetInvoiceDetailFieldValue(object detail, string fieldName)
+        {
+            if (detail == null || string.IsNullOrEmpty(fieldName)) return null;
+            
+            try
+            {
+                var property = detail.GetType().GetProperty(fieldName, System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.IgnoreCase);
+                return property?.GetValue(detail);
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         /// <summary>
