@@ -50,22 +50,24 @@ namespace AutoBotUtilities.Tests
 
                 await ExecuteSqlScript(templateMappingDataScript, "Current OCR_TemplateTableMapping data");
 
-                // 3. Check FileTypes-FileImporterInfo data (DocumentType enum mappings)
-                var fileTypesScript = @"
+                // 3. First check FileTypes-FileImporterInfo structure
+                var fileTypesStructureScript = @"
                     SELECT 
-                        Id as FileTypeId,
-                        EntryType as DocumentTypeEnum,
-                        CASE EntryType
-                            WHEN 0 THEN 'Invoice'
-                            WHEN 1 THEN 'PurchaseOrder'
-                            WHEN 2 THEN 'Receipt'
-                            WHEN 3 THEN 'Statement'
-                            WHEN 4 THEN 'Other'
-                            ELSE 'Unknown (' + CAST(EntryType as VARCHAR) + ')'
-                        END as DocumentTypeName,
-                        FileExtension,
-                        Description
-                    FROM [WebSource-AutoBot].[dbo].[FileTypes-FileImporterInfo]
+                        COLUMN_NAME, 
+                        DATA_TYPE, 
+                        IS_NULLABLE, 
+                        COLUMN_DEFAULT
+                    FROM INFORMATION_SCHEMA.COLUMNS 
+                    WHERE TABLE_NAME = 'FileTypes-FileImporterInfo' 
+                    AND TABLE_SCHEMA = 'dbo'
+                    ORDER BY ORDINAL_POSITION;
+                ";
+
+                await ExecuteSqlScript(fileTypesStructureScript, "FileTypes-FileImporterInfo table structure");
+
+                // 4. Check FileTypes-FileImporterInfo data (DocumentType enum mappings)
+                var fileTypesScript = @"
+                    SELECT * FROM [WebSource-AutoBot].[dbo].[FileTypes-FileImporterInfo]
                     ORDER BY EntryType;
                 ";
 
