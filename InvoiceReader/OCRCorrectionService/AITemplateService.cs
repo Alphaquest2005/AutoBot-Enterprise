@@ -862,18 +862,25 @@ namespace WaterNut.DataSpace
             {
                 if (spec.HasFailure) return spec; // Short-circuit if already failed
 
+                // **DUAL LAYER 1: AI RECOMMENDATION QUALITY VALIDATION**
                 var templateOptimizationRecommendations = recommendations?.Where(r => 
                     r.Category == "Template Optimization" || r.Description.Contains("optimization") || 
                     r.Description.Contains("performance")).ToList() ?? new List<PromptRecommendation>();
                 
-                bool success = templateOptimizationRecommendations.Any() || (recommendations?.Count ?? 0) == 0;
+                bool aiRecommendationSuccess = templateOptimizationRecommendations.Any() || (recommendations?.Count ?? 0) == 0;
                 
-                var result = success 
-                    ? TemplateValidationResult.Success("TEMPLATE_SPEC_OPTIMIZATION", 
-                        $"Generated {templateOptimizationRecommendations.Count} template optimization recommendations", 
+                // **DUAL LAYER 2: COMPREHENSIVE 8-LAYER ACTUAL DATA COMPLIANCE VALIDATION**
+                // Validate actual business data against ALL Template_Specifications.md requirements
+                bool actualDataCompliance = ValidateActualDataCompliance(spec, spec.DocumentType);
+                
+                bool overallSuccess = aiRecommendationSuccess && actualDataCompliance;
+                
+                var result = overallSuccess 
+                    ? TemplateValidationResult.Success("TEMPLATE_SPEC_OPTIMIZATION_DUAL_LAYER", 
+                        $"✅ AI Quality: {templateOptimizationRecommendations.Count} recommendations + ✅ Data Compliance: 8-layer validation passed for {spec.DocumentType}", 
                         templateOptimizationRecommendations.Count)
-                    : TemplateValidationResult.Failure("TEMPLATE_SPEC_OPTIMIZATION", 
-                        "No template optimization recommendations - may miss performance improvement opportunities");
+                    : TemplateValidationResult.Failure("TEMPLATE_SPEC_OPTIMIZATION_DUAL_LAYER", 
+                        $"❌ AI Quality: {aiRecommendationSuccess} + ❌ Data Compliance: {actualDataCompliance} - 8-layer validation failed for {spec.DocumentType}");
                 
                 spec.ValidationResults.Add(result);
                 return spec;
