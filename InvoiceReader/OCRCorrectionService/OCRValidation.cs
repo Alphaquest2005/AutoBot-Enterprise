@@ -234,7 +234,7 @@ namespace WaterNut.DataSpace
                 // LAYER 2: Actual mathematical data validation against Template_Specifications.md
                 var mathDataFields = new[] { "Quantity", "Cost", "TotalCost", "Discount" };
                 bool actualMathDataSuccess = invoice.InvoiceDetails?.Any(d => mathDataFields.Any(f => 
-                    GetFieldValue(d, f) != null)) ?? false;
+                    GetInvoiceDetailFieldValue(d, f) != null)) ?? false;
                 bool templateSpec1Success = aiMathQualitySuccess && actualMathDataSuccess;
                 _logger.Error((templateSpec1Success ? "✅" : "❌") + " **TEMPLATE_SPEC_AI_AND_MATH_DATA**: " + 
                     (templateSpec1Success ? $"Both AI math quality ({aiMathQualitySuccess}) and math data compliance ({actualMathDataSuccess}) passed for {documentType}" : 
@@ -273,7 +273,7 @@ namespace WaterNut.DataSpace
                 {
                     // Default mathematical validation rules
                     mathDataTypeRulesSuccess = invoice.InvoiceDetails?.All(d => 
-                        d.Quantity >= 0 && (d.Cost ?? 0) >= 0 && (d.TotalCost ?? 0) >= 0) ?? true;
+                        d.Quantity >= 0 && (d.Cost ?? 0.0) >= 0 && (d.TotalCost ?? 0.0) >= 0) ?? true;
                 }
                 _logger.Error((mathDataTypeRulesSuccess ? "✅" : "❌") + " **TEMPLATE_SPEC_MATH_DATA_RULES**: " + 
                     (mathDataTypeRulesSuccess ? $"Mathematical data types and business rules compliant for {documentType} (Database-driven validation)" : 
