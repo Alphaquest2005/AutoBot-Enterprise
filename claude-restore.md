@@ -161,7 +161,7 @@ sqlcmd -Q "SELECT Success FROM OCRCorrectionLearning WHERE CreatedDate >= '2025-
 
 ---
 
-## 🎯 CRITICAL TEST REFERENCE
+## 🎯 CRITICAL TEST REFERENCE {#critical-test-reference}
 
 ### **MANGO Import Test** (Template Creation from Unknown Supplier)
 ```bash
@@ -372,7 +372,7 @@ The session management system ensures Claude Code maintains awareness of:
 
 ---
 
-## Build Commands
+## Build Commands {#build-commands}
 
 ```powershell
 # Full solution build (x64 platform required)
@@ -413,7 +413,7 @@ The session management system ensures Claude Code maintains awareness of:
 "/mnt/c/Program Files/Microsoft Visual Studio/2022/Enterprise/Common7/IDE/CommonExtensions/Microsoft/TestWindow/vstest.console.exe" "./AutoBotUtilities.Tests/bin/x64/Debug/net48/AutoBotUtilities.Tests.dll" /TestCaseFilter:"FullyQualifiedName~BatchOCRCorrectionComparison" "/Logger:console;verbosity=detailed"
 ```
 
-## Tool Usage - Correct File Paths
+## Tool Usage - Correct File Paths {#tool-usage---correct-file-paths}
 
 ### Repository Root
 **Correct base path**: `/mnt/c/Insight Software/AutoBot-Enterprise/`
@@ -486,7 +486,7 @@ Grep pattern="Gift Card|TotalDeduction" include="*.cs"
 
 ---
 
-## OCR Correction Service Architecture - COMPLETE IMPLEMENTATION ✅
+## OCR Correction Service Architecture - COMPLETE IMPLEMENTATION ✅ {#ocr-correction-service-architecture}
 
 ### Main Components (All Implemented)
 - **Main Service**: `/mnt/c/Insight Software/AutoBot-Enterprise/InvoiceReader/OCRCorrectionService/OCRCorrectionService.cs`
@@ -586,7 +586,7 @@ All paths and commands in this file have been verified as working:
 
 ---
 
-## High-Level Architecture
+## High-Level Architecture {#high-level-architecture}
 
 AutoBot-Enterprise is a .NET Framework 4.8 application that automates customs document processing workflows. The system processes emails, PDFs, and various file formats to extract data and manage customs-related documents (Asycuda).
 
