@@ -58,16 +58,20 @@ Dual-Layer Template Specification Integration means adding **5 specific Template
 
 ## 🏗️ **DUAL-LAYER IMPLEMENTATION PATTERN - EXACT TEMPLATE TO FOLLOW**
 
-### **Step 1: Add Dual-Layer Template Specification Validation Block**
+### **Step 1: Add Dual-Layer Template Specification Validation Block - OBJECT-ORIENTED FUNCTIONAL APPROACH**
+**🚨 MANDATORY**: Use object-oriented functional approach with short-circuit failure and DatabaseTemplateHelper integration.
+
+**❌ PROHIBITED**: Hardcoded EntityType validations like `f.EntityType == "Invoice"` - these violate document-type specificity.
+
 Add this block AFTER the standard 8 business success criteria and BEFORE the overall success assessment:
 
 ```csharp
-// **TEMPLATE SPECIFICATION SUCCESS CRITERIA VALIDATION - DUAL LAYER APPROACH**
+// **TEMPLATE SPECIFICATION SUCCESS CRITERIA VALIDATION - OBJECT-ORIENTED FUNCTIONAL DUAL LAYER APPROACH**
 _logger.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: [Method Purpose] dual-layer template specification compliance analysis");
 
-// Determine document type using FileTypeManager.EntryTypes
-string documentType = context?.FileType?.FileImporterInfos?.EntryType ?? FileTypeManager.EntryTypes.Unknown;
-_logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using document-specific validation rules");
+// Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
+string documentType = context?.FileType?.FileImporterInfos?.EntryType ?? "ShipmentInvoice";
+_logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
 
 // **TEMPLATE_SPEC_1: AI RECOMMENDATION QUALITY + ACTUAL DATA VALIDATION**
 // LAYER 1: AI Recommendation Quality for document type
