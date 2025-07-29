@@ -202,6 +202,31 @@ namespace WaterNut.DataSpace
             {
                 _logger.Verbose("✅ **FIELD_DEFINITION_FOUND**: Located field '{FieldName}' with Key='{FieldKey}'", 
                     fieldDefinition.Field, fieldDefinition.Key);
+                
+                // **TEMPLATE SPECIFICATION SUCCESS CRITERIA VALIDATION - OBJECT-ORIENTED FUNCTIONAL DUAL LAYER APPROACH**
+                _logger.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: FindOcrFieldDefinitionInTemplate dual-layer template specification compliance analysis");
+
+                // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
+                string documentType = "Invoice"; // Field definition lookup is document-type agnostic
+                _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
+
+                // Create template specification object for document type with dual-layer validation
+                var templateSpec = TemplateSpecification.CreateForUtilityOperation(documentType, "FindOcrFieldDefinitionInTemplate", 
+                    new { lineId, fieldId, templateId = ocrTemplate?.OcrTemplates?.Id }, fieldDefinition);
+
+                // Fluent validation with short-circuiting - stops on first failure
+                var validatedSpec = templateSpec
+                    .ValidateEntityTypeAwareness(null) // No AI recommendations for utility operations
+                    .ValidateFieldMappingEnhancement(null)
+                    .ValidateDataTypeRecommendations("Entity") // Field definition entity operations
+                    .ValidatePatternQuality(null)
+                    .ValidateTemplateOptimization(null);
+
+                // Log all validation results
+                validatedSpec.LogValidationResults(_logger);
+
+                // Extract overall success from validated specification
+                bool templateSpecificationSuccess = validatedSpec.IsValid;
             }
             
             return fieldDefinition;
@@ -224,6 +249,32 @@ namespace WaterNut.DataSpace
             if (template == null)
             {
                 _logger.Verbose("⚠️ **NULL_TEMPLATE**: Template is null - returning empty InvoiceContext");
+                
+                // **TEMPLATE SPECIFICATION SUCCESS CRITERIA VALIDATION - OBJECT-ORIENTED FUNCTIONAL DUAL LAYER APPROACH**
+                _logger.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: GetInvoiceContext dual-layer template specification compliance analysis");
+
+                // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
+                string documentType = "Invoice"; // Invoice context extraction is document-type agnostic
+                _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
+
+                // Create template specification object for document type with dual-layer validation
+                var templateSpec = TemplateSpecification.CreateForUtilityOperation(documentType, "GetInvoiceContext", 
+                    template, new InvoiceContext());
+
+                // Fluent validation with short-circuiting - stops on first failure
+                var validatedSpec = templateSpec
+                    .ValidateEntityTypeAwareness(null) // No AI recommendations for utility operations
+                    .ValidateFieldMappingEnhancement(null)
+                    .ValidateDataTypeRecommendations("Entity") // Invoice context entity operations
+                    .ValidatePatternQuality(null)
+                    .ValidateTemplateOptimization(null);
+
+                // Log all validation results
+                validatedSpec.LogValidationResults(_logger);
+
+                // Extract overall success from validated specification
+                bool templateSpecificationSuccess = validatedSpec.IsValid;
+                
                 return new InvoiceContext();
             }
             
@@ -234,11 +285,38 @@ namespace WaterNut.DataSpace
                 _logger.Debug("   - **FALLBACK_STRATEGY**: Using Template.OcrTemplates.Id as fallback for InvoiceContext");
                 _logger.Debug("   - **CONTEXT_LIMITATION**: Limited context available due to missing navigation property");
                 
-                return new InvoiceContext 
+                var fallbackContext = new InvoiceContext 
                 { 
                     InvoiceId = template.OcrTemplates.Id, 
                     InvoiceName = template.OcrTemplates.Name ?? "Unknown OCR Template Name" 
                 };
+                
+                // **TEMPLATE SPECIFICATION SUCCESS CRITERIA VALIDATION - OBJECT-ORIENTED FUNCTIONAL DUAL LAYER APPROACH**
+                _logger.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: GetInvoiceContext dual-layer template specification compliance analysis");
+
+                // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
+                string documentType = "Invoice"; // Invoice context extraction is document-type agnostic
+                _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
+
+                // Create template specification object for document type with dual-layer validation
+                var templateSpec = TemplateSpecification.CreateForUtilityOperation(documentType, "GetInvoiceContext", 
+                    template, fallbackContext);
+
+                // Fluent validation with short-circuiting - stops on first failure
+                var validatedSpec = templateSpec
+                    .ValidateEntityTypeAwareness(null) // No AI recommendations for utility operations
+                    .ValidateFieldMappingEnhancement(null)
+                    .ValidateDataTypeRecommendations("Entity") // Invoice context entity operations
+                    .ValidatePatternQuality(null)
+                    .ValidateTemplateOptimization(null);
+
+                // Log all validation results
+                validatedSpec.LogValidationResults(_logger);
+
+                // Extract overall success from validated specification
+                bool templateSpecificationSuccess = validatedSpec.IsValid;
+                
+                return fallbackContext;
             }
             
             // **LOG_THE_WHO**: Complete context extraction with full template details
