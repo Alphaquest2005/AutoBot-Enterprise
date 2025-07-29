@@ -277,7 +277,7 @@ namespace WaterNut.DataSpace
                 var templateSpec = TemplateSpecification.CreateForUtilityOperation(documentType, "GetOrCreateTemplateAsync", templateName, null);
 
                 // Fluent validation with short-circuiting - stops on first failure
-                var validatedSpec = templateSpec
+                var validatedSpecInputFail = templateSpec
                     .ValidateEntityTypeAwareness(null) // No AI recommendations for template management
                     .ValidateFieldMappingEnhancement(null)
                     .ValidateDataTypeRecommendations(null)
@@ -285,14 +285,14 @@ namespace WaterNut.DataSpace
                     .ValidateTemplateOptimization(null);
 
                 // Log all validation results
-                validatedSpec.LogValidationResults(_logger);
+                validatedSpecInputFail.LogValidationResults(_logger);
 
                 // Extract overall success from validated specification (always fails for null input case)
-                bool templateSpecificationSuccess = validatedSpec.IsValid;
+                bool templateSpecSuccessInputFail = validatedSpecInputFail.IsValid;
 
                 _logger.Error("🏆 **FINAL_METHOD_SUCCESS_WITH_TEMPLATE_SPEC**: {Status} - GetOrCreateTemplateAsync (input validation failure) with template specification validation {Result}", 
-                    templateSpecificationSuccess ? "✅ PASS" : "❌ FAIL", 
-                    templateSpecificationSuccess ? "completed successfully" : "failed validation");
+                    templateSpecSuccessInputFail ? "✅ PASS" : "❌ FAIL", 
+                    templateSpecSuccessInputFail ? "completed successfully" : "failed validation");
                 
                 return null;
             }
@@ -346,7 +346,7 @@ namespace WaterNut.DataSpace
                     var templateSpec = TemplateSpecification.CreateForUtilityOperation(documentType, "GetOrCreateTemplateAsync", templateName, existingTemplate);
 
                     // Fluent validation with short-circuiting - stops on first failure
-                    var validatedSpec = templateSpec
+                    var validatedSpecExisting = templateSpec
                         .ValidateEntityTypeAwareness(null) // No AI recommendations for template management
                         .ValidateFieldMappingEnhancement(null)
                         .ValidateDataTypeRecommendations(null)
@@ -354,13 +354,13 @@ namespace WaterNut.DataSpace
                         .ValidateTemplateOptimization(null);
 
                     // Log all validation results
-                    validatedSpec.LogValidationResults(_logger);
+                    validatedSpecExisting.LogValidationResults(_logger);
 
                     // Extract overall success from validated specification
-                    bool templateSpecificationSuccess = validatedSpec.IsValid;
+                    bool templateSpecSuccessExisting = validatedSpecExisting.IsValid;
 
                     // Update overall success to include template specification validation
-                    overallSuccess = overallSuccess && templateSpecificationSuccess;
+                    overallSuccess = overallSuccess && templateSpecSuccessExisting;
 
                     _logger.Error("🏆 **FINAL_METHOD_SUCCESS_WITH_TEMPLATE_SPEC**: {Status} - GetOrCreateTemplateAsync (existing template) with template specification validation {Result}", 
                         overallSuccess ? "✅ PASS" : "❌ FAIL", 
@@ -422,7 +422,7 @@ namespace WaterNut.DataSpace
                 var templateSpec = TemplateSpecification.CreateForUtilityOperation(documentType, "GetOrCreateTemplateAsync", templateName, newTemplate);
 
                 // Fluent validation with short-circuiting - stops on first failure
-                var validatedSpec = templateSpec
+                var validatedSpecNew = templateSpec
                     .ValidateEntityTypeAwareness(null) // No AI recommendations for template management
                     .ValidateFieldMappingEnhancement(null)
                     .ValidateDataTypeRecommendations(null)
@@ -430,13 +430,13 @@ namespace WaterNut.DataSpace
                     .ValidateTemplateOptimization(null);
 
                 // Log all validation results
-                validatedSpec.LogValidationResults(_logger);
+                validatedSpecNew.LogValidationResults(_logger);
 
                 // Extract overall success from validated specification
-                bool templateSpecificationSuccess = validatedSpec.IsValid;
+                bool templateSpecSuccessNew = validatedSpecNew.IsValid;
 
                 // Update overall success to include template specification validation
-                overallSuccess = overallSuccess && templateSpecificationSuccess;
+                overallSuccess = overallSuccess && templateSpecSuccessNew;
 
                 _logger.Error("🏆 **FINAL_METHOD_SUCCESS_WITH_TEMPLATE_SPEC**: {Status} - GetOrCreateTemplateAsync (new template) with template specification validation {Result}", 
                     overallSuccess ? "✅ PASS" : "❌ FAIL", 
@@ -481,7 +481,7 @@ namespace WaterNut.DataSpace
                 var templateSpec = TemplateSpecification.CreateForUtilityOperation(documentType, "GetOrCreateTemplateAsync", templateName, null);
 
                 // Fluent validation with short-circuiting - stops on first failure
-                var validatedSpec = templateSpec
+                var validatedSpecException = templateSpec
                     .ValidateEntityTypeAwareness(null) // No AI recommendations for template management
                     .ValidateFieldMappingEnhancement(null)
                     .ValidateDataTypeRecommendations(null)
@@ -489,14 +489,14 @@ namespace WaterNut.DataSpace
                     .ValidateTemplateOptimization(null);
 
                 // Log all validation results
-                validatedSpec.LogValidationResults(_logger);
+                validatedSpecException.LogValidationResults(_logger);
 
                 // Extract overall success from validated specification (always fails for exception case)
-                bool templateSpecificationSuccess = validatedSpec.IsValid;
+                bool templateSpecSuccessException = validatedSpecException.IsValid;
 
                 _logger.Error("🏆 **FINAL_METHOD_SUCCESS_WITH_TEMPLATE_SPEC**: {Status} - GetOrCreateTemplateAsync (exception) with template specification validation {Result}", 
-                    templateSpecificationSuccess ? "✅ PASS" : "❌ FAIL", 
-                    templateSpecificationSuccess ? "completed successfully" : "failed validation");
+                    templateSpecSuccessException ? "✅ PASS" : "❌ FAIL", 
+                    templateSpecSuccessException ? "completed successfully" : "failed validation");
                 
                 return null;
             }
