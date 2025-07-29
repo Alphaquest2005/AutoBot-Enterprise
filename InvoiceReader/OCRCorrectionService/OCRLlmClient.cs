@@ -376,7 +376,6 @@ namespace WaterNut.DataSpace
                 throw new InvalidOperationException("No fallback strategy available - Gemini API key not configured and DeepSeek failed");
             }
         }
-        }
 
         /// <summary>
         /// **🧠 ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v5**: DeepSeek API integration with OCR-optimized request handling
