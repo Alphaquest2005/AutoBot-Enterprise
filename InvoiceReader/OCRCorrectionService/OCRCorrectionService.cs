@@ -823,11 +823,11 @@ namespace WaterNut.DataSpace
                         .SelectMany(l => l.Fields)
                         .ToList();
                     
+                    // Determine document type from template (default to Invoice for CreateInvoiceTemplateAsync)
+                    string documentType = template?.FileType?.FileImporterInfos?.EntryType ?? "Invoice";
+                    var expectedEntityTypes = DatabaseTemplateHelper.GetExpectedEntityTypesForDocumentType(documentType);
                     var hasValidEntityTypes = templateParts.Any(f => 
-                        f.EntityType == "Invoice" || 
-                        f.EntityType == "InvoiceDetails" || 
-                        f.EntityType == "ShipmentBL" || 
-                        f.EntityType == "PurchaseOrders");
+                        expectedEntityTypes.Contains(f.EntityType, StringComparer.OrdinalIgnoreCase));
                     
                     if (hasValidEntityTypes) validEntityTypeMappings++;
                 }
