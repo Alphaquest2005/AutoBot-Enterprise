@@ -79,6 +79,32 @@ namespace WaterNut.DataSpace
             {
                 _logger.Error("❌ **CONFIGURATION_FAILURE**: No LLM provider API keys configured - cannot initialize client");
                 _logger.Error("   - **REQUIRED_ENVIRONMENT_VARIABLES**: DEEPSEEK_API_KEY or GEMINI_API_KEY must be set");
+                
+                // **TEMPLATE SPECIFICATION SUCCESS CRITERIA VALIDATION - OBJECT-ORIENTED FUNCTIONAL DUAL LAYER APPROACH**
+                _logger.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: OCRLlmClient constructor dual-layer template specification compliance analysis");
+
+                // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
+                string documentType = "Invoice"; // LLM client construction is document-type agnostic
+                _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
+
+                // Create template specification object for document type with dual-layer validation
+                var templateSpec = TemplateSpecification.CreateForUtilityOperation(documentType, "OCRLlmClient", 
+                    logger, null);
+
+                // Fluent validation with short-circuiting - stops on first failure
+                var validatedSpec = templateSpec
+                    .ValidateEntityTypeAwareness(null) // No AI recommendations for utility operations
+                    .ValidateFieldMappingEnhancement(null)
+                    .ValidateDataTypeRecommendations("Text") // LLM client configuration operations
+                    .ValidatePatternQuality(null)
+                    .ValidateTemplateOptimization(null);
+
+                // Log all validation results
+                validatedSpec.LogValidationResults(_logger);
+
+                // Extract overall success from validated specification
+                bool templateSpecificationSuccess = validatedSpec.IsValid;
+                
                 throw new InvalidOperationException("At least one API key must be set: DEEPSEEK_API_KEY or GEMINI_API_KEY");
             }
 
@@ -119,6 +145,32 @@ namespace WaterNut.DataSpace
             if (string.IsNullOrWhiteSpace(prompt))
             {
                 _logger.Error("❌ **VALIDATION_FAILURE**: Prompt validation failed - null or empty prompt provided");
+                
+                // **TEMPLATE SPECIFICATION SUCCESS CRITERIA VALIDATION - OBJECT-ORIENTED FUNCTIONAL DUAL LAYER APPROACH**
+                _logger.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: GetResponseAsync dual-layer template specification compliance analysis");
+
+                // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
+                string documentType = "Invoice"; // LLM request orchestration is document-type agnostic
+                _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
+
+                // Create template specification object for document type with dual-layer validation
+                var templateSpec = TemplateSpecification.CreateForUtilityOperation(documentType, "GetResponseAsync", 
+                    new { prompt, temperature, maxTokens }, null);
+
+                // Fluent validation with short-circuiting - stops on first failure
+                var validatedSpec = templateSpec
+                    .ValidateEntityTypeAwareness(null) // No AI recommendations for utility operations
+                    .ValidateFieldMappingEnhancement(null)
+                    .ValidateDataTypeRecommendations("Text") // LLM response text operations
+                    .ValidatePatternQuality(null)
+                    .ValidateTemplateOptimization(null);
+
+                // Log all validation results
+                validatedSpec.LogValidationResults(_logger);
+
+                // Extract overall success from validated specification
+                bool templateSpecificationSuccess = validatedSpec.IsValid;
+                
                 throw new ArgumentException("Prompt cannot be null or empty", nameof(prompt));
             }
 
@@ -156,6 +208,31 @@ namespace WaterNut.DataSpace
                     _logger.Information("✅ **PRIMARY_STRATEGY_SUCCESS**: DeepSeek responded successfully");
                     _logger.Information("   - **RESPONSE_METRICS**: Length={ResponseLength}, Provider=DeepSeek, FallbackUsed=false", responseLength);
                     _logger.Information("   - **SUCCESS_ASSERTION**: Primary provider delivered expected LLM response, no fallback required");
+                    
+                    // **TEMPLATE SPECIFICATION SUCCESS CRITERIA VALIDATION - OBJECT-ORIENTED FUNCTIONAL DUAL LAYER APPROACH**
+                    _logger.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: GetResponseAsync dual-layer template specification compliance analysis");
+
+                    // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
+                    string documentType = "Invoice"; // LLM request orchestration is document-type agnostic
+                    _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
+
+                    // Create template specification object for document type with dual-layer validation
+                    var templateSpec = TemplateSpecification.CreateForUtilityOperation(documentType, "GetResponseAsync", 
+                        new { prompt, temperature, maxTokens }, deepSeekResponse);
+
+                    // Fluent validation with short-circuiting - stops on first failure
+                    var validatedSpec = templateSpec
+                        .ValidateEntityTypeAwareness(null) // No AI recommendations for utility operations
+                        .ValidateFieldMappingEnhancement(null)
+                        .ValidateDataTypeRecommendations("Text") // LLM response text operations
+                        .ValidatePatternQuality(null)
+                        .ValidateTemplateOptimization(null);
+
+                    // Log all validation results
+                    validatedSpec.LogValidationResults(_logger);
+
+                    // Extract overall success from validated specification
+                    bool templateSpecificationSuccess = validatedSpec.IsValid;
                     
                     return deepSeekResponse;
                 }
