@@ -95,7 +95,7 @@ namespace WaterNut.DataSpace
                 var validatedSpec = templateSpec
                     .ValidateEntityTypeAwareness(null) // No AI recommendations for utility operations
                     .ValidateFieldMappingEnhancement(null)
-                    .ValidateDataTypeRecommendations("Text") // LLM client configuration operations
+                    .ValidateDataTypeRecommendations(new List<PromptRecommendation>()) // LLM client configuration operations
                     .ValidatePatternQuality(null)
                     .ValidateTemplateOptimization(null);
 
