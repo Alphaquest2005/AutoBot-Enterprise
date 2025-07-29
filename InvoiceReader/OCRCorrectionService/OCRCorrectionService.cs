@@ -850,9 +850,9 @@ namespace WaterNut.DataSpace
             _logger.Error((databaseIntegration ? "✅" : "❌") + " **INTEGRATION_SUCCESS**: " + (databaseIntegration ? "Database integration and template storage functioning properly" : "Database integration failed"));
             _logger.Error((reasonableTemplateCount ? "✅" : "❌") + " **PERFORMANCE_COMPLIANCE**: " + (reasonableTemplateCount ? "Template count within reasonable performance limits" : "Template count exceeds performance limits"));
             
-            // **ENHANCED OVERALL SUCCESS WITH TEMPLATE SPECIFICATIONS**
+            // **ENHANCED OVERALL SUCCESS WITH DUAL-LAYER TEMPLATE SPECIFICATIONS**
             bool overallSuccess = templatesCreated && inputProcessed && templateDataValid && databaseIntegration && textDataPreserved && reasonableTemplateCount &&
-                                 entityTypeMappingSuccess && requiredFieldCoverage && regexPatternQuality && fieldMappingValidation && templateCompleteness;
+                                 templateSpecificationSuccess;
             _logger.Error(overallSuccess ? "🏆 **OVERALL_METHOD_SUCCESS**: ✅ PASS" : ("🏆 **OVERALL_METHOD_SUCCESS**: ❌ FAIL" + " - Template creation analysis"));
             
             _logger.Error("📊 **TEMPLATE_CREATION_SUMMARY**: TemplatesCreated={TemplateCount}, InputTextLength={TextLength}, ProcessingSuccess={ProcessingSuccess}", 
