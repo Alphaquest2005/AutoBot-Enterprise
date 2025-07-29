@@ -406,6 +406,11 @@ namespace WaterNut.DataSpace
             public List<string> RequiredFields { get; set; } = new List<string>();
             public List<string> RequiredCategories { get; set; } = new List<string>();
             public List<TemplateValidationResult> ValidationResults { get; set; } = new List<TemplateValidationResult>();
+            
+            // Template creation specific properties
+            public List<Template> CreatedTemplates { get; set; } = new List<Template>();
+            public string SourceText { get; set; }
+            
             public bool IsValid => ValidationResults.All(r => r.IsSuccess);
             public bool HasFailure => ValidationResults.Any(r => !r.IsSuccess);
 
