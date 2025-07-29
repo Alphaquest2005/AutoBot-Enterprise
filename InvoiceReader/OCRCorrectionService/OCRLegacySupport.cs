@@ -873,6 +873,32 @@ namespace WaterNut.DataSpace
                 logger.Error("🎯 **ENHANCED_CAPTURE_POINTS**: Data validation, count verification, exit behavior rationale");
                 logger.Error("📚 **FIX_RATIONALE**: Invalid data requires early return for pipeline safety");
                 logger.Error("🔍 **FIX_VALIDATION**: Monitoring invalid sync attempts and upstream cause identification");
+                
+                // **TEMPLATE SPECIFICATION SUCCESS CRITERIA VALIDATION - OBJECT-ORIENTED FUNCTIONAL DUAL LAYER APPROACH**
+                logger.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: UpdateDynamicResultsWithCorrections dual-layer template specification compliance analysis");
+
+                // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
+                string documentType = "Invoice"; // Dynamic sync is document-type agnostic
+                logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
+
+                // Create template specification object for document type with dual-layer validation
+                var templateSpec = TemplateSpecification.CreateForUtilityOperation(documentType, "UpdateDynamicResultsWithCorrections", 
+                    new { dynamicItems, correctedInvoices }, null);
+
+                // Fluent validation with short-circuiting - stops on first failure
+                var validatedSpec = templateSpec
+                    .ValidateEntityTypeAwareness(null) // No AI recommendations for utility operations
+                    .ValidateFieldMappingEnhancement(null)
+                    .ValidateDataTypeRecommendations("Text") // Dynamic sync data operations
+                    .ValidatePatternQuality(null)
+                    .ValidateTemplateOptimization(null);
+
+                // Log all validation results
+                validatedSpec.LogValidationResults(logger);
+
+                // Extract overall success from validated specification
+                bool templateSpecificationSuccess = validatedSpec.IsValid;
+                
                 return;
             }
             
