@@ -187,8 +187,15 @@ namespace WaterNut.DataSpace
                             
                             _logger.Information("📊 Mathematical Validation Summary: Processed={ProcessedItems}, Errors={TotalErrors}, CalcErrors={CalcErrors}, ReasonablenessErrors={ReasonErrors}, TotalVariance={Variance:F4}", 
                                 processedLineItems, errors.Count, calculationErrors, reasonablenessErrors, totalVariance);
-                        }
-                        else
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.Error(ex, "💥 Exception during mathematical consistency validation for invoice {InvoiceNo} - ProcessedItems: {ProcessedItems}", 
+                            invoice.InvoiceNo, processedLineItems);
+                        // Don't re-throw - return partial results if available
+                    }
+                }
+                else
                         {
                             _logger.Information("ℹ️ No invoice details found for mathematical validation - returning empty error list");
                         }
