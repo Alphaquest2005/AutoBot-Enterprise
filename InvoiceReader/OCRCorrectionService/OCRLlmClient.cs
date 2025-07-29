@@ -945,7 +945,7 @@ namespace WaterNut.DataSpace
             var validatedSpec = templateSpec
                 .ValidateEntityTypeAwareness(null) // No AI recommendations for utility operations
                 .ValidateFieldMappingEnhancement(null)
-                .ValidateDataTypeRecommendations("Object") // Retry policy object creation
+                .ValidateDataTypeRecommendations(new List<PromptRecommendation>()) // Retry policy object creation
                 .ValidatePatternQuality(null)
                 .ValidateTemplateOptimization(null);
 
