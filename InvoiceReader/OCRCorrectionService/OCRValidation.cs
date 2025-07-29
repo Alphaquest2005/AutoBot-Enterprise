@@ -92,8 +92,8 @@ namespace WaterNut.DataSpace
             _logger.Error("📊 **LOGGING_ENHANCEMENTS**: Enhanced processing with calculation tracking and error detection");
             
             try
-                    {
-                        if (invoice.InvoiceDetails != null && invoice.InvoiceDetails.Any())
+            {
+                if (invoice.InvoiceDetails != null && invoice.InvoiceDetails.Any())
                         {
                             _logger.Information("📊 Processing {LineItemCount} invoice line items for mathematical validation", invoice.InvoiceDetails.Count);
                             
