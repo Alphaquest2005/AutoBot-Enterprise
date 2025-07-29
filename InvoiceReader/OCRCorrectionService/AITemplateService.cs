@@ -412,6 +412,11 @@ namespace WaterNut.DataSpace
             public List<Template> CreatedTemplates { get; set; } = new List<Template>();
             public string SourceText { get; set; }
             
+            // Correction application specific properties
+            public ShipmentInvoice Invoice { get; set; }
+            public List<CorrectionResult> CorrectionResults { get; set; } = new List<CorrectionResult>();
+            public List<InvoiceError> Errors { get; set; } = new List<InvoiceError>();
+            
             public bool IsValid => ValidationResults.All(r => r.IsSuccess);
             public bool HasFailure => ValidationResults.Any(r => !r.IsSuccess);
 
