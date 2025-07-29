@@ -845,8 +845,8 @@ namespace WaterNut.DataSpace
                 _logger.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: Field conflict resolution dual-layer template specification compliance analysis");
                 
                 // Get template mapping from database using FileTypeId (if available) or default to ShipmentInvoice
-                var templateMapping = originalInvoice?.FileTypeId.HasValue == true 
-                    ? DatabaseTemplateHelper.GetTemplateMappingByFileTypeId(originalInvoice.FileTypeId.Value)
+                var templateMapping = originalInvoice?.FileTypeId != null 
+                    ? DatabaseTemplateHelper.GetTemplateMappingByFileTypeId(originalInvoice.FileTypeId)
                     : null;
                 string documentType = templateMapping?.DocumentType ?? FileTypeManager.EntryTypes.ShipmentInvoice;
                 _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} (FileTypeId={originalInvoice?.FileTypeId}) - Using database-driven conflict resolution validation rules");
@@ -1117,8 +1117,8 @@ namespace WaterNut.DataSpace
                 _logger.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: Mathematical impact correction dual-layer template specification compliance analysis");
                 
                 // Get template mapping from database using FileTypeId (if available) or default to ShipmentInvoice
-                var templateMapping = originalInvoice?.FileTypeId.HasValue == true 
-                    ? DatabaseTemplateHelper.GetTemplateMappingByFileTypeId(originalInvoice.FileTypeId.Value)
+                var templateMapping = originalInvoice?.FileTypeId != null 
+                    ? DatabaseTemplateHelper.GetTemplateMappingByFileTypeId(originalInvoice.FileTypeId)
                     : null;
                 string documentType = templateMapping?.DocumentType ?? FileTypeManager.EntryTypes.ShipmentInvoice;
                 _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} (FileTypeId={originalInvoice?.FileTypeId}) - Using database-driven mathematical impact validation rules");
