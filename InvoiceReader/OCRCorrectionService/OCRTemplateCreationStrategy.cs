@@ -360,11 +360,11 @@ namespace WaterNut.DataSpace
                     bool templateSpecSuccessExisting = validatedSpecExisting.IsValid;
 
                     // Update overall success to include template specification validation
-                    overallSuccess = overallSuccess && templateSpecSuccessExisting;
+                    overallSuccessExisting = overallSuccessExisting && templateSpecSuccessExisting;
 
                     _logger.Error("🏆 **FINAL_METHOD_SUCCESS_WITH_TEMPLATE_SPEC**: {Status} - GetOrCreateTemplateAsync (existing template) with template specification validation {Result}", 
-                        overallSuccess ? "✅ PASS" : "❌ FAIL", 
-                        overallSuccess ? "completed successfully" : "failed validation");
+                        overallSuccessExisting ? "✅ PASS" : "❌ FAIL", 
+                        overallSuccessExisting ? "completed successfully" : "failed validation");
                     
                     _logger.Error("📊 **TEMPLATE_MANAGEMENT_SUMMARY**: ExistingTemplate - ID={TemplateId}, Name='{TemplateName}', Active={IsActive}", 
                         existingTemplate.Id, existingTemplate.Name, existingTemplate.IsActive);
