@@ -100,14 +100,14 @@ namespace WaterNut.DataSpace
                     foreach (var detail in invoice.InvoiceDetails.Where(d => d != null))
                     {
                         processedLineItems++;
-                                _logger.Debug("🔍 Validating Line {LineNumber}: Qty={Quantity}, Cost={Cost}, Discount={Discount}, TotalCost={TotalCost}", 
-                                    detail.LineNumber, detail.Quantity, detail.Cost, detail.Discount, detail.TotalCost);
+                        _logger.Debug("🔍 Validating Line {LineNumber}: Qty={Quantity}, Cost={Cost}, Discount={Discount}, TotalCost={TotalCost}", 
+                            detail.LineNumber, detail.Quantity, detail.Cost, detail.Discount, detail.TotalCost);
 
-                                // Mathematical calculation validation
-                                double quantity = detail.Quantity;
-                                double unitCost = detail.Cost;
-                                double discount = detail.Discount ?? 0;
-                                double reportedLineTotal = detail.TotalCost ?? 0;
+                        // Mathematical calculation validation
+                        double quantity = detail.Quantity;
+                        double unitCost = detail.Cost;
+                        double discount = detail.Discount ?? 0;
+                        double reportedLineTotal = detail.TotalCost ?? 0;
 
                                 double calculatedLineTotal;
                                 if (quantity == 0 && unitCost != 0) {
