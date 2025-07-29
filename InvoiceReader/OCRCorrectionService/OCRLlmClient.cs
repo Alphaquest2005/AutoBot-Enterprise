@@ -849,7 +849,7 @@ namespace WaterNut.DataSpace
             var validatedSpec = templateSpec
                 .ValidateEntityTypeAwareness(null) // No AI recommendations for utility operations
                 .ValidateFieldMappingEnhancement(null)
-                .ValidateDataTypeRecommendations("Object") // HTTP client object creation
+                .ValidateDataTypeRecommendations(new List<PromptRecommendation>()) // HTTP client object creation
                 .ValidatePatternQuality(null)
                 .ValidateTemplateOptimization(null);
 
