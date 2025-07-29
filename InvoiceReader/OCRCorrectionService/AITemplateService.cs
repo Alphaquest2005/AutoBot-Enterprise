@@ -467,6 +467,23 @@ namespace WaterNut.DataSpace
             }
 
             /// <summary>
+            /// Creates a TemplateSpecification for database strategy validation
+            /// Tailored for validating database operations against Template_Specifications.md
+            /// </summary>
+            public static TemplateSpecification CreateForDatabaseStrategy(string documentType, RegexUpdateRequest request, DatabaseUpdateResult result = null)
+            {
+                return new TemplateSpecification
+                {
+                    DocumentType = documentType,
+                    RequiredEntityTypes = DatabaseTemplateHelper.GetExpectedEntityTypesForDocumentType(documentType),
+                    RequiredFields = DatabaseTemplateHelper.GetRequiredFieldsForDocumentType(documentType),
+                    RequiredCategories = new List<string> { "Database Strategy Validation", "Field Operations", "Regex Pattern Quality" },
+                    DatabaseRequest = request,
+                    DatabaseResult = result
+                };
+            }
+
+            /// <summary>
             /// Gets the relevant EntityTypes for a specific document type
             /// Based on Template_Specifications.md EntityType mapping
             /// </summary>
