@@ -449,50 +449,50 @@ _logger.Error(overallSuccess ? "🏆 **OVERALL_METHOD_SUCCESS**: ✅ PASS" : "�
 
 ---
 
-## 🚨 **CRITICAL IMPLEMENTATION VIOLATIONS TO FIX**
+## ✅ **CRITICAL IMPLEMENTATION VIOLATIONS - RESOLVED**
 
-### **❌ IDENTIFIED HARDCODED VALIDATIONS - MUST BE REPLACED**
+### **✅ SUCCESSFULLY FIXED HARDCODED VALIDATIONS**
 
-The following hardcoded EntityType validations violate the object-oriented functional approach and MUST be replaced:
+All hardcoded EntityType validations have been successfully replaced with object-oriented functional approach using DatabaseTemplateHelper:
 
-**📁 OCRFieldMapping.cs (Lines 255-259)**:
+**✅ FIXED: OCRFieldMapping.cs** - *(Previously fixed in earlier session)*
+- Replaced hardcoded EntityType validation with `DatabaseTemplateHelper.GetExpectedEntityTypesForDocumentType()`
+
+**✅ FIXED: OCRCorrectionService.cs** - *(Previously fixed in earlier session)*
+- Replaced 2 hardcoded EntityType validations with DatabaseTemplateHelper document-type specific validation
+
+**✅ FIXED: OCRUtilities.cs (Line 994)**:
 ```csharp
-// ❌ PROHIBITED - Replace with DatabaseTemplateHelper
-bool entityTypeValid = fieldInfo == null || (
-    fieldInfo.EntityType == "Invoice" || 
-    fieldInfo.EntityType == "InvoiceDetails" || 
-    fieldInfo.EntityType == "ShipmentBL" || 
-    fieldInfo.EntityType == "PurchaseOrders");
+// ✅ FIXED - Now uses DatabaseTemplateHelper
+if (targetPropertyName.StartsWith("invoicedetail", StringComparison.OrdinalIgnoreCase) ||
+    (fieldInfo != null && DatabaseTemplateHelper.IsEntityTypeDetailType(fieldInfo.EntityType)))
 ```
 
-**📁 OCRCorrectionService.cs (Lines 827-830)**:
+**✅ FIXED: OCRDatabaseStrategies.cs (Line 322)**:
 ```csharp
-// ❌ PROHIBITED - Replace with DatabaseTemplateHelper
-var hasValidEntityTypes = templateParts.Any(f => 
-    f.EntityType == "Invoice" || 
-    f.EntityType == "InvoiceDetails" || 
-    f.EntityType == "ShipmentBL" || 
-    f.EntityType == "PurchaseOrders");
+// ✅ FIXED - Now uses DatabaseTemplateHelper
+string targetPartTypeName = DatabaseTemplateHelper.GetPartTypeForEntityType(fieldInfo?.EntityType);
 ```
 
-**📁 OCRCorrectionService.cs (Lines 905-907)**:
-```csharp
-// ❌ PROHIBITED - Replace with DatabaseTemplateHelper
-(f.EntityType == "Invoice" && (f.Field == "InvoiceNo" || f.Field == "InvoiceDate" || f.Field == "SupplierCode")) ||
-(f.EntityType == "InvoiceDetails" && (f.Field == "ItemNumber" || f.Field == "ItemDescription" || f.Field == "Quantity")) ||
-(f.EntityType == "ShipmentBL" && (f.Field == "BLNumber" || f.Field == "WeightKG"))
-```
+### **✅ ENHANCED DATABASETEMPLATEHELPER METHODS**
 
-**📁 OCRUtilities.cs (Line 994)**:
-```csharp
-// ❌ PROHIBITED - Replace with DatabaseTemplateHelper
-(fieldInfo != null && fieldInfo.EntityType == "InvoiceDetails")
-```
+Added new methods to support object-oriented functional approach:
 
-**📁 OCRDatabaseStrategies.cs (Line 322)**:
 ```csharp
-// ❌ PROHIBITED - Replace with DatabaseTemplateHelper
-string targetPartTypeName = (fieldInfo?.EntityType == "InvoiceDetails") ? "LineItem" : "Header";
+/// <summary>
+/// Determines if an EntityType represents detail/line item data (vs header data)
+/// </summary>
+public static bool IsEntityTypeDetailType(string entityType)
+
+/// <summary>
+/// Determines the Part Type Name ("LineItem" or "Header") based on EntityType
+/// </summary>
+public static string GetPartTypeForEntityType(string entityType)
+
+/// <summary>
+/// Checks if an EntityType is valid for a specific document type using database-driven validation
+/// </summary>
+public static bool IsEntityTypeValidForDocumentType(string entityType, string documentType, int applicationSettingsId = 1)
 ```
 
 ### **✅ MANDATORY REPLACEMENT PATTERN**
