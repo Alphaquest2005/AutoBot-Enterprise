@@ -1006,6 +1006,32 @@ namespace WaterNut.DataSpace
                     _logger.Error("🎯 **BUSINESS_SUCCESS_CRITERIA_VALIDATION**: AI regex correction failed due to empty response");
                     _logger.Error("❌ **OVERALL_METHOD_SUCCESS**: ❌ FAIL - AI regex correction terminated due to empty AI response");
                     
+                    // **TEMPLATE SPECIFICATION SUCCESS CRITERIA VALIDATION - OBJECT-ORIENTED FUNCTIONAL DUAL LAYER APPROACH (EMPTY RESPONSE PATH)**
+                    _logger.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: AI regex correction dual-layer template specification compliance analysis (Empty response path)");
+
+                    // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
+                    string documentType = DatabaseTemplateHelper.GetDocumentTypeFromFieldName(correction.FieldName) ?? "Invoice";
+                    _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
+
+                    // Create template specification object for document type with dual-layer validation
+                    var templateSpec = TemplateSpecification.CreateForUtilityOperation(documentType, "RequestRegexCorrectionFromDeepSeek", correction, null);
+
+                    // Fluent validation with short-circuiting - stops on first failure
+                    var validatedSpec = templateSpec
+                        .ValidateEntityTypeAwareness(null) // No AI output due to empty response
+                        .ValidateFieldMappingEnhancement(correction.FieldName)
+                        .ValidateDataTypeRecommendations(correction.CurrentValue)
+                        .ValidatePatternQuality(null) // No pattern due to empty response
+                        .ValidateTemplateOptimization(null); // No response due to empty response
+
+                    // Log all validation results
+                    validatedSpec.LogValidationResults(_logger);
+
+                    // Extract overall success from validated specification
+                    bool templateSpecificationSuccess = validatedSpec.IsValid;
+
+                    _logger.Error("🏆 **FINAL_METHOD_SUCCESS_WITH_TEMPLATE_SPEC**: ❌ FAIL - RequestRegexCorrectionFromDeepSeek empty response path with template specification validation failed");
+                    
                     return null;
                 }
                 
