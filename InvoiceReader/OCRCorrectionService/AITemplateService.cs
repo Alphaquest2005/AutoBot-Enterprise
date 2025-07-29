@@ -426,6 +426,11 @@ namespace WaterNut.DataSpace
             public object UtilityInputData { get; set; }
             public object UtilityOutputData { get; set; }
             
+            // Field mapping specific properties
+            public string FieldMappingOperation { get; set; }
+            public string FieldName { get; set; }
+            public object MappingResult { get; set; }
+            
             public bool IsValid => ValidationResults.All(r => r.IsSuccess);
             public bool HasFailure => ValidationResults.Any(r => !r.IsSuccess);
 
