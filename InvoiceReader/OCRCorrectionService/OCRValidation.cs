@@ -97,6 +97,9 @@ namespace WaterNut.DataSpace
                 {
                     _logger.Information("📊 Processing {LineItemCount} invoice line items for mathematical validation", invoice.InvoiceDetails.Count);
                     
+                    try
+                    {
+                    
                     foreach (var detail in invoice.InvoiceDetails.Where(d => d != null))
                     {
                         processedLineItems++;
