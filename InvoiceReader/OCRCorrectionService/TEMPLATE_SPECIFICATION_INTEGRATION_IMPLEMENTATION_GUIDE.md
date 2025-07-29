@@ -119,7 +119,41 @@ _logger.Error($"🏆 **TEMPLATE_SPECIFICATION_OVERALL**: {(templateSpecification
     $"Dual-layer validation for {documentType} with comprehensive compliance analysis");
 ```
 
-### **Step 2: Document-Type Specific Validation Helper Methods**
+### **Step 2: MANDATORY Object-Oriented Functional Approach - FLUENT VALIDATION WITH SHORT-CIRCUIT**
+
+**🚨 CRITICAL REQUIREMENT**: All template specification validation MUST use the object-oriented functional approach with short-circuit failure, NOT inline hardcoded validations.
+
+**✅ CORRECT APPROACH**: Create TemplateSpecification object and use fluent validation with DatabaseTemplateHelper
+```csharp
+// Create template specification object with document-type awareness
+var templateSpec = new TemplateSpecification 
+{
+    DocumentType = documentType,
+    RequiredEntityTypes = DatabaseTemplateHelper.GetExpectedEntityTypesForDocumentType(documentType),
+    RequiredFields = DatabaseTemplateHelper.GetRequiredFieldsForDocumentType(documentType)
+};
+
+// Use fluent validation with short-circuit failure
+var validatedSpec = templateSpec
+    .ValidateEntityTypeAwareness(recommendations)
+    .ValidateFieldMappingEnhancement(recommendations) 
+    .ValidateDataTypeRecommendations(recommendations)
+    .ValidatePatternQuality(recommendations)
+    .ValidateTemplateOptimization(recommendations);
+
+// Extract overall success from validated specification
+bool templateSpecificationSuccess = validatedSpec.IsValid;
+```
+
+**❌ PROHIBITED APPROACH**: Hardcoded inline validations like:
+```csharp
+// ❌ DO NOT USE - violates document-type specificity
+bool entityTypeValid = fieldInfo.EntityType == "Invoice" || 
+                      fieldInfo.EntityType == "InvoiceDetails" || 
+                      fieldInfo.EntityType == "ShipmentBL";
+```
+
+### **Step 3: Document-Type Specific Validation Helper Methods**
 Implement these helper methods for comprehensive validation:
 
 ```csharp
