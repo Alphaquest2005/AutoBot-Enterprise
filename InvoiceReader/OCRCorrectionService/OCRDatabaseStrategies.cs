@@ -1312,9 +1312,37 @@ namespace WaterNut.DataSpace
                 _logger.Error(staticValueCreationSuccess ? "✅" : "❌" + " **BUSINESS_LOGIC**: Static value assignment objective achieved");
                 _logger.Error(persistenceSuccess ? "✅" : "❌" + " **INTEGRATION_SUCCESS**: Database persistence successful for all entities");
                 _logger.Error("✅ **PERFORMANCE_COMPLIANCE**: Entity creation completed within reasonable timeframe");
+
+                // **TEMPLATE SPECIFICATION SUCCESS CRITERIA VALIDATION - OBJECT-ORIENTED FUNCTIONAL DUAL LAYER APPROACH**
+                _logger.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: Database strategy dual-layer template specification compliance analysis");
+
+                // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
+                string documentType = request?.FileType ?? "Invoice";
+                _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
+
+                // Create template specification object for document type with dual-layer validation
+                var dbResult = DatabaseUpdateResult.Success(newLineEntity.Id, "Created new line and static field value for inferred value", newFieldEntity.Id);
+                var templateSpec = TemplateSpecification.CreateForDatabaseStrategy(documentType, request, dbResult);
+
+                // Fluent validation with short-circuiting - stops on first failure
+                var validatedSpec = templateSpec
+                    .ValidateEntityTypeAwareness(null) // Database strategy doesn't have AI recommendations
+                    .ValidateFieldMappingEnhancement(null)
+                    .ValidateDataTypeRecommendations(null)
+                    .ValidatePatternQuality(null)
+                    .ValidateTemplateOptimization(null);
+
+                // Log all validation results
+                validatedSpec.LogValidationResults(_logger);
+
+                // Extract overall success from validated specification
+                bool templateSpecificationSuccess = validatedSpec.IsValid;
                 
-                bool overallSuccess = regexCreationSuccess && lineCreationSuccess && fieldCreationSuccess && staticValueCreationSuccess && entityRelationshipsSuccess;
-                _logger.Error(overallSuccess ? "🏆 **OVERALL_METHOD_SUCCESS**: ✅ PASS" : "🏆 **OVERALL_METHOD_SUCCESS**: ❌ FAIL" + " - Static value line creation analysis");
+                bool overallSuccess = regexCreationSuccess && lineCreationSuccess && fieldCreationSuccess && staticValueCreationSuccess && entityRelationshipsSuccess && templateSpecificationSuccess;
+                _logger.Error(overallSuccess ? "🏆 **OVERALL_METHOD_SUCCESS**: ✅ PASS" : "🏆 **OVERALL_METHOD_SUCCESS**: ❌ FAIL" + 
+                    $" - Database strategy for {documentType} " + (overallSuccess ? 
+                    "with comprehensive dual-layer template specification compliance (AI quality + data validation)" : 
+                    "failed dual-layer validation criteria - check AI recommendations AND data compliance"));
                 
                 _logger.Error("📊 **CREATION_SUMMARY**: Line ID: {LineId}, Field ID: {FieldId}, Static Value: '{StaticValue}'", 
                     newLineEntity.Id, newFieldEntity.Id, request.NewValue);
