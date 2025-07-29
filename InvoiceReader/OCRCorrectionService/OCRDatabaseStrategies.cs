@@ -319,7 +319,7 @@ namespace WaterNut.DataSpace
                     return null;
                 }
 
-                string targetPartTypeName = (fieldInfo?.EntityType == "InvoiceDetails") ? "LineItem" : "Header";
+                string targetPartTypeName = DatabaseTemplateHelper.GetPartTypeForEntityType(fieldInfo?.EntityType);
                 _logger.Error("   - [LOGIC]: Determined Target Part Type is '{PartType}'.", targetPartTypeName);
 
                 var part = await context.Parts.Include(p => p.PartTypes)
