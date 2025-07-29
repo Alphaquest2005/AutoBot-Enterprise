@@ -640,28 +640,28 @@ namespace WaterNut.DataSpace
                     validatedFields, errors.Count, Math.Abs(calculatedSubTotalFromDetails - reportedSubTotal), totalsZeroResult);
             }
             catch (Exception ex)
-                    {
-                        // **v4.2 EXCEPTION HANDLING**: Enhanced exception handling with cross-field validation impact assessment
-                        _logger.Error(ex, "🚨 **CROSS_FIELD_VALIDATION_EXCEPTION**: Critical exception in cross-field consistency validation");
-                        _logger.Error("📋 **AVAILABLE_LOG_DATA**: Exception context - InvoiceNo='{InvoiceNo}', ExceptionType='{ExceptionType}'", 
-                            invoice?.InvoiceNo, ex.GetType().Name);
-                        _logger.Error("🔍 **PATTERN_ANALYSIS**: Exception prevents cross-field validation completion and balance verification");
-                        _logger.Error("💡 **LOG_BASED_HYPOTHESIS**: Critical exceptions indicate calculation errors or data corruption");
-                        _logger.Error("📚 **FIX_RATIONALE**: Exception handling ensures graceful failure with partial results return");
-                        _logger.Error("🔍 **FIX_VALIDATION**: Exception documented for troubleshooting and cross-field validation monitoring");
-                        
-                        // **STEP 4: MANDATORY SUCCESS CRITERIA VALIDATION - EXCEPTION PATH**
-                        _logger.Error("🎯 **BUSINESS_SUCCESS_CRITERIA_VALIDATION**: Cross-field validation failed due to critical exception");
-                        _logger.Error("❌ **PURPOSE_FULFILLMENT**: Cross-field validation failed due to unhandled exception");
-                        _logger.Error("❌ **OUTPUT_COMPLETENESS**: Partial error collection returned due to exception termination");
-                        _logger.Error("❌ **PROCESS_COMPLETION**: Cross-field validation workflow interrupted by critical exception");
-                        _logger.Error("❌ **DATA_QUALITY**: No complete validation data produced due to exception");
-                        _logger.Error("✅ **ERROR_HANDLING**: Exception caught and handled gracefully with partial results");
-                        _logger.Error("❌ **BUSINESS_LOGIC**: Cross-field validation objective not fully achieved due to exception");
-                        _logger.Error("❌ **INTEGRATION_SUCCESS**: Cross-field processing failed due to critical exception");
-                        _logger.Error("✅ **PERFORMANCE_COMPLIANCE**: Exception handling completed within reasonable timeframe");
-                        _logger.Error("🏆 **OVERALL_METHOD_SUCCESS**: ❌ FAIL - Cross-field validation terminated by critical exception");
-                    }
+            {
+                // **v4.2 EXCEPTION HANDLING**: Enhanced exception handling with cross-field validation impact assessment
+                _logger.Error(ex, "🚨 **CROSS_FIELD_VALIDATION_EXCEPTION**: Critical exception in cross-field consistency validation");
+                _logger.Error("📋 **AVAILABLE_LOG_DATA**: Exception context - InvoiceNo='{InvoiceNo}', ExceptionType='{ExceptionType}'", 
+                    invoice?.InvoiceNo, ex.GetType().Name);
+                _logger.Error("🔍 **PATTERN_ANALYSIS**: Exception prevents cross-field validation completion and balance verification");
+                _logger.Error("💡 **LOG_BASED_HYPOTHESIS**: Critical exceptions indicate calculation errors or data corruption");
+                _logger.Error("📚 **FIX_RATIONALE**: Exception handling ensures graceful failure with partial results return");
+                _logger.Error("🔍 **FIX_VALIDATION**: Exception documented for troubleshooting and cross-field validation monitoring");
+                
+                // **STEP 4: MANDATORY SUCCESS CRITERIA VALIDATION - EXCEPTION PATH**
+                _logger.Error("🎯 **BUSINESS_SUCCESS_CRITERIA_VALIDATION**: Cross-field validation failed due to critical exception");
+                _logger.Error("❌ **PURPOSE_FULFILLMENT**: Cross-field validation failed due to unhandled exception");
+                _logger.Error("❌ **OUTPUT_COMPLETENESS**: Partial error collection returned due to exception termination");
+                _logger.Error("❌ **PROCESS_COMPLETION**: Cross-field validation workflow interrupted by critical exception");
+                _logger.Error("❌ **DATA_QUALITY**: No complete validation data produced due to exception");
+                _logger.Error("✅ **ERROR_HANDLING**: Exception caught and handled gracefully with partial results");
+                _logger.Error("❌ **BUSINESS_LOGIC**: Cross-field validation objective not fully achieved due to exception");
+                _logger.Error("❌ **INTEGRATION_SUCCESS**: Cross-field processing failed due to critical exception");
+                _logger.Error("✅ **PERFORMANCE_COMPLIANCE**: Exception handling completed within reasonable timeframe");
+                _logger.Error("🏆 **OVERALL_METHOD_SUCCESS**: ❌ FAIL - Cross-field validation terminated by critical exception");
+            }
 
 
             return errors;
