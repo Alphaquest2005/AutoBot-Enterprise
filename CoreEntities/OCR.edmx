@@ -68,6 +68,7 @@
           <Property Name="LastUpdated" Type="datetime2" Precision="7" Nullable="false" />
           <Property Name="CreatedBy" Type="nvarchar" MaxLength="100" />
           <Property Name="ProcessingNotes" Type="nvarchar(max)" />
+          <Property Name="FileTypeId" Type="int" />
         </EntityType>
         <EntityType Name="OCR-ChildPart">
           <Key>
@@ -494,7 +495,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.vw_OCRCorrectionAnalysis'
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_OCR-TemplateIdentificatonRegEx_OCR-Invoices">
+        <Association Name="FK_OCR-InvoiceIdentificatonRegEx_OCR-Invoices">
           <End Role="OCR-Templates" Type="Self.OCR-Templates" Multiplicity="1">
             <OnDelete Action="Cascade" />
           </End>
@@ -508,7 +509,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.vw_OCRCorrectionAnalysis'
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_OCR-TemplateIdentificatonRegEx_OCR-RegularExpressions">
+        <Association Name="FK_OCR-InvoiceIdentificatonRegEx_OCR-RegularExpressions">
           <End Role="OCR-RegularExpressions" Type="Self.OCR-RegularExpressions" Multiplicity="1" />
           <End Role="OCR-TemplateIdentificatonRegEx" Type="Self.OCR-TemplateIdentificatonRegEx" Multiplicity="*" />
           <ReferentialConstraint>
@@ -786,11 +787,11 @@ FROM [dbo].[vw_OCRCorrectionAnalysis] AS [vw_OCRCorrectionAnalysis]</DefiningQue
             <End Role="OCR-Fields" EntitySet="OCR-Fields" />
             <End Role="OCR-FieldValue" EntitySet="OCR-FieldValue" />
           </AssociationSet>
-          <AssociationSet Name="FK_OCR-TemplateIdentificatonRegEx_OCR-Invoices" Association="Self.FK_OCR-TemplateIdentificatonRegEx_OCR-Invoices">
+          <AssociationSet Name="FK_OCR-InvoiceIdentificatonRegEx_OCR-Invoices" Association="Self.FK_OCR-InvoiceIdentificatonRegEx_OCR-Invoices">
             <End Role="OCR-Templates" EntitySet="OCR-Templates" />
             <End Role="OCR-TemplateIdentificatonRegEx" EntitySet="OCR-TemplateIdentificatonRegEx" />
           </AssociationSet>
-          <AssociationSet Name="FK_OCR-TemplateIdentificatonRegEx_OCR-RegularExpressions" Association="Self.FK_OCR-TemplateIdentificatonRegEx_OCR-RegularExpressions">
+          <AssociationSet Name="FK_OCR-InvoiceIdentificatonRegEx_OCR-RegularExpressions" Association="Self.FK_OCR-InvoiceIdentificatonRegEx_OCR-RegularExpressions">
             <End Role="OCR-RegularExpressions" EntitySet="OCR-RegularExpressions" />
             <End Role="OCR-TemplateIdentificatonRegEx" EntitySet="OCR-TemplateIdentificatonRegEx" />
           </AssociationSet>
@@ -1668,6 +1669,7 @@ FROM [dbo].[vw_OCRCorrectionAnalysis] AS [vw_OCRCorrectionAnalysis]</DefiningQue
           <NavigationProperty Name="OCR_KeywordDetectionLog" Relationship="WaterNutDBModel.FK_OCR_KeywordDetectionLog_Mapping" FromRole="OCR_TemplateTableMapping" ToRole="OCR_KeywordDetectionLog" />
           <NavigationProperty Name="OCR_TemplateTableMapping1" Relationship="WaterNutDBModel.FK_OCR_TemplateTableMapping_Parent" FromRole="OCR_TemplateTableMapping" ToRole="OCR_TemplateTableMapping1" />
           <NavigationProperty Name="OCR_TemplateTableMapping2" Relationship="WaterNutDBModel.FK_OCR_TemplateTableMapping_Parent" FromRole="OCR_TemplateTableMapping1" ToRole="OCR_TemplateTableMapping" />
+          <Property Name="FileTypeId" Type="Int32" />
         </EntityType>
         <Association Name="FK_OCR_KeywordDetectionLog_Mapping">
           <End Type="WaterNutDBModel.OCR_TemplateTableMapping" Role="OCR_TemplateTableMapping" Multiplicity="0..1" />
@@ -1940,6 +1942,7 @@ FROM [dbo].[vw_OCRCorrectionAnalysis] AS [vw_OCRCorrectionAnalysis]</DefiningQue
           <EntitySetMapping Name="OCR_TemplateTableMapping">
             <EntityTypeMapping TypeName="WaterNutDBModel.OCR_TemplateTableMapping">
               <MappingFragment StoreEntitySet="OCR_TemplateTableMapping">
+                <ScalarProperty Name="FileTypeId" ColumnName="FileTypeId" />
                 <ScalarProperty Name="ProcessingNotes" ColumnName="ProcessingNotes" />
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="LastUpdated" ColumnName="LastUpdated" />
