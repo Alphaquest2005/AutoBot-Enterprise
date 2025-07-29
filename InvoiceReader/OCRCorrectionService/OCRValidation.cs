@@ -638,8 +638,8 @@ namespace WaterNut.DataSpace
                 
                 _logger.Error("📊 **CROSS_FIELD_VALIDATION_SUMMARY**: ValidatedFields={ValidatedFields}, ErrorsDetected={ErrorCount}, SubTotalVariance={SubTotalVar:F4}, TotalsZeroResult={TotalsZero}", 
                     validatedFields, errors.Count, Math.Abs(calculatedSubTotalFromDetails - reportedSubTotal), totalsZeroResult);
-                    }
-                    catch (Exception ex)
+            }
+            catch (Exception ex)
                     {
                         // **v4.2 EXCEPTION HANDLING**: Enhanced exception handling with cross-field validation impact assessment
                         _logger.Error(ex, "🚨 **CROSS_FIELD_VALIDATION_EXCEPTION**: Critical exception in cross-field consistency validation");
