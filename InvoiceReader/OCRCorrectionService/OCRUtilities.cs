@@ -991,7 +991,7 @@ namespace WaterNut.DataSpace
                 }
 
                 if (targetPropertyName.StartsWith("invoicedetail", StringComparison.OrdinalIgnoreCase) ||
-                    (fieldInfo != null && fieldInfo.EntityType == "InvoiceDetails"))
+                    (fieldInfo != null && DatabaseTemplateHelper.IsEntityTypeDetailType(fieldInfo.EntityType)))
                 {
                     var parts = fieldNameFromError.Split('_');
                     if (parts.Length >= 3 && parts[0].Equals("InvoiceDetail", StringComparison.OrdinalIgnoreCase))
