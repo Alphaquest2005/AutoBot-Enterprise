@@ -1812,6 +1812,33 @@ namespace WaterNut.DataSpace
             catch (ArgumentException ex)
             {
                 _logger.Error(ex, "    - ❌ **VALIDATION_FAIL**: The regex pattern is syntactically invalid.");
+                
+                // **TEMPLATE SPECIFICATION SUCCESS CRITERIA VALIDATION - OBJECT-ORIENTED FUNCTIONAL DUAL LAYER APPROACH (EXCEPTION PATH)**
+                _logger.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: Regex validation dual-layer template specification compliance analysis (Exception path)");
+
+                // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
+                string documentType = DatabaseTemplateHelper.GetDocumentTypeFromFieldName(correction.FieldName) ?? "Invoice";
+                _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
+
+                // Create template specification object for document type with dual-layer validation
+                var templateSpec = TemplateSpecification.CreateForUtilityOperation(documentType, "ValidateRegexPattern", correction, false);
+
+                // Fluent validation with short-circuiting - stops on first failure
+                var validatedSpec = templateSpec
+                    .ValidateEntityTypeAwareness(regexResponse.RegexPattern) // Pattern exists but has syntax error
+                    .ValidateFieldMappingEnhancement(correction.FieldName)
+                    .ValidateDataTypeRecommendations("Pattern") // Method designed to validate pattern data types
+                    .ValidatePatternQuality(regexResponse.RegexPattern) // Pattern quality issue - syntax error
+                    .ValidateTemplateOptimization(false); // Return false for validation failure
+
+                // Log all validation results
+                validatedSpec.LogValidationResults(_logger);
+
+                // Extract overall success from validated specification
+                bool templateSpecificationSuccess = validatedSpec.IsValid;
+
+                _logger.Error("🏆 **FINAL_METHOD_SUCCESS_WITH_TEMPLATE_SPEC**: ❌ FAIL - ValidateRegexPattern exception path with template specification validation failed");
+                
                 return false;
             }
             finally
