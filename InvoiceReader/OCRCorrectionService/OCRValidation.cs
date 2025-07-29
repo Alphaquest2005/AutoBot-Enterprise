@@ -109,14 +109,14 @@ namespace WaterNut.DataSpace
                         double discount = detail.Discount ?? 0;
                         double reportedLineTotal = detail.TotalCost ?? 0;
 
-                                double calculatedLineTotal;
-                                if (quantity == 0 && unitCost != 0) {
-                                    calculatedLineTotal = -discount;
-                                    _logger.Debug("🧮 Special Case: Zero quantity with non-zero cost - calculated total = -discount = {CalculatedTotal}", calculatedLineTotal);
-                                } else {
-                                    calculatedLineTotal = (quantity * unitCost) - discount;
-                                    _logger.Debug("🧮 Standard Calculation: ({Qty} * {Cost}) - {Discount} = {CalculatedTotal}", quantity, unitCost, discount, calculatedLineTotal);
-                                }
+                        double calculatedLineTotal;
+                        if (quantity == 0 && unitCost != 0) {
+                            calculatedLineTotal = -discount;
+                            _logger.Debug("🧮 Special Case: Zero quantity with non-zero cost - calculated total = -discount = {CalculatedTotal}", calculatedLineTotal);
+                        } else {
+                            calculatedLineTotal = (quantity * unitCost) - discount;
+                            _logger.Debug("🧮 Standard Calculation: ({Qty} * {Cost}) - {Discount} = {CalculatedTotal}", quantity, unitCost, discount, calculatedLineTotal);
+                        }
 
                                 double variance = Math.Abs(calculatedLineTotal - reportedLineTotal);
                                 totalVariance += variance;
