@@ -382,5 +382,50 @@ namespace WaterNut.DataSpace
 
             return requiredFields;
         }
+
+        /// <summary>
+        /// Determines if an EntityType represents detail/line item data (vs header data)
+        /// Based on Template_Specifications.md EntityType patterns
+        /// </summary>
+        /// <param name="entityType">The EntityType to check</param>
+        /// <returns>True if EntityType represents detail/line items, false for header types</returns>
+        public static bool IsEntityTypeDetailType(string entityType)
+        {
+            if (string.IsNullOrEmpty(entityType))
+                return false;
+
+            // EntityTypes ending with "Details" are line item types
+            // e.g., InvoiceDetails, ShipmentBLDetails, ShipmentFreightDetails, etc.
+            return entityType.EndsWith("Details", StringComparison.OrdinalIgnoreCase) ||
+                   entityType.EndsWith("LineItems", StringComparison.OrdinalIgnoreCase);
+        }
+
+        /// <summary>
+        /// Determines the Part Type Name ("LineItem" or "Header") based on EntityType
+        /// Used for database Part queries where PartTypes.Name needs to be determined
+        /// </summary>
+        /// <param name="entityType">The EntityType to check</param>
+        /// <returns>"LineItem" for detail EntityTypes, "Header" for header EntityTypes</returns>
+        public static string GetPartTypeForEntityType(string entityType)
+        {
+            return IsEntityTypeDetailType(entityType) ? "LineItem" : "Header";
+        }
+
+        /// <summary>
+        /// Checks if an EntityType is valid for a specific document type using database-driven validation
+        /// Replaces hardcoded EntityType checks with document-type specific validation
+        /// </summary>
+        /// <param name="entityType">The EntityType to validate</param>
+        /// <param name="documentType">The document type (e.g., "Invoice", "PurchaseOrder")</param>
+        /// <param name="applicationSettingsId">Application settings ID</param>
+        /// <returns>True if EntityType is valid for the document type</returns>
+        public static bool IsEntityTypeValidForDocumentType(string entityType, string documentType, int applicationSettingsId = 1)
+        {
+            if (string.IsNullOrEmpty(entityType) || string.IsNullOrEmpty(documentType))
+                return false;
+
+            var expectedEntityTypes = GetExpectedEntityTypesForDocumentType(documentType, applicationSettingsId);
+            return expectedEntityTypes.Contains(entityType, StringComparer.OrdinalIgnoreCase);
+        }
     }
 }
