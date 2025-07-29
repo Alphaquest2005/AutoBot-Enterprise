@@ -11,6 +11,7 @@ using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using System.Linq;
 using EntryDataDS.Business.Entities;
+using OCR.Business.Entities;
 using Serilog;
 
 namespace WaterNut.DataSpace
