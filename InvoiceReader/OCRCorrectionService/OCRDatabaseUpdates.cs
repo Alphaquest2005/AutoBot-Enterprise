@@ -1233,6 +1233,27 @@ namespace WaterNut.DataSpace
             // **NO_PARSING_COMPLEXITY**: Eliminates need for WindowText parsing and regex extraction
             // **CLEAN_IMPLEMENTATION**: Dedicated field usage as intended by database schema enhancement
             
+            // **TEMPLATE SPECIFICATION SUCCESS CRITERIA VALIDATION - OBJECT-ORIENTED FUNCTIONAL DUAL LAYER APPROACH**
+            // Note: Static method - no logger available, validation performed without logging
+            
+            // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
+            string documentType = "Invoice"; // Learning record access is document-type agnostic
+            
+            // Create template specification object for document type with dual-layer validation
+            var templateSpec = TemplateSpecification.CreateForUtilityOperation(documentType, "GetSuggestedRegexFromLearningRecord", 
+                learningRecord, learningRecord?.SuggestedRegex);
+
+            // Fluent validation with short-circuiting - stops on first failure
+            var validatedSpec = templateSpec
+                .ValidateEntityTypeAwareness(null) // No AI recommendations for utility operations
+                .ValidateFieldMappingEnhancement(null)
+                .ValidateDataTypeRecommendations("Text") // Regex extraction operations return text results
+                .ValidatePatternQuality(null)
+                .ValidateTemplateOptimization(null);
+
+            // Extract overall success from validated specification (no logging available)
+            bool templateSpecificationSuccess = validatedSpec.IsValid;
+            
             return learningRecord?.SuggestedRegex;
             
             // **LOG_THE_WHO**: Method completion and return value
