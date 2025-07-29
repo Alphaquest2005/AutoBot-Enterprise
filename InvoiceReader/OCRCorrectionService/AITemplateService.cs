@@ -511,6 +511,24 @@ namespace WaterNut.DataSpace
             }
 
             /// <summary>
+            /// Creates a TemplateSpecification for field mapping operations validation
+            /// Tailored for validating field mapping operations against Template_Specifications.md
+            /// </summary>
+            public static TemplateSpecification CreateForFieldMapping(string documentType, string operationType, string fieldName = null, object mappingResult = null)
+            {
+                return new TemplateSpecification
+                {
+                    DocumentType = documentType,
+                    RequiredEntityTypes = DatabaseTemplateHelper.GetExpectedEntityTypesForDocumentType(documentType),
+                    RequiredFields = DatabaseTemplateHelper.GetRequiredFieldsForDocumentType(documentType),
+                    RequiredCategories = new List<string> { "Field Mapping Validation", "EntityType Compliance", "Database Integration" },
+                    FieldMappingOperation = operationType,
+                    FieldName = fieldName,
+                    MappingResult = mappingResult
+                };
+            }
+
+            /// <summary>
             /// Gets the relevant EntityTypes for a specific document type
             /// Based on Template_Specifications.md EntityType mapping
             /// </summary>
