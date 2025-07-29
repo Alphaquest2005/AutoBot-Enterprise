@@ -251,12 +251,11 @@ namespace WaterNut.DataSpace
                 // **STEP 4: MANDATORY TEMPLATE SPECIFICATION SUCCESS CRITERIA VALIDATION** ⭐ **ENHANCED WITH TEMPLATE SPECIFICATIONS**
                 _logger.Error("🎯 **TEMPLATE_SPECIFICATION_SUCCESS_CRITERIA_VALIDATION**: Field mapping success analysis with Template Specifications compliance");
                 
-                // **TEMPLATE_SPEC_1: EntityType Classification Validation**
-                bool entityTypeValid = fieldInfo == null || (
-                    fieldInfo.EntityType == "Invoice" || 
-                    fieldInfo.EntityType == "InvoiceDetails" || 
-                    fieldInfo.EntityType == "ShipmentBL" || 
-                    fieldInfo.EntityType == "PurchaseOrders");
+                // **TEMPLATE_SPEC_1: EntityType Classification Validation - DOCUMENT-TYPE SPECIFIC**
+                // Determine document type (default to ShipmentInvoice for backward compatibility)
+                string documentType = "ShipmentInvoice"; // TODO: Pass document type as parameter for full document-type specificity
+                var expectedEntityTypes = DatabaseTemplateHelper.GetExpectedEntityTypesForDocumentType(documentType);
+                bool entityTypeValid = fieldInfo == null || expectedEntityTypes.Contains(fieldInfo.EntityType, StringComparer.OrdinalIgnoreCase);
                 _logger.Error((entityTypeValid ? "✅" : "❌") + " **TEMPLATE_SPEC_ENTITYTYPE_CLASSIFICATION**: " + 
                     (entityTypeValid ? $"Field EntityType classification valid - '{fieldInfo?.EntityType ?? "NULL"}' is recognized template EntityType" : 
                     $"Field EntityType classification invalid - '{fieldInfo?.EntityType ?? "NULL"}' is not a valid template EntityType"));
