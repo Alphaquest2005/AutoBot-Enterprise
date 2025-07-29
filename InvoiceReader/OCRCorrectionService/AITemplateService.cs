@@ -2791,22 +2791,6 @@ If you find no new omissions or corrections, return an empty errors array with d
 
         #region Data Models
 
-        public class TemplateValidationResult
-        {
-            public bool IsValid { get; set; }
-            public List<string> Errors { get; set; } = new List<string>();
-            public List<string> Warnings { get; set; } = new List<string>();
-        }
-
-        public class PromptRecommendation
-        {
-            public string Provider { get; set; }
-            public string Type { get; set; }
-            public string Description { get; set; }
-            public string Example { get; set; }
-            public string Impact { get; set; }
-            public DateTime Timestamp { get; set; }
-        }
 
         public class AIProviderConfig
         {
