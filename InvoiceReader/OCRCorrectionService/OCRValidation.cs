@@ -96,10 +96,10 @@ namespace WaterNut.DataSpace
                 if (invoice.InvoiceDetails != null && invoice.InvoiceDetails.Any())
                 {
                     _logger.Information("📊 Processing {LineItemCount} invoice line items for mathematical validation", invoice.InvoiceDetails.Count);
-                            
-                            foreach (var detail in invoice.InvoiceDetails.Where(d => d != null))
-                            {
-                                processedLineItems++;
+                    
+                    foreach (var detail in invoice.InvoiceDetails.Where(d => d != null))
+                    {
+                        processedLineItems++;
                                 _logger.Debug("🔍 Validating Line {LineNumber}: Qty={Quantity}, Cost={Cost}, Discount={Discount}, TotalCost={TotalCost}", 
                                     detail.LineNumber, detail.Quantity, detail.Cost, detail.Discount, detail.TotalCost);
 
