@@ -1433,6 +1433,37 @@ namespace WaterNut.DataSpace
                 bool overallSuccess = allChecksCompleted && correctionStatusPreserved && validationLogicExecuted;
                 _logger.Error(overallSuccess ? "🏆 **OVERALL_METHOD_SUCCESS**: ✅ PASS" : "🏆 **OVERALL_METHOD_SUCCESS**: ❌ FAIL" + " - Internal pattern validation analysis");
                 
+                // **TEMPLATE SPECIFICATION SUCCESS CRITERIA VALIDATION - OBJECT-ORIENTED FUNCTIONAL DUAL LAYER APPROACH (SUCCESS PATH)**
+                _logger.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: Pattern validation dual-layer template specification compliance analysis (Success path)");
+
+                // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
+                string documentType = DatabaseTemplateHelper.GetDocumentTypeFromFieldName(correction.FieldName) ?? "Invoice";
+                _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
+
+                // Create template specification object for document type with dual-layer validation
+                var templateSpec = TemplateSpecification.CreateForUtilityOperation(documentType, "ValidatePatternInternal", correction, correction);
+
+                // Fluent validation with short-circuiting - stops on first failure
+                var validatedSpec = templateSpec
+                    .ValidateEntityTypeAwareness(correction.SuggestedRegex)
+                    .ValidateFieldMappingEnhancement(correction.FieldName)
+                    .ValidateDataTypeRecommendations("Pattern") // Method designed to validate pattern data types
+                    .ValidatePatternQuality(correction.SuggestedRegex)
+                    .ValidateTemplateOptimization(correction); // Return validated correction object
+
+                // Log all validation results
+                validatedSpec.LogValidationResults(_logger);
+
+                // Extract overall success from validated specification
+                bool templateSpecificationSuccess = validatedSpec.IsValid;
+
+                // Update overall success to include template specification validation
+                overallSuccess = overallSuccess && templateSpecificationSuccess;
+
+                _logger.Error("🏆 **FINAL_METHOD_SUCCESS_WITH_TEMPLATE_SPEC**: {Status} - ValidatePatternInternal with template specification validation {Result}", 
+                    overallSuccess ? "✅ PASS" : "❌ FAIL", 
+                    overallSuccess ? "completed successfully" : "failed validation");
+                
                 return correction;
             }
             catch (Exception ex)
