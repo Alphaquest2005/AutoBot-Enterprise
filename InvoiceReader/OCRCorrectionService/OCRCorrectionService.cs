@@ -901,10 +901,15 @@ namespace WaterNut.DataSpace
                         .Where(f => !string.IsNullOrEmpty(f.Field) && !string.IsNullOrEmpty(f.EntityType))
                         .ToList();
                     
+                    // Determine document type from template (default to Invoice for CreateInvoiceTemplateAsync)
+                    string documentType = template?.FileType?.FileImporterInfos?.EntryType ?? "Invoice";
+                    var expectedEntityTypes = DatabaseTemplateHelper.GetExpectedEntityTypesForDocumentType(documentType);
+                    var requiredFields = DatabaseTemplateHelper.GetRequiredFieldsForDocumentType(documentType);
+                    
                     var validMappingCount = fieldMappings.Count(f => 
-                        (f.EntityType == "Invoice" && (f.Field == "InvoiceNo" || f.Field == "InvoiceDate" || f.Field == "SupplierCode")) ||
-                        (f.EntityType == "InvoiceDetails" && (f.Field == "ItemNumber" || f.Field == "ItemDescription" || f.Field == "Quantity")) ||
-                        (f.EntityType == "ShipmentBL" && (f.Field == "BLNumber" || f.Field == "WeightKG")));
+                        expectedEntityTypes.Contains(f.EntityType, StringComparer.OrdinalIgnoreCase) &&
+                        (requiredFields.Contains(f.Field, StringComparer.OrdinalIgnoreCase) ||
+                         DatabaseTemplateHelper.IsFieldAppropriateForDocumentType(f.Field, documentType)));
                     
                     var hasValidMappings = validMappingCount > 0; // At least one valid field mapping
                     if (hasValidMappings) templatesWithValidMappings++;
