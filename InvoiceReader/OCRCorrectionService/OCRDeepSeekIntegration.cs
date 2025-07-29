@@ -903,6 +903,32 @@ namespace WaterNut.DataSpace
                 _logger.Error("✅ **PERFORMANCE_COMPLIANCE**: Validation completed within reasonable timeframe");
                 _logger.Error("🏆 **OVERALL_METHOD_SUCCESS**: ❌ FAIL - AI regex correction terminated due to input validation failure");
                 
+                // **TEMPLATE SPECIFICATION SUCCESS CRITERIA VALIDATION - OBJECT-ORIENTED FUNCTIONAL DUAL LAYER APPROACH (INPUT VALIDATION FAILURE PATH)**
+                _logger.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: AI regex correction dual-layer template specification compliance analysis (Input validation failure path)");
+
+                // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING) - Use fallback since correction may be null
+                string documentType = correction?.FieldName != null ? DatabaseTemplateHelper.GetDocumentTypeFromFieldName(correction.FieldName) ?? "Invoice" : "Invoice";
+                _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
+
+                // Create template specification object for document type with dual-layer validation
+                var templateSpec = TemplateSpecification.CreateForUtilityOperation(documentType, "RequestRegexCorrectionFromDeepSeek", correction, null);
+
+                // Fluent validation with short-circuiting - stops on first failure
+                var validatedSpec = templateSpec
+                    .ValidateEntityTypeAwareness(null) // No AI output due to input validation failure
+                    .ValidateFieldMappingEnhancement(correction?.FieldName)
+                    .ValidateDataTypeRecommendations(correction?.CurrentValue)
+                    .ValidatePatternQuality(null) // No pattern due to input validation failure
+                    .ValidateTemplateOptimization(null); // No response due to input validation failure
+
+                // Log all validation results
+                validatedSpec.LogValidationResults(_logger);
+
+                // Extract overall success from validated specification
+                bool templateSpecificationSuccess = validatedSpec.IsValid;
+
+                _logger.Error("🏆 **FINAL_METHOD_SUCCESS_WITH_TEMPLATE_SPEC**: ❌ FAIL - RequestRegexCorrectionFromDeepSeek input validation failure path with template specification validation failed");
+                
                 return null;
             }
             
