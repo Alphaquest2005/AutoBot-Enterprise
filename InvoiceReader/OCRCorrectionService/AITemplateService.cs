@@ -444,6 +444,24 @@ namespace WaterNut.DataSpace
             }
 
             /// <summary>
+            /// Creates a TemplateSpecification for correction application validation
+            /// Tailored for validating correction results against Template_Specifications.md
+            /// </summary>
+            public static TemplateSpecification CreateForCorrectionApplication(string documentType, ShipmentInvoice invoice, List<InvoiceError> errors, List<CorrectionResult> correctionResults)
+            {
+                return new TemplateSpecification
+                {
+                    DocumentType = documentType,
+                    RequiredEntityTypes = DatabaseTemplateHelper.GetExpectedEntityTypesForDocumentType(documentType),
+                    RequiredFields = DatabaseTemplateHelper.GetRequiredFieldsForDocumentType(documentType),
+                    RequiredCategories = new List<string> { "Field Correction Validation", "Data Type Validation", "Business Rule Compliance" },
+                    Invoice = invoice,
+                    CorrectionResults = correctionResults,
+                    Errors = errors
+                };
+            }
+
+            /// <summary>
             /// Gets the relevant EntityTypes for a specific document type
             /// Based on Template_Specifications.md EntityType mapping
             /// </summary>
