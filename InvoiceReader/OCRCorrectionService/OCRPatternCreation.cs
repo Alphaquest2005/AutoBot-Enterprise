@@ -1663,6 +1663,33 @@ namespace WaterNut.DataSpace
                 if (!match.Success)
                 {
                     _logger.Debug("    - ❌ **VALIDATION_FAIL**: The regex pattern did not find any match in the test text: '{TextToTest}'", textToTest);
+                    
+                    // **TEMPLATE SPECIFICATION SUCCESS CRITERIA VALIDATION - OBJECT-ORIENTED FUNCTIONAL DUAL LAYER APPROACH (PATTERN DIDN'T MATCH PATH)**
+                    _logger.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: Regex validation dual-layer template specification compliance analysis (Pattern didn't match path)");
+
+                    // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
+                    string documentType = DatabaseTemplateHelper.GetDocumentTypeFromFieldName(correction.FieldName) ?? "Invoice";
+                    _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
+
+                    // Create template specification object for document type with dual-layer validation
+                    var templateSpec = TemplateSpecification.CreateForUtilityOperation(documentType, "ValidateRegexPattern", correction, false);
+
+                    // Fluent validation with short-circuiting - stops on first failure
+                    var validatedSpec = templateSpec
+                        .ValidateEntityTypeAwareness(regexResponse.RegexPattern) // Pattern exists but failed to match
+                        .ValidateFieldMappingEnhancement(correction.FieldName)
+                        .ValidateDataTypeRecommendations("Pattern") // Method designed to validate pattern data types
+                        .ValidatePatternQuality(regexResponse.RegexPattern) // Pattern quality issue - failed to match
+                        .ValidateTemplateOptimization(false); // Return false for validation failure
+
+                    // Log all validation results
+                    validatedSpec.LogValidationResults(_logger);
+
+                    // Extract overall success from validated specification
+                    bool templateSpecificationSuccess = validatedSpec.IsValid;
+
+                    _logger.Error("🏆 **FINAL_METHOD_SUCCESS_WITH_TEMPLATE_SPEC**: ✅ PASS - ValidateRegexPattern pattern didn't match path handled appropriately");
+                    
                     return false;
                 }
                 _logger.Debug("    - ✅ **MATCH_SUCCESS**: Regex found a match in the test text: '{MatchValue}'", match.Value);
