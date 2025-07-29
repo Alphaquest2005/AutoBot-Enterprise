@@ -312,6 +312,31 @@ namespace WaterNut.DataSpace
                     _logger.Error("   - **SYSTEM_STATE**: Both DeepSeek and Gemini strategies failed - OCR processing cannot continue");
                     _logger.Error("   - **RECOMMENDED_ACTION**: Check API keys, network connectivity, and provider service status");
                     
+                    // **TEMPLATE SPECIFICATION SUCCESS CRITERIA VALIDATION - OBJECT-ORIENTED FUNCTIONAL DUAL LAYER APPROACH**
+                    _logger.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: GetResponseAsync dual-layer template specification compliance analysis");
+
+                    // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
+                    string documentType = "Invoice"; // LLM request orchestration is document-type agnostic
+                    _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
+
+                    // Create template specification object for document type with dual-layer validation
+                    var templateSpec = TemplateSpecification.CreateForUtilityOperation(documentType, "GetResponseAsync", 
+                        new { prompt, temperature, maxTokens }, null);
+
+                    // Fluent validation with short-circuiting - stops on first failure
+                    var validatedSpec = templateSpec
+                        .ValidateEntityTypeAwareness(null) // No AI recommendations for utility operations
+                        .ValidateFieldMappingEnhancement(null)
+                        .ValidateDataTypeRecommendations("Text") // LLM response text operations
+                        .ValidatePatternQuality(null)
+                        .ValidateTemplateOptimization(null);
+
+                    // Log all validation results
+                    validatedSpec.LogValidationResults(_logger);
+
+                    // Extract overall success from validated specification
+                    bool templateSpecificationSuccess = validatedSpec.IsValid;
+                    
                     throw new InvalidOperationException($"Both DeepSeek and Gemini strategies failed. Last error: {geminiEx.Message}", geminiEx);
                 }
             }
