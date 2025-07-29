@@ -2,6 +2,38 @@
 
 *This file restores the complete CLAUDE.md content that was lost, combining all historical versions and optimizing for Claude usage.*
 
+## 📋 TABLE OF CONTENTS
+
+### 🔥 CRITICAL SECTIONS (Most Important)
+1. [**🚨 CRITICAL LOGGING MANDATE**](#critical-logging-mandate) - Always use log files, never console output
+2. [**🎯 CRITICAL TEST REFERENCE**](#critical-test-reference) - MANGO test command and key testing procedures
+3. [**Build Commands**](#build-commands) - Essential build and test commands
+4. [**Tool Usage - Correct File Paths**](#tool-usage---correct-file-paths) - Repository structure and key paths
+
+### 📈 CURRENT DEVELOPMENT
+5. [**🚀 AI-POWERED TEMPLATE SYSTEM**](#ai-powered-template-system) - Latest template implementation (July 2025)
+6. [**🚨 LATEST: OCRCorrectionLearning System**](#latest-ocrcorrectionlearning-system) - Production-ready enhancements
+
+### 🏗️ ARCHITECTURE & HISTORY
+7. [**High-Level Architecture**](#high-level-architecture) - System overview and core workflow
+8. [**OCR Correction Service Architecture**](#ocr-correction-service-architecture) - Complete implementation details
+9. [**🚨 CRITICAL BREAKTHROUGHS**](#critical-breakthroughs) - Previous sessions archive
+
+### 📋 GOVERNANCE & STANDARDS
+10. [**Session Management & Continuity Protocol**](#session-management--continuity-protocol) - Development session tracking
+11. [**🧠 Enhanced Ultradiagnostic Logging**](#enhanced-ultradiagnostic-logging) - Business success criteria validation
+12. [**🏗️ The Established Codebase Respect Mandate**](#the-established-codebase-respect-mandate) - Development principles
+
+### 📊 LOGGING & DIAGNOSTICS
+13. [**🔍 Strategic Logging System**](#strategic-logging-system) - LLM diagnosis capabilities
+14. [**Logging Unification Status**](#logging-unification-status) - Implementation status across projects
+
+### 📚 HISTORICAL REFERENCES  
+15. [**🚨 DeepSeek Generalization Enhancement**](#deepseek-generalization-enhancement) - June 2025 breakthrough
+16. [**🚨 ARCHIVED: DeepSeek Diagnostic Test Results**](#archived-deepseek-diagnostic-test-results) - Amazon detection work
+
+---
+
 ## 🚀 AI-POWERED TEMPLATE SYSTEM - ULTRA-SIMPLE IMPLEMENTATION (July 26, 2025)
 
 ### **🎯 REVOLUTIONARY APPROACH: Simple + Powerful = Success**
