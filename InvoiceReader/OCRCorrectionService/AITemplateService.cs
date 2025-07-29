@@ -488,6 +488,24 @@ namespace WaterNut.DataSpace
             }
 
             /// <summary>
+            /// Creates a TemplateSpecification for utility operations validation
+            /// Tailored for validating utility operations against Template_Specifications.md
+            /// </summary>
+            public static TemplateSpecification CreateForUtilityOperation(string documentType, string operationType, object inputData = null, object outputData = null)
+            {
+                return new TemplateSpecification
+                {
+                    DocumentType = documentType,
+                    RequiredEntityTypes = DatabaseTemplateHelper.GetExpectedEntityTypesForDocumentType(documentType),
+                    RequiredFields = DatabaseTemplateHelper.GetRequiredFieldsForDocumentType(documentType),
+                    RequiredCategories = new List<string> { "Utility Operation Validation", "Data Processing Quality", "Content Preservation" },
+                    UtilityOperation = operationType,
+                    UtilityInputData = inputData,
+                    UtilityOutputData = outputData
+                };
+            }
+
+            /// <summary>
             /// Gets the relevant EntityTypes for a specific document type
             /// Based on Template_Specifications.md EntityType mapping
             /// </summary>
