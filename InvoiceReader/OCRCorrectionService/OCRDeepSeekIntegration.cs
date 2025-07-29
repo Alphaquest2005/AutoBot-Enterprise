@@ -1067,6 +1067,37 @@ namespace WaterNut.DataSpace
                 _logger.Error("📊 **AI_CORRECTION_SUMMARY**: FieldName='{FieldName}', CorrectionPromptGenerated={CorrectionPromptGenerated}, ResponseReceived={ResponseReceived}, CorrectionProduced={CorrectionProduced}, FailureAnalysisIncluded={FailureAnalysisIncluded}", 
                     correction.FieldName, correctionPromptGenerated, aiCorrectionResponseReceived, correctionResultProduced, failureAnalysisIncluded);
                 
+                // **TEMPLATE SPECIFICATION SUCCESS CRITERIA VALIDATION - OBJECT-ORIENTED FUNCTIONAL DUAL LAYER APPROACH**
+                _logger.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: AI regex correction dual-layer template specification compliance analysis");
+
+                // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
+                string documentType = DatabaseTemplateHelper.GetDocumentTypeFromFieldName(correction.FieldName) ?? "Invoice";
+                _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
+
+                // Create template specification object for document type with dual-layer validation
+                var templateSpec = TemplateSpecification.CreateForUtilityOperation(documentType, "RequestRegexCorrectionFromDeepSeek", correction, parsedResponse);
+
+                // Fluent validation with short-circuiting - stops on first failure
+                var validatedSpec = templateSpec
+                    .ValidateEntityTypeAwareness(parsedResponse?.RegexPattern)
+                    .ValidateFieldMappingEnhancement(correction.FieldName)
+                    .ValidateDataTypeRecommendations(correction.CurrentValue)
+                    .ValidatePatternQuality(parsedResponse?.RegexPattern)
+                    .ValidateTemplateOptimization(parsedResponse);
+
+                // Log all validation results
+                validatedSpec.LogValidationResults(_logger);
+
+                // Extract overall success from validated specification
+                bool templateSpecificationSuccess = validatedSpec.IsValid;
+
+                // Update overall success to include template specification validation
+                overallSuccess = overallSuccess && templateSpecificationSuccess;
+
+                _logger.Error("🏆 **FINAL_METHOD_SUCCESS_WITH_TEMPLATE_SPEC**: {Status} - RequestRegexCorrectionFromDeepSeek with template specification validation {Result}", 
+                    overallSuccess ? "✅ PASS" : "❌ FAIL", 
+                    overallSuccess ? "completed successfully" : "failed validation");
+                
                 return parsedResponse;
             }
             catch (Exception ex)
