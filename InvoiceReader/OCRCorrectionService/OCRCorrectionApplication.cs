@@ -433,7 +433,10 @@ namespace WaterNut.DataSpace
             // Extract overall success from validated specification
             bool templateSpecificationSuccess = validatedSpec.IsValid;
             var overallSuccess = purposeFulfilled && outputComplete && processComplete && dataQuality && errorHandling && businessLogic && integrationSuccess && performanceCompliance && templateSpecificationSuccess;
-            _logger.Error("🏆 **OVERALL_METHOD_SUCCESS**: " + (overallSuccess ? "✅ PASS" : "❌ FAIL") + " - Correction application " + (overallSuccess ? "completed successfully with comprehensive confidence filtering, aggregation protection, and template specification compliance" : "failed due to validation criteria not met"));
+            _logger.Error(overallSuccess ? "🏆 **OVERALL_METHOD_SUCCESS**: ✅ PASS" : "🏆 **OVERALL_METHOD_SUCCESS**: ❌ FAIL" + 
+                $" - Correction application for {documentType} " + (overallSuccess ? 
+                "with comprehensive dual-layer template specification compliance (AI quality + data validation)" : 
+                "failed dual-layer validation criteria - check AI recommendations AND data compliance"));
 
             return correctionResults;
         }
