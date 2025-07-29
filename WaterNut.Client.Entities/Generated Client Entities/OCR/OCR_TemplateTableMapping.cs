@@ -333,6 +333,21 @@ public string ProcessingNotes
 		}
      
 
+       
+       
+public Nullable<int> FileTypeId
+		{ 
+		    get { return this.ocr_templatetablemapping.FileTypeId; }
+			set
+			{
+			    if (value == this.ocr_templatetablemapping.FileTypeId) return;
+				this.ocr_templatetablemapping.FileTypeId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("FileTypeId");
+			}
+		}
+     
+
         ObservableCollection<OCR_KeywordDetectionLog> _OCR_KeywordDetectionLog = null;
         public  ObservableCollection<OCR_KeywordDetectionLog> OCR_KeywordDetectionLog
 		{

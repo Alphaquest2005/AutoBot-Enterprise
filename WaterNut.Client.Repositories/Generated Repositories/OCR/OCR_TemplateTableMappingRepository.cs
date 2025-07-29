@@ -422,6 +422,34 @@ namespace OCR.Client.Repositories
                 throw;
             }
         } 
+ 	 public async Task<IEnumerable<OCR_TemplateTableMapping>> GetOCR_TemplateTableMappingByFileTypeId(string FileTypeId, List<string> includesLst = null)
+        {
+             if (FileTypeId == "0") return null;
+            try
+            {
+                 using (OCR_TemplateTableMappingClient t = new OCR_TemplateTableMappingClient())
+                    {
+                        var res = await t.GetOCR_TemplateTableMappingByFileTypeId(FileTypeId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                         if(res != null)
+                        {
+                            return res.Select(x => new OCR_TemplateTableMapping(x)).AsEnumerable();
+					    }                
+					    else
+					    {
+						    return null;
+					    }                    
+                    }
+            }
+            catch (FaultException<ValidationFault> e)
+            {
+                throw new Exception(e.Detail.Message, e.InnerException);
+            }
+            catch (Exception)
+            {
+                Debugger.Break();
+                throw;
+            }
+        } 
          
 		public decimal SumField(string whereExp, string sumExp)
         {

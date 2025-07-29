@@ -85,6 +85,9 @@ namespace OCR.Client.Contracts
   		[OperationContract]
 		Task<IEnumerable<OCR_TemplateTableMapping>> GetOCR_TemplateTableMappingByParentTemplateTableId(string ParentTemplateTableId, List<string> includesLst = null);
         
+  		[OperationContract]
+		Task<IEnumerable<OCR_TemplateTableMapping>> GetOCR_TemplateTableMappingByFileTypeId(string FileTypeId, List<string> includesLst = null);
+        
   		
     }
 }

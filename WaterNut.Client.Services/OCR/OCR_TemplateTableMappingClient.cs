@@ -122,6 +122,11 @@ namespace OCR.Client.Services
             return  await Channel.GetOCR_TemplateTableMappingByParentTemplateTableId(ParentTemplateTableId, includesLst).ConfigureAwait(false);
         }
 			 
+  		public async Task<IEnumerable<OCR_TemplateTableMapping>> GetOCR_TemplateTableMappingByFileTypeId(string FileTypeId, List<string> includesLst = null)
+        {
+            return  await Channel.GetOCR_TemplateTableMappingByFileTypeId(FileTypeId, includesLst).ConfigureAwait(false);
+        }
+			 
           public decimal SumField(string whereExp, string sumExp)
 		{
 			return Channel.SumField(whereExp,sumExp);

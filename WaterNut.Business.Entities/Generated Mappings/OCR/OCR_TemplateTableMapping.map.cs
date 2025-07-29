@@ -31,6 +31,7 @@
               this.Property(t => t.LastUpdated).HasColumnName("LastUpdated");
               this.Property(t => t.CreatedBy).HasColumnName("CreatedBy").HasMaxLength(100);
               this.Property(t => t.ProcessingNotes).HasColumnName("ProcessingNotes");
+              this.Property(t => t.FileTypeId).HasColumnName("FileTypeId");
               this.HasOptional(t => t.OCR_TemplateTableMapping2).WithMany(t =>(ICollection<OCR_TemplateTableMapping>) t.OCR_TemplateTableMapping1).HasForeignKey(d => d.ParentId);
               this.HasMany(t => t.OCR_KeywordDetectionLog).WithOptional(t => t.OCR_TemplateTableMapping).HasForeignKey(d => d.DetectedMappingId);
               this.HasMany(t => t.OCR_TemplateTableMapping1).WithOptional(t => t.OCR_TemplateTableMapping2).HasForeignKey(d => d.ParentId);

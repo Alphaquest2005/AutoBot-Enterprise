@@ -111,6 +111,9 @@ namespace OCR.Business.Services
   		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
         Task<IEnumerable<OCR_TemplateTableMapping>> GetOCR_TemplateTableMappingByParentTemplateTableId(string ParentTemplateTableId, List<string> includesLst = null);
+  		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<OCR_TemplateTableMapping>> GetOCR_TemplateTableMappingByFileTypeId(string FileTypeId, List<string> includesLst = null);
   
 
 

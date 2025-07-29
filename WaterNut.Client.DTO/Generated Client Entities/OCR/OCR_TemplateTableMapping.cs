@@ -255,6 +255,19 @@ namespace OCR.Client.DTO
 		}
         private string _ProcessingNotes;
 
+        [DataMember]
+        public Nullable<int> FileTypeId
+		{ 
+		    get { return _FileTypeId; }
+			set
+			{
+			    if (value == _FileTypeId) return;
+				_FileTypeId = value;
+				NotifyPropertyChanged();//m => this.FileTypeId
+			}
+		}
+        private Nullable<int> _FileTypeId;
+
        
         [DataMember]
         public ChangeTrackingCollection<OCR_KeywordDetectionLog> OCR_KeywordDetectionLog

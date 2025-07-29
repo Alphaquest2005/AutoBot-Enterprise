@@ -297,6 +297,21 @@ namespace OCR.Business.Entities
         }
         string _processingnotes;
         [DataMember]
+        public Nullable<int> FileTypeId 
+        {
+            get
+            {
+                return _filetypeid;
+            }
+            set
+            {
+                _filetypeid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _filetypeid;
+        [DataMember]
         public List<OCR_KeywordDetectionLog> OCR_KeywordDetectionLog { get; set; }
         [DataMember]
         public List<OCR_TemplateTableMapping> OCR_TemplateTableMapping1 { get; set; }

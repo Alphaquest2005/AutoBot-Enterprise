@@ -1,0 +1,6 @@
+﻿Core/AsycudaWorld421|Core/Core.Common.Data|Core/Core.Common|Core/Core.Common.Contracts|Core/Core.Common.UI|Hosting/AutoWaterNutServer|Data/WaterNut.Data|Data/DataLayer|Data/System.Linq.Dynamic|Business/WaterNut.Business.Bootstraper|Business/WaterNut.Business.Entities|Business/WaterNut.Business.Services|Business/InvoiceReader|Client/AutoWaterNut|Client/WaterNut.Client.Bootstraper|Client/WaterNut.Client.Contracts|Client/WaterNut.Client.DTO|Client/WaterNut.Client.Entities|Client/WaterNut.Client.Repositories|Client/WaterNut.Client.Services|Client/WaterNut.Client.CompositeEntities|Client/AutoBotUtilities|Client/AutoBot|Client/xlsxWriter|Edmx/CoreEntities|Edmx/AllocationDS|Edmx/InventoryDS|Edmx/QuickBooksDS|Edmx/EntryDataDS|Edmx/DocumentItemDS|Edmx/DocumentDS|Edmx/AllocationQS|Edmx/EntryDataQS|Edmx/PreviousDocumentQS|Edmx/InventoryQS|Edmx/SalesDataQS|Edmx/AAll-QuerySpaceEDMX|Edmx/AAll-DataSpaceEDMX|Edmx/PreviousDocumentDS|Edmx/CounterPointQS|Edmx/AAll-EDMX|Edmx/T4 Library|Edmx/AdjustmentQS|Edmx/ValuationDS|Edmx/LicenseDS|Domain/InterfacesModel|Server/EmailDownloader|PdfOcr/pdf-ocr|Tests/AutoBotUtilities.Tests
+
+
+
+	
+
