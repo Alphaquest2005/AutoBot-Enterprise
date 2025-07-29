@@ -629,7 +629,10 @@ namespace WaterNut.DataSpace
 
                 // **OVERALL SUCCESS VALIDATION WITH TEMPLATE SPECIFICATIONS**
                 bool overallSuccess = dualCoverageSuccess && outputCompletenessSuccess && processCompletionSuccess && templateSpecificationSuccess;
-                _logger.Error(overallSuccess ? "🏆 **OVERALL_METHOD_SUCCESS**: ✅ PASS" : "🏆 **OVERALL_METHOD_SUCCESS**: ❌ FAIL" + " - Dual-pathway error detection with template specification compliance");
+                
+                _logger.Error("🏆 **FINAL_METHOD_SUCCESS_WITH_TEMPLATE_SPEC**: {Status} - DetectHeaderFieldErrorsAndOmissionsAsync with template specification validation {Result}", 
+                    overallSuccess ? "✅ PASS" : "❌ FAIL", 
+                    overallSuccess ? "completed successfully" : "failed validation");
                 
                 _logger.Error("📊 **DETECTION_SUMMARY**: Header errors: {HeaderCount}, Line item errors: {LineItemCount}, Total: {TotalCount}", 
                     headerErrorCount, lineItemErrorCount, totalErrorCount);
