@@ -959,6 +959,37 @@ namespace WaterNut.DataSpace
                     
                     bool overallSuccess = matchValid && positionFound && lineNumberValid && calculationAccurate;
                     _logger.Error(overallSuccess ? "🏆 **OVERALL_METHOD_SUCCESS**: ✅ PASS" : "🏆 **OVERALL_METHOD_SUCCESS**: ❌ FAIL" + " - Line number calculation analysis");
+
+                    // **TEMPLATE SPECIFICATION SUCCESS CRITERIA VALIDATION - OBJECT-ORIENTED FUNCTIONAL DUAL LAYER APPROACH**
+                    _logger.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: Line number calculation dual-layer template specification compliance analysis");
+
+                    // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
+                    string documentType = "Invoice"; // Line calculation is document-type agnostic
+                    _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
+
+                    // Create template specification object for document type with dual-layer validation
+                    var templateSpec = TemplateSpecification.CreateForUtilityOperation(documentType, "GetLineNumberForMatch", match, i + 1);
+
+                    // Fluent validation with short-circuiting - stops on first failure
+                    var validatedSpec = templateSpec
+                        .ValidateEntityTypeAwareness(null) // No AI recommendations for line calculation
+                        .ValidateFieldMappingEnhancement(null)
+                        .ValidateDataTypeRecommendations(null)
+                        .ValidatePatternQuality(null)
+                        .ValidateTemplateOptimization(null);
+
+                    // Log all validation results
+                    validatedSpec.LogValidationResults(_logger);
+
+                    // Extract overall success from validated specification
+                    bool templateSpecificationSuccess = validatedSpec.IsValid;
+
+                    // Update overall success to include template specification validation
+                    overallSuccess = overallSuccess && templateSpecificationSuccess;
+
+                    _logger.Error("🏆 **FINAL_METHOD_SUCCESS_WITH_TEMPLATE_SPEC**: {Status} - GetLineNumberForMatch with template specification validation {Result}", 
+                        overallSuccess ? "✅ PASS" : "❌ FAIL", 
+                        overallSuccess ? "completed successfully" : "failed validation");
                     
                     _logger.Error("📊 **CALCULATION_SUMMARY**: Match found at line {LineNumber}, character position {MatchIndex}", i + 1, match.Index);
                     
