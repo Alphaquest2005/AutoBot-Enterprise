@@ -196,7 +196,6 @@ namespace WaterNut.DataSpace
                             invoice.InvoiceNo, processedLineItems);
                         // Don't re-throw - return partial results if available
                     }
-                }
                 
                 // **STEP 4: MANDATORY SUCCESS CRITERIA VALIDATION**
                 _logger.Error("🎯 **BUSINESS_SUCCESS_CRITERIA_VALIDATION**: Mathematical consistency validation success analysis");
