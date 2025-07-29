@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using EntryDataDS.Business.Entities; // For ShipmentInvoice, InvoiceDetails
 using Serilog; // ILogger is available as this._logger
+using WaterNut.Business.Services.Utils; // For FileTypeManager
 
 namespace WaterNut.DataSpace
 {
