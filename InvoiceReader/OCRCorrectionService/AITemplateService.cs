@@ -417,6 +417,10 @@ namespace WaterNut.DataSpace
             public List<CorrectionResult> CorrectionResults { get; set; } = new List<CorrectionResult>();
             public List<InvoiceError> Errors { get; set; } = new List<InvoiceError>();
             
+            // Database strategy specific properties
+            public RegexUpdateRequest DatabaseRequest { get; set; }
+            public DatabaseUpdateResult DatabaseResult { get; set; }
+            
             public bool IsValid => ValidationResults.All(r => r.IsSuccess);
             public bool HasFailure => ValidationResults.Any(r => !r.IsSuccess);
 
