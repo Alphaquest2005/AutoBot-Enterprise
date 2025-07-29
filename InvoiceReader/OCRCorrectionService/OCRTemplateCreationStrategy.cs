@@ -270,14 +270,14 @@ namespace WaterNut.DataSpace
                 _logger.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: Template entity management (input validation failure) dual-layer template specification compliance analysis");
 
                 // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
-                string documentType = "Invoice"; // Template management is document-type agnostic
-                _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
+                string docTypeInputFail = "Invoice"; // Template management is document-type agnostic
+                _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {docTypeInputFail} - Using DatabaseTemplateHelper document-specific validation rules");
 
                 // Create template specification object for document type with dual-layer validation
-                var templateSpec = TemplateSpecification.CreateForUtilityOperation(documentType, "GetOrCreateTemplateAsync", templateName, null);
+                var templateSpecInputFail = TemplateSpecification.CreateForUtilityOperation(docTypeInputFail, "GetOrCreateTemplateAsync", templateName, null);
 
                 // Fluent validation with short-circuiting - stops on first failure
-                var validatedSpecInputFail = templateSpec
+                var validatedSpecInputFail = templateSpecInputFail
                     .ValidateEntityTypeAwareness(null) // No AI recommendations for template management
                     .ValidateFieldMappingEnhancement(null)
                     .ValidateDataTypeRecommendations(null)
@@ -339,14 +339,14 @@ namespace WaterNut.DataSpace
                     _logger.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: Template entity management (existing template) dual-layer template specification compliance analysis");
 
                     // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
-                    string documentType = "Invoice"; // Template management is document-type agnostic
-                    _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
+                    string docTypeExisting = "Invoice"; // Template management is document-type agnostic
+                    _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {docTypeExisting} - Using DatabaseTemplateHelper document-specific validation rules");
 
                     // Create template specification object for document type with dual-layer validation
-                    var templateSpec = TemplateSpecification.CreateForUtilityOperation(documentType, "GetOrCreateTemplateAsync", templateName, existingTemplate);
+                    var templateSpecExisting = TemplateSpecification.CreateForUtilityOperation(docTypeExisting, "GetOrCreateTemplateAsync", templateName, existingTemplate);
 
                     // Fluent validation with short-circuiting - stops on first failure
-                    var validatedSpecExisting = templateSpec
+                    var validatedSpecExisting = templateSpecExisting
                         .ValidateEntityTypeAwareness(null) // No AI recommendations for template management
                         .ValidateFieldMappingEnhancement(null)
                         .ValidateDataTypeRecommendations(null)
@@ -415,14 +415,14 @@ namespace WaterNut.DataSpace
                 _logger.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: Template entity management (new template) dual-layer template specification compliance analysis");
 
                 // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
-                string documentType = "Invoice"; // Template management is document-type agnostic
-                _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
+                string docTypeNew = "Invoice"; // Template management is document-type agnostic
+                _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {docTypeNew} - Using DatabaseTemplateHelper document-specific validation rules");
 
                 // Create template specification object for document type with dual-layer validation
-                var templateSpec = TemplateSpecification.CreateForUtilityOperation(documentType, "GetOrCreateTemplateAsync", templateName, newTemplate);
+                var templateSpecNew = TemplateSpecification.CreateForUtilityOperation(docTypeNew, "GetOrCreateTemplateAsync", templateName, newTemplate);
 
                 // Fluent validation with short-circuiting - stops on first failure
-                var validatedSpecNew = templateSpec
+                var validatedSpecNew = templateSpecNew
                     .ValidateEntityTypeAwareness(null) // No AI recommendations for template management
                     .ValidateFieldMappingEnhancement(null)
                     .ValidateDataTypeRecommendations(null)
@@ -474,14 +474,14 @@ namespace WaterNut.DataSpace
                 _logger.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: Template entity management (exception) dual-layer template specification compliance analysis");
 
                 // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
-                string documentType = "Invoice"; // Template management is document-type agnostic
-                _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
+                string docTypeException = "Invoice"; // Template management is document-type agnostic
+                _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {docTypeException} - Using DatabaseTemplateHelper document-specific validation rules");
 
                 // Create template specification object for document type with dual-layer validation
-                var templateSpec = TemplateSpecification.CreateForUtilityOperation(documentType, "GetOrCreateTemplateAsync", templateName, null);
+                var templateSpecException = TemplateSpecification.CreateForUtilityOperation(docTypeException, "GetOrCreateTemplateAsync", templateName, null);
 
                 // Fluent validation with short-circuiting - stops on first failure
-                var validatedSpecException = templateSpec
+                var validatedSpecException = templateSpecException
                     .ValidateEntityTypeAwareness(null) // No AI recommendations for template management
                     .ValidateFieldMappingEnhancement(null)
                     .ValidateDataTypeRecommendations(null)
