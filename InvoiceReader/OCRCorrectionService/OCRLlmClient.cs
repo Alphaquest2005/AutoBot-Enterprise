@@ -756,26 +756,26 @@ namespace WaterNut.DataSpace
                 _logger.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: CheckForApiError dual-layer template specification compliance analysis");
 
                 // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
-                string documentType = "Invoice"; // API error detection is document-type agnostic
-                _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
+                string apiErrorDocumentType = "Invoice"; // API error detection is document-type agnostic
+                _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {apiErrorDocumentType} - Using DatabaseTemplateHelper document-specific validation rules");
 
                 // Create template specification object for document type with dual-layer validation
-                var templateSpec = TemplateSpecification.CreateForUtilityOperation(documentType, "CheckForApiError", 
+                var apiErrorTemplateSpec = TemplateSpecification.CreateForUtilityOperation(apiErrorDocumentType, "CheckForApiError", 
                     responseObj, error);
 
                 // Fluent validation with short-circuiting - stops on first failure
-                var validatedSpec = templateSpec
+                var apiErrorValidatedSpec = apiErrorTemplateSpec
                     .ValidateEntityTypeAwareness(null) // No AI recommendations for utility operations
                     .ValidateFieldMappingEnhancement(null)
-                    .ValidateDataTypeRecommendations("Text") // API error message processing
+                    .ValidateDataTypeRecommendations(new List<PromptRecommendation>()) // API error message processing
                     .ValidatePatternQuality(null)
                     .ValidateTemplateOptimization(null);
 
                 // Log all validation results
-                validatedSpec.LogValidationResults(_logger);
+                apiErrorValidatedSpec.LogValidationResults(_logger);
 
                 // Extract overall success from validated specification
-                bool templateSpecificationSuccess = validatedSpec.IsValid;
+                bool apiErrorTemplateSpecificationSuccess = apiErrorValidatedSpec.IsValid;
                 
                 throw new InvalidOperationException($"{provider} API error: {error}");
             }
