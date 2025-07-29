@@ -1161,7 +1161,7 @@ namespace WaterNut.DataSpace
             var validatedSpec = templateSpec
                 .ValidateEntityTypeAwareness(null) // No AI recommendations for utility operations
                 .ValidateFieldMappingEnhancement(null)
-                .ValidateDataTypeRecommendations("Numeric") // Text counting operations return numeric results
+                .ValidateDataTypeRecommendations(new List<PromptRecommendation>()) // Text counting operations return numeric results
                 .ValidatePatternQuality(null)
                 .ValidateTemplateOptimization(null);
 
