@@ -223,8 +223,8 @@ namespace WaterNut.DataSpace
                 _logger.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: Mathematical consistency dual-layer template specification compliance analysis");
                 
                 // Get template mapping from database using FileTypeId (if available) or default to ShipmentInvoice
-                var templateMapping = invoice.FileTypeId.HasValue 
-                    ? DatabaseTemplateHelper.GetTemplateMappingByFileTypeId(invoice.FileTypeId.Value)
+                var templateMapping = invoice.FileTypeId != null 
+                    ? DatabaseTemplateHelper.GetTemplateMappingByFileTypeId(invoice.FileTypeId)
                     : null;
                 string documentType = templateMapping?.DocumentType ?? FileTypeManager.EntryTypes.ShipmentInvoice;
                 _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} (FileTypeId={invoice.FileTypeId}) - Using database-driven validation rules");
@@ -567,8 +567,8 @@ namespace WaterNut.DataSpace
                 _logger.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: Cross-field consistency dual-layer template specification compliance analysis");
                 
                 // Get template mapping from database using FileTypeId (if available) or default to ShipmentInvoice
-                var templateMapping = invoice.FileTypeId.HasValue 
-                    ? DatabaseTemplateHelper.GetTemplateMappingByFileTypeId(invoice.FileTypeId.Value)
+                var templateMapping = invoice.FileTypeId != null 
+                    ? DatabaseTemplateHelper.GetTemplateMappingByFileTypeId(invoice.FileTypeId)
                     : null;
                 string documentType = templateMapping?.DocumentType ?? FileTypeManager.EntryTypes.ShipmentInvoice;
                 _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} (FileTypeId={invoice.FileTypeId}) - Using database-driven cross-field validation rules");
