@@ -419,7 +419,7 @@ private static List<string> GetExpectedEntityTypesForDocumentType(string documen
 }
 ```
 
-### **Step 3: Update Overall Success Calculation**
+### **Step 4: Update Overall Success Calculation**
 Modify the existing overall success line to include template specification success:
 
 ```csharp
@@ -432,7 +432,7 @@ bool overallSuccess = purposeFulfilled && outputComplete && processComplete && d
     errorHandling && businessLogic && integrationSuccess && performanceCompliance && templateSpecificationSuccess;
 ```
 
-### **Step 4: Update Success Message with Document-Type Context**
+### **Step 5: Update Success Message with Document-Type Context**
 Enhance the success message to mention dual-layer template specification compliance:
 
 ```csharp
@@ -445,6 +445,66 @@ _logger.Error(overallSuccess ? "🏆 **OVERALL_METHOD_SUCCESS**: ✅ PASS" : "�
     $" - [Method description] for {documentType} " + (overallSuccess ? 
     "with comprehensive dual-layer template specification compliance (AI quality + data validation)" : 
     "failed dual-layer validation criteria - check AI recommendations AND data compliance"));
+```
+
+---
+
+## 🚨 **CRITICAL IMPLEMENTATION VIOLATIONS TO FIX**
+
+### **❌ IDENTIFIED HARDCODED VALIDATIONS - MUST BE REPLACED**
+
+The following hardcoded EntityType validations violate the object-oriented functional approach and MUST be replaced:
+
+**📁 OCRFieldMapping.cs (Lines 255-259)**:
+```csharp
+// ❌ PROHIBITED - Replace with DatabaseTemplateHelper
+bool entityTypeValid = fieldInfo == null || (
+    fieldInfo.EntityType == "Invoice" || 
+    fieldInfo.EntityType == "InvoiceDetails" || 
+    fieldInfo.EntityType == "ShipmentBL" || 
+    fieldInfo.EntityType == "PurchaseOrders");
+```
+
+**📁 OCRCorrectionService.cs (Lines 827-830)**:
+```csharp
+// ❌ PROHIBITED - Replace with DatabaseTemplateHelper
+var hasValidEntityTypes = templateParts.Any(f => 
+    f.EntityType == "Invoice" || 
+    f.EntityType == "InvoiceDetails" || 
+    f.EntityType == "ShipmentBL" || 
+    f.EntityType == "PurchaseOrders");
+```
+
+**📁 OCRCorrectionService.cs (Lines 905-907)**:
+```csharp
+// ❌ PROHIBITED - Replace with DatabaseTemplateHelper
+(f.EntityType == "Invoice" && (f.Field == "InvoiceNo" || f.Field == "InvoiceDate" || f.Field == "SupplierCode")) ||
+(f.EntityType == "InvoiceDetails" && (f.Field == "ItemNumber" || f.Field == "ItemDescription" || f.Field == "Quantity")) ||
+(f.EntityType == "ShipmentBL" && (f.Field == "BLNumber" || f.Field == "WeightKG"))
+```
+
+**📁 OCRUtilities.cs (Line 994)**:
+```csharp
+// ❌ PROHIBITED - Replace with DatabaseTemplateHelper
+(fieldInfo != null && fieldInfo.EntityType == "InvoiceDetails")
+```
+
+**📁 OCRDatabaseStrategies.cs (Line 322)**:
+```csharp
+// ❌ PROHIBITED - Replace with DatabaseTemplateHelper
+string targetPartTypeName = (fieldInfo?.EntityType == "InvoiceDetails") ? "LineItem" : "Header";
+```
+
+### **✅ MANDATORY REPLACEMENT PATTERN**
+
+Replace ALL hardcoded validations with:
+```csharp
+// Determine document type from context
+string documentType = context?.FileType?.EntryType ?? "ShipmentInvoice";
+
+// Use DatabaseTemplateHelper for document-type specific validation
+var expectedEntityTypes = DatabaseTemplateHelper.GetExpectedEntityTypesForDocumentType(documentType);
+bool entityTypeValid = fieldInfo == null || expectedEntityTypes.Contains(fieldInfo.EntityType, StringComparer.OrdinalIgnoreCase);
 ```
 
 ---
