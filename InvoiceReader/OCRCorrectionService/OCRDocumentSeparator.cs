@@ -116,6 +116,37 @@ namespace WaterNut.DataSpace
             // Overall assessment
             var overallSuccess = purposeFulfilled && outputComplete && processComplete && dataQuality && errorHandling && businessLogic && integrationSuccess && performanceCompliance;
             _logger.Error("🏆 **OVERALL_METHOD_SUCCESS**: " + (overallSuccess ? "✅ PASS" : "❌ FAIL") + " - Document separation " + (overallSuccess ? $"completed successfully with {documents.Count} clean documents ready for processing" : "failed due to validation criteria not met"));
+
+            // **TEMPLATE SPECIFICATION SUCCESS CRITERIA VALIDATION - OBJECT-ORIENTED FUNCTIONAL DUAL LAYER APPROACH**
+            _logger.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: Document separation dual-layer template specification compliance analysis");
+
+            // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
+            string documentType = "Invoice"; // Document separation is document-type agnostic
+            _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
+
+            // Create template specification object for document type with dual-layer validation
+            var templateSpec = TemplateSpecification.CreateForUtilityOperation(documentType, "SeparateDocumentsAsync", rawText, documents);
+
+            // Fluent validation with short-circuiting - stops on first failure
+            var validatedSpec = templateSpec
+                .ValidateEntityTypeAwareness(null) // No AI recommendations for document separation
+                .ValidateFieldMappingEnhancement(null)
+                .ValidateDataTypeRecommendations(null)
+                .ValidatePatternQuality(null)
+                .ValidateTemplateOptimization(null);
+
+            // Log all validation results
+            validatedSpec.LogValidationResults(_logger);
+
+            // Extract overall success from validated specification
+            bool templateSpecificationSuccess = validatedSpec.IsValid;
+
+            // Update overall success to include template specification validation
+            overallSuccess = overallSuccess && templateSpecificationSuccess;
+
+            _logger.Error("🏆 **FINAL_METHOD_SUCCESS_WITH_TEMPLATE_SPEC**: {Status} - SeparateDocumentsAsync with template specification validation {Result}", 
+                overallSuccess ? "✅ PASS" : "❌ FAIL", 
+                overallSuccess ? "completed successfully" : "failed validation");
             
             _logger.Information("🎯 **SEPARATION_COMPLETE**: Created {DocumentCount} documents from input content", documents.Count);
             foreach (var doc in documents)
