@@ -812,6 +812,32 @@ namespace WaterNut.DataSpace
                 _logger.Error("✅ **PERFORMANCE_COMPLIANCE**: Exception handling completed within reasonable timeframe");
                 _logger.Error("🏆 **OVERALL_METHOD_SUCCESS**: ❌ FAIL - AI regex request terminated by critical exception");
                 
+                // **TEMPLATE SPECIFICATION SUCCESS CRITERIA VALIDATION - OBJECT-ORIENTED FUNCTIONAL DUAL LAYER APPROACH (EXCEPTION PATH)**
+                _logger.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: AI regex creation dual-layer template specification compliance analysis (Exception path)");
+
+                // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
+                string documentType = DatabaseTemplateHelper.GetDocumentTypeFromFieldName(correction.FieldName) ?? "Invoice";
+                _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
+
+                // Create template specification object for document type with dual-layer validation
+                var templateSpec = TemplateSpecification.CreateForUtilityOperation(documentType, "RequestNewRegexFromDeepSeek", correction, null);
+
+                // Fluent validation with short-circuiting - stops on first failure
+                var validatedSpec = templateSpec
+                    .ValidateEntityTypeAwareness(null) // No AI output due to exception
+                    .ValidateFieldMappingEnhancement(correction.FieldName)
+                    .ValidateDataTypeRecommendations(correction.CurrentValue)
+                    .ValidatePatternQuality(null) // No pattern due to exception
+                    .ValidateTemplateOptimization(null); // No response due to exception
+
+                // Log all validation results
+                validatedSpec.LogValidationResults(_logger);
+
+                // Extract overall success from validated specification
+                bool templateSpecificationSuccess = validatedSpec.IsValid;
+
+                _logger.Error("🏆 **FINAL_METHOD_SUCCESS_WITH_TEMPLATE_SPEC**: ❌ FAIL - RequestNewRegexFromDeepSeek exception path with template specification validation failed");
+                
                 return null;
             }
         }
