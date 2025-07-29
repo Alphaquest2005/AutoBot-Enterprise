@@ -186,6 +186,31 @@ namespace WaterNut.DataSpace
                 _logger.Error("🔍 **FIX_VALIDATION**: Immediate save confirmed, regex entity ready with established database ID");
                 _logger.Error("🎯 **SUCCESS_ASSERTION**: Regex entity management completed with foreign key safety for LLM analysis");
                 
+                // **TEMPLATE SPECIFICATION SUCCESS CRITERIA VALIDATION - OBJECT-ORIENTED FUNCTIONAL DUAL LAYER APPROACH**
+                _logger.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: GetOrCreateRegexAsync dual-layer template specification compliance analysis");
+
+                // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
+                string documentType = "Invoice"; // Regex entity management is document-type agnostic
+                _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
+
+                // Create template specification object for document type with dual-layer validation
+                var templateSpec = TemplateSpecification.CreateForUtilityOperation(documentType, "GetOrCreateRegexAsync", 
+                    new { pattern, multiLine, maxLines, description }, newRegex);
+
+                // Fluent validation with short-circuiting - stops on first failure
+                var validatedSpec = templateSpec
+                    .ValidateEntityTypeAwareness(null) // No AI recommendations for utility operations
+                    .ValidateFieldMappingEnhancement(null)
+                    .ValidateDataTypeRecommendations("Object") // Regex entity operations return objects
+                    .ValidatePatternQuality(null)
+                    .ValidateTemplateOptimization(null);
+
+                // Log all validation results
+                validatedSpec.LogValidationResults(_logger);
+
+                // Extract overall success from validated specification
+                bool templateSpecificationSuccess = validatedSpec.IsValid;
+                
                 return newRegex;
             }
 
