@@ -377,6 +377,37 @@ namespace WaterNut.DataSpace
                 
                 bool overallSuccess = aiPathwaySuccess && consolidationSuccess && outputPreparationSuccess && dataStructureValid;
                 _logger.Error(overallSuccess ? "🏆 **OVERALL_METHOD_SUCCESS**: ✅ PASS" : "🏆 **OVERALL_METHOD_SUCCESS**: ❌ FAIL" + " - Dual-pathway detection orchestration analysis");
+
+                // **TEMPLATE SPECIFICATION SUCCESS CRITERIA VALIDATION - OBJECT-ORIENTED FUNCTIONAL DUAL LAYER APPROACH**
+                _logger.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: Dual-pathway error detection dual-layer template specification compliance analysis");
+
+                // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
+                string documentType = invoice?.EntityType ?? "Invoice";
+                _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
+
+                // Create template specification object for document type with dual-layer validation
+                var templateSpec = TemplateSpecification.CreateForUtilityOperation(documentType, "DetectInvoiceErrorsAsync", invoice, uniqueErrors);
+
+                // Fluent validation with short-circuiting - stops on first failure
+                var validatedSpec = templateSpec
+                    .ValidateEntityTypeAwareness(null) // No AI recommendations for error detection
+                    .ValidateFieldMappingEnhancement(null)
+                    .ValidateDataTypeRecommendations(null)
+                    .ValidatePatternQuality(null)
+                    .ValidateTemplateOptimization(null);
+
+                // Log all validation results
+                validatedSpec.LogValidationResults(_logger);
+
+                // Extract overall success from validated specification
+                bool templateSpecificationSuccess = validatedSpec.IsValid;
+
+                // Update overall success to include template specification validation
+                overallSuccess = overallSuccess && templateSpecificationSuccess;
+
+                _logger.Error("🏆 **FINAL_METHOD_SUCCESS_WITH_TEMPLATE_SPEC**: {Status} - DetectInvoiceErrorsAsync with template specification validation {Result}", 
+                    overallSuccess ? "✅ PASS" : "❌ FAIL", 
+                    overallSuccess ? "completed successfully" : "failed validation");
                 
                 _logger.Error("📊 **ORCHESTRATION_SUMMARY**: Raw errors: {RawCount}, Unique errors: {UniqueCount}, AI pathway: Success", 
                     allDetectedErrors.Count, uniqueErrors.Count);
