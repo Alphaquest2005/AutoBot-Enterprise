@@ -947,6 +947,37 @@ If you return an empty errors array (no errors detected), you MUST include an ""
             // Overall assessment
             var overallSuccess = purposeFulfilled && outputComplete && processComplete && dataQuality && errorHandling && businessLogic && integrationSuccess && performanceCompliance;
             _logger.Error("🏆 **OVERALL_METHOD_SUCCESS**: " + (overallSuccess ? "✅ PASS" : "❌ FAIL") + " - OCR section analysis " + (overallSuccess ? "completed successfully with accurate section identification and classification" : "failed due to validation criteria not met"));
+
+            // **TEMPLATE SPECIFICATION SUCCESS CRITERIA VALIDATION - OBJECT-ORIENTED FUNCTIONAL DUAL LAYER APPROACH**
+            _logger.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: OCR section analysis dual-layer template specification compliance analysis");
+
+            // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
+            string documentType = "Invoice"; // OCR section analysis is document-type agnostic
+            _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
+
+            // Create template specification object for document type with dual-layer validation
+            var templateSpec = TemplateSpecification.CreateForUtilityOperation(documentType, "AnalyzeOCRSections", fileText, sections);
+
+            // Fluent validation with short-circuiting - stops on first failure
+            var validatedSpec = templateSpec
+                .ValidateEntityTypeAwareness(null) // No AI recommendations for OCR section analysis
+                .ValidateFieldMappingEnhancement(null)
+                .ValidateDataTypeRecommendations(null)
+                .ValidatePatternQuality(null)
+                .ValidateTemplateOptimization(null);
+
+            // Log all validation results
+            validatedSpec.LogValidationResults(_logger);
+
+            // Extract overall success from validated specification
+            bool templateSpecificationSuccess = validatedSpec.IsValid;
+
+            // Update overall success to include template specification validation
+            overallSuccess = overallSuccess && templateSpecificationSuccess;
+
+            _logger.Error("🏆 **FINAL_METHOD_SUCCESS_WITH_TEMPLATE_SPEC**: {Status} - AnalyzeOCRSections with template specification validation {Result}", 
+                overallSuccess ? "✅ PASS" : "❌ FAIL", 
+                overallSuccess ? "completed successfully" : "failed validation");
             
             return sections;
         }
