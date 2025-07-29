@@ -2474,14 +2474,14 @@ If you find no new omissions or corrections, return an empty errors array with d
             return spec;
         }
 
-        public static TemplateSpecification ValidatePatternQuality(this TemplateSpecification spec, List<PromptRecommendation> recommendations)
+        public static TemplateSpecification ValidatePatternQuality(this TemplateSpecification spec, List<AITemplateService.PromptRecommendation> recommendations)
         {
             if (spec.HasFailure) return spec; // Short-circuit if already failed
 
             // **DUAL LAYER 1: AI RECOMMENDATION QUALITY VALIDATION**
             var patternQualityRecommendations = recommendations?.Where(r => 
                 r.Description.Contains("regex") || r.Description.Contains("pattern") || 
-                r.Category == "Pattern Quality").ToList() ?? new List<PromptRecommendation>();
+                r.Category == "Pattern Quality").ToList() ?? new List<AITemplateService.PromptRecommendation>();
             
             bool aiRecommendationSuccess = patternQualityRecommendations.Any() || (recommendations?.Count ?? 0) == 0;
             
@@ -2502,14 +2502,14 @@ If you find no new omissions or corrections, return an empty errors array with d
             return spec;
         }
 
-        public static TemplateSpecification ValidateTemplateOptimization(this TemplateSpecification spec, List<PromptRecommendation> recommendations)
+        public static TemplateSpecification ValidateTemplateOptimization(this TemplateSpecification spec, List<AITemplateService.PromptRecommendation> recommendations)
         {
             if (spec.HasFailure) return spec; // Short-circuit if already failed
 
             // **DUAL LAYER 1: AI RECOMMENDATION QUALITY VALIDATION**
             var templateOptimizationRecommendations = recommendations?.Where(r => 
                 r.Category == "Template Optimization" || r.Description.Contains("optimization") || 
-                r.Description.Contains("performance")).ToList() ?? new List<PromptRecommendation>();
+                r.Description.Contains("performance")).ToList() ?? new List<AITemplateService.PromptRecommendation>();
             
             bool aiRecommendationSuccess = templateOptimizationRecommendations.Any() || (recommendations?.Count ?? 0) == 0;
             
