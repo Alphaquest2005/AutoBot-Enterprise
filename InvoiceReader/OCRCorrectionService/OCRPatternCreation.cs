@@ -798,6 +798,37 @@ namespace WaterNut.DataSpace
                 bool overallSuccess = patternGenerated && replacementValid && conversionAccurate;
                 _logger.Error(overallSuccess ? "🏆 **OVERALL_METHOD_SUCCESS**: ✅ PASS" : "🏆 **OVERALL_METHOD_SUCCESS**: ❌ FAIL" + " - Parentheses pattern creation analysis");
                 
+                // **TEMPLATE SPECIFICATION SUCCESS CRITERIA VALIDATION - OBJECT-ORIENTED FUNCTIONAL DUAL LAYER APPROACH**
+                _logger.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: Negative number pattern dual-layer template specification compliance analysis (Parentheses path)");
+
+                // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
+                string documentType = "Invoice"; // Pattern creation is document-type agnostic
+                _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
+
+                // Create template specification object for document type with dual-layer validation
+                var templateSpec = TemplateSpecification.CreateForUtilityOperation(documentType, "CreateNegativeNumberPattern", o, result);
+
+                // Fluent validation with short-circuiting - stops on first failure
+                var validatedSpec = templateSpec
+                    .ValidateEntityTypeAwareness(result.Item1)
+                    .ValidateFieldMappingEnhancement(null) // No specific field mapping for pattern creation
+                    .ValidateDataTypeRecommendations("Numeric") // Method processes numeric data types
+                    .ValidatePatternQuality(result.Item1)
+                    .ValidateTemplateOptimization(result);
+
+                // Log all validation results
+                validatedSpec.LogValidationResults(_logger);
+
+                // Extract overall success from validated specification
+                bool templateSpecificationSuccess = validatedSpec.IsValid;
+
+                // Update overall success to include template specification validation
+                overallSuccess = overallSuccess && templateSpecificationSuccess;
+
+                _logger.Error("🏆 **FINAL_METHOD_SUCCESS_WITH_TEMPLATE_SPEC**: {Status} - CreateNegativeNumberPattern with template specification validation {Result}", 
+                    overallSuccess ? "✅ PASS" : "❌ FAIL", 
+                    overallSuccess ? "completed successfully" : "failed validation");
+                
                 return result;
             }
             
