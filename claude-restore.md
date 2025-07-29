@@ -128,7 +128,7 @@ await service.GetRecommendationsAsync(prompt, provider);
 
 ---
 
-## 🚨 CRITICAL LOGGING MANDATE: ALWAYS USE LOG FILES FOR COMPLETE ANALYSIS
+## 🚨 CRITICAL LOGGING MANDATE: ALWAYS USE LOG FILES FOR COMPLETE ANALYSIS {#critical-logging-mandate}
 
 ### **❌ CATASTROPHIC MISTAKE TO AVOID: Console Log Truncation**
 
