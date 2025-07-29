@@ -274,7 +274,7 @@ namespace WaterNut.DataSpace
                 {
                     // Default mathematical validation rules
                     mathDataTypeRulesSuccess = invoice.InvoiceDetails?.All(d => 
-                        d.Quantity >= 0 && (d.Cost ?? 0.0) >= 0 && (d.TotalCost ?? 0.0) >= 0) ?? true;
+                        d.Quantity >= 0 && (d.Cost.HasValue ? d.Cost.Value >= 0 : true) && (d.TotalCost.HasValue ? d.TotalCost.Value >= 0 : true)) ?? true;
                 }
                 _logger.Error((mathDataTypeRulesSuccess ? "✅" : "❌") + " **TEMPLATE_SPEC_MATH_DATA_RULES**: " + 
                     (mathDataTypeRulesSuccess ? $"Mathematical data types and business rules compliant for {documentType} (Database-driven validation)" : 
