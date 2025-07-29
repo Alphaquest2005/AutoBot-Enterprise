@@ -603,58 +603,31 @@ namespace WaterNut.DataSpace
                 _logger.Error((headerDetectionSuccess && lineItemDetectionSuccess) ? "✅" : "❌" + " **INTEGRATION_SUCCESS**: DeepSeek AI integration successful for both detection pathways");
                 _logger.Error("✅ **PERFORMANCE_COMPLIANCE**: Method completed within reasonable timeframe");
                 
-                // **TEMPLATE SPECIFICATION SUCCESS CRITERIA VALIDATION**
-                _logger.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: Error detection template specification compliance analysis");
-                
-                // **TEMPLATE_SPEC_1: EntityType Field Detection Validation**
-                var invoiceErrors = allDetectedErrors.Where(e => !string.IsNullOrEmpty(e.Field) && 
-                    (e.Field.Contains("InvoiceNo") || e.Field.Contains("InvoiceDate") || e.Field.Contains("InvoiceTotal") || 
-                     e.Field.Contains("SubTotal") || e.Field.Contains("Currency") || e.Field.Contains("SupplierCode") || 
-                     e.Field.Contains("PONumber") || e.Field.Contains("SupplierName"))).ToList();
-                var invoiceDetailErrors = allDetectedErrors.Where(e => !string.IsNullOrEmpty(e.Field) && 
-                    (e.Field.Contains("ItemNumber") || e.Field.Contains("ItemDescription") || e.Field.Contains("Quantity") || 
-                     e.Field.Contains("Cost") || e.Field.Contains("TotalCost") || e.Field.Contains("Units"))).ToList();
-                bool entityTypeFieldDetectionSuccess = invoiceErrors.Any() || invoiceDetailErrors.Any();
-                _logger.Error((entityTypeFieldDetectionSuccess ? "✅" : "❌") + " **TEMPLATE_SPEC_ENTITYTYPE_DETECTION**: " + 
-                    (entityTypeFieldDetectionSuccess ? $"Successfully detected {invoiceErrors.Count} Invoice and {invoiceDetailErrors.Count} InvoiceDetail field errors" : 
-                    "No EntityType-specific field errors detected - may indicate detection gaps"));
-                
-                // **TEMPLATE_SPEC_2: Required Field Coverage Validation**
-                var criticalFields = new[] { "InvoiceNo", "InvoiceDate", "InvoiceTotal", "SupplierName" };
-                var criticalFieldErrors = allDetectedErrors.Where(e => criticalFields.Any(cf => e.Field?.Contains(cf) == true)).ToList();
-                bool requiredFieldCoverageSuccess = criticalFieldErrors.Any() || totalErrorCount == 0;
-                _logger.Error((requiredFieldCoverageSuccess ? "✅" : "❌") + " **TEMPLATE_SPEC_REQUIRED_COVERAGE**: " + 
-                    (criticalFieldErrors.Any() ? $"Detected errors in {criticalFieldErrors.Count} critical fields requiring attention" : 
-                    totalErrorCount == 0 ? "No errors detected - all required fields appear valid" : "No critical field errors detected"));
-                
-                // **TEMPLATE_SPEC_3: Field Data Type Validation**
-                var numericFieldErrors = allDetectedErrors.Where(e => !string.IsNullOrEmpty(e.Field) && 
-                    (e.Field.Contains("Total") || e.Field.Contains("Cost") || e.Field.Contains("Quantity"))).ToList();
-                var dateFieldErrors = allDetectedErrors.Where(e => !string.IsNullOrEmpty(e.Field) && 
-                    e.Field.Contains("Date")).ToList();
-                bool dataTypeValidationSuccess = true; // Detection method identifies errors without correcting types
-                _logger.Error((dataTypeValidationSuccess ? "✅" : "❌") + " **TEMPLATE_SPEC_DATATYPE_VALIDATION**: " + 
-                    $"Detected {numericFieldErrors.Count} numeric field errors and {dateFieldErrors.Count} date field errors for type validation");
-                
-                // **TEMPLATE_SPEC_4: Error Detection Pattern Quality**
-                var fieldsWithErrors = allDetectedErrors.Where(e => !string.IsNullOrEmpty(e.Field)).Select(e => e.Field).Distinct().Count();
-                var errorQualityScore = totalErrorCount > 0 ? (double)fieldsWithErrors / totalErrorCount : 1.0;
-                bool errorPatternQualitySuccess = errorQualityScore >= 0.7; // At least 70% unique field coverage
-                _logger.Error((errorPatternQualitySuccess ? "✅" : "❌") + " **TEMPLATE_SPEC_ERROR_QUALITY**: " + 
-                    (errorPatternQualitySuccess ? $"High error detection quality with {fieldsWithErrors} unique fields in {totalErrorCount} total errors (quality score: {errorQualityScore:F2})" : 
-                    $"Error detection quality needs improvement - {fieldsWithErrors} unique fields in {totalErrorCount} total errors (quality score: {errorQualityScore:F2})"));
-                
-                // **TEMPLATE_SPEC_5: Business Rule Compliance Validation**
-                var headerResponseSuccess = !string.IsNullOrWhiteSpace(headerResponseJson);
-                var lineItemResponseSuccess = !string.IsNullOrWhiteSpace(lineItemResponseJson);
-                bool businessRuleComplianceSuccess = headerResponseSuccess || lineItemResponseSuccess;
-                _logger.Error((businessRuleComplianceSuccess ? "✅" : "❌") + " **TEMPLATE_SPEC_BUSINESS_COMPLIANCE**: " + 
-                    (businessRuleComplianceSuccess ? "Error detection follows dual-pathway business rules with successful AI response processing" : 
-                    "Business rule compliance failed - both header and line item detection pathways failed"));
-                
+                // **TEMPLATE SPECIFICATION SUCCESS CRITERIA VALIDATION - OBJECT-ORIENTED FUNCTIONAL DUAL LAYER APPROACH**
+                _logger.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: Dual-pathway error detection dual-layer template specification compliance analysis");
+
+                // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
+                string documentType = invoice?.EntityType ?? "Invoice";
+                _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
+
+                // Create template specification object for document type with dual-layer validation
+                var templateSpec = TemplateSpecification.CreateForUtilityOperation(documentType, "DetectHeaderFieldErrorsAndOmissionsAsync", invoice, allDetectedErrors);
+
+                // Fluent validation with short-circuiting - stops on first failure
+                var validatedSpec = templateSpec
+                    .ValidateEntityTypeAwareness(null) // No AI recommendations for error detection
+                    .ValidateFieldMappingEnhancement(null)
+                    .ValidateDataTypeRecommendations(null)
+                    .ValidatePatternQuality(null)
+                    .ValidateTemplateOptimization(null);
+
+                // Log all validation results
+                validatedSpec.LogValidationResults(_logger);
+
+                // Extract overall success from validated specification
+                bool templateSpecificationSuccess = validatedSpec.IsValid;
+
                 // **OVERALL SUCCESS VALIDATION WITH TEMPLATE SPECIFICATIONS**
-                bool templateSpecificationSuccess = entityTypeFieldDetectionSuccess && requiredFieldCoverageSuccess && 
-                    dataTypeValidationSuccess && errorPatternQualitySuccess && businessRuleComplianceSuccess;
                 bool overallSuccess = dualCoverageSuccess && outputCompletenessSuccess && processCompletionSuccess && templateSpecificationSuccess;
                 _logger.Error(overallSuccess ? "🏆 **OVERALL_METHOD_SUCCESS**: ✅ PASS" : "🏆 **OVERALL_METHOD_SUCCESS**: ❌ FAIL" + " - Dual-pathway error detection with template specification compliance");
                 
