@@ -2130,7 +2130,7 @@ If you find no new omissions or corrections, return an empty errors array with d
     /// </summary>
     public static class TemplateSpecificationExtensions
     {
-        public static TemplateSpecification ValidateEntityTypeAwareness(this TemplateSpecification spec, List<PromptRecommendation> recommendations)
+        public static TemplateSpecification ValidateEntityTypeAwareness(this TemplateSpecification spec, List<AITemplateService.PromptRecommendation> recommendations)
         {
             if (spec.HasFailure) return spec; // Short-circuit if already failed
 
