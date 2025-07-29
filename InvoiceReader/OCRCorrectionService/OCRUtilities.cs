@@ -211,13 +211,38 @@ namespace WaterNut.DataSpace
                 _logger.Error("⚡ **PERFORMANCE_COMPLIANCE**: {Status} - Processing {InitialLength} character text within reasonable performance limits", 
                     performanceCompliant ? "✅ PASS" : "❌ FAIL", initialLength);
 
+                // **TEMPLATE SPECIFICATION SUCCESS CRITERIA VALIDATION - OBJECT-ORIENTED FUNCTIONAL DUAL LAYER APPROACH**
+                _logger.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: Text cleaning dual-layer template specification compliance analysis");
+
+                // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
+                string documentType = "Invoice"; // Utility operation is document-type agnostic, default to Invoice
+                _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
+
+                // Create template specification object for document type with dual-layer validation
+                var templateSpec = TemplateSpecification.CreateForUtilityOperation(documentType, "CleanTextForAnalysis", text, cleaned);
+
+                // Fluent validation with short-circuiting - stops on first failure
+                var validatedSpec = templateSpec
+                    .ValidateEntityTypeAwareness(null) // Utility operation doesn't have AI recommendations
+                    .ValidateFieldMappingEnhancement(null)
+                    .ValidateDataTypeRecommendations(null)
+                    .ValidatePatternQuality(null)
+                    .ValidateTemplateOptimization(null);
+
+                // Log all validation results
+                validatedSpec.LogValidationResults(_logger);
+
+                // Extract overall success from validated specification
+                bool templateSpecificationSuccess = validatedSpec.IsValid;
+
                 // Overall Success Assessment
                 bool overallSuccess = purposeFulfilled && outputComplete && processComplete && dataQualityMet && 
-                                    errorHandlingSuccess && businessLogicValid && integrationSuccess && performanceCompliant;
+                                    errorHandlingSuccess && businessLogicValid && integrationSuccess && performanceCompliant && templateSpecificationSuccess;
                 
-                _logger.Error("🏆 **OVERALL_METHOD_SUCCESS**: {Status} - CleanTextForAnalysis {Result} with {FinalLength} characters and content preservation: {ContentPreserved}", 
-                    overallSuccess ? "✅ PASS" : "❌ FAIL", 
-                    overallSuccess ? "completed successfully" : "encountered issues", finalLength, contentPreserved);
+                _logger.Error(overallSuccess ? "🏆 **OVERALL_METHOD_SUCCESS**: ✅ PASS" : "🏆 **OVERALL_METHOD_SUCCESS**: ❌ FAIL" + 
+                    $" - Text cleaning for {documentType} " + (overallSuccess ? 
+                    "with comprehensive dual-layer template specification compliance (AI quality + data validation)" : 
+                    "failed dual-layer validation criteria - check AI recommendations AND data compliance"));
             }
 
             return cleaned;
