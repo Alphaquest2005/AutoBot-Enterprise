@@ -853,7 +853,10 @@ namespace WaterNut.DataSpace
             // **ENHANCED OVERALL SUCCESS WITH DUAL-LAYER TEMPLATE SPECIFICATIONS**
             bool overallSuccess = templatesCreated && inputProcessed && templateDataValid && databaseIntegration && textDataPreserved && reasonableTemplateCount &&
                                  templateSpecificationSuccess;
-            _logger.Error(overallSuccess ? "🏆 **OVERALL_METHOD_SUCCESS**: ✅ PASS" : ("🏆 **OVERALL_METHOD_SUCCESS**: ❌ FAIL" + " - Template creation analysis"));
+            _logger.Error(overallSuccess ? "🏆 **OVERALL_METHOD_SUCCESS**: ✅ PASS" : "🏆 **OVERALL_METHOD_SUCCESS**: ❌ FAIL" + 
+                $" - Template creation for {documentType} " + (overallSuccess ? 
+                "with comprehensive dual-layer template specification compliance (AI quality + data validation)" : 
+                "failed dual-layer validation criteria - check AI recommendations AND data compliance"));
             
             _logger.Error("📊 **TEMPLATE_CREATION_SUMMARY**: TemplatesCreated={TemplateCount}, InputTextLength={TextLength}, ProcessingSuccess={ProcessingSuccess}", 
                 createdTemplates.Count, pdfText.Length, overallSuccess);
