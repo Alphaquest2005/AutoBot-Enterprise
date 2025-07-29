@@ -807,146 +807,29 @@ namespace WaterNut.DataSpace
                     template.FormattedPdfText?.Length ?? 0);
             }
             
-            // **STEP 4: MANDATORY TEMPLATE SPECIFICATION SUCCESS CRITERIA VALIDATION** ⭐ **ENHANCED WITH TEMPLATE SPECIFICATIONS**
-            _logger.Error("🎯 **TEMPLATE_SPECIFICATION_SUCCESS_CRITERIA_VALIDATION**: Template creation success analysis with Template Specifications compliance");
-            
-            // **TEMPLATE_SPEC_1: EntityType Mapping Validation**
-            bool entityTypeMappingSuccess = true;
-            int validEntityTypeMappings = 0;
-            using (var validationContext = new OCRContext())
-            {
-                foreach (var template in createdTemplates)
-                {
-                    var templateParts = validationContext.Parts
-                        .Where(p => p.TemplateId == template.OcrTemplates?.Id)
-                        .SelectMany(p => p.Lines)
-                        .SelectMany(l => l.Fields)
-                        .ToList();
-                    
-                    // Determine document type from template (default to Invoice for CreateInvoiceTemplateAsync)
-                    string documentType = template?.FileType?.FileImporterInfos?.EntryType ?? "Invoice";
-                    var expectedEntityTypes = DatabaseTemplateHelper.GetExpectedEntityTypesForDocumentType(documentType);
-                    var hasValidEntityTypes = templateParts.Any(f => 
-                        expectedEntityTypes.Contains(f.EntityType, StringComparer.OrdinalIgnoreCase));
-                    
-                    if (hasValidEntityTypes) validEntityTypeMappings++;
-                }
-                entityTypeMappingSuccess = validEntityTypeMappings >= createdTemplates.Count * 0.8; // 80% threshold
-            }
-            _logger.Error((entityTypeMappingSuccess ? "✅" : "❌") + " **TEMPLATE_SPEC_ENTITYTYPE_MAPPING**: " + 
-                (entityTypeMappingSuccess ? $"EntityType mapping success - {validEntityTypeMappings}/{createdTemplates.Count} templates have valid EntityTypes" : 
-                $"EntityType mapping failed - only {validEntityTypeMappings}/{createdTemplates.Count} templates have valid EntityTypes"));
-            
-            // **TEMPLATE_SPEC_2: Required Field Coverage Validation**
-            bool requiredFieldCoverage = true;
-            int templatesWithRequiredFields = 0;
-            using (var fieldValidationContext = new OCRContext())
-            {
-                foreach (var template in createdTemplates)
-                {
-                    var requiredFields = fieldValidationContext.Parts
-                        .Where(p => p.TemplateId == template.OcrTemplates?.Id)
-                        .SelectMany(p => p.Lines)
-                        .SelectMany(l => l.Fields)
-                        .Where(f => f.IsRequired == 1)
-                        .ToList();
-                    
-                    var hasMinimumRequiredFields = requiredFields.Count >= 3; // Minimum 3 required fields per template
-                    if (hasMinimumRequiredFields) templatesWithRequiredFields++;
-                }
-                requiredFieldCoverage = templatesWithRequiredFields >= createdTemplates.Count * 0.9; // 90% threshold
-            }
-            _logger.Error((requiredFieldCoverage ? "✅" : "❌") + " **TEMPLATE_SPEC_REQUIRED_FIELDS**: " + 
-                (requiredFieldCoverage ? $"Required field coverage success - {templatesWithRequiredFields}/{createdTemplates.Count} templates have adequate required fields" : 
-                $"Required field coverage failed - only {templatesWithRequiredFields}/{createdTemplates.Count} templates have adequate required fields"));
-            
-            // **TEMPLATE_SPEC_3: Regex Pattern Quality Validation**
-            bool regexPatternQuality = true;
-            int templatesWithValidPatterns = 0;
-            using (var patternValidationContext = new OCRContext())
-            {
-                foreach (var template in createdTemplates)
-                {
-                    var regexPatterns = patternValidationContext.Parts
-                        .Where(p => p.TemplateId == template.OcrTemplates?.Id)
-                        .SelectMany(p => p.Lines)
-                        .Where(l => !string.IsNullOrEmpty(l.RegEx))
-                        .ToList();
-                    
-                    var validPatternCount = regexPatterns.Count(l => 
-                        l.RegEx.Contains("(?<") && // Has named capture groups
-                        !string.IsNullOrEmpty(l.Key) && // Has proper key mapping
-                        l.RegEx.Length > 10); // Reasonable pattern complexity
-                    
-                    var hasGoodPatternQuality = validPatternCount >= regexPatterns.Count * 0.8; // 80% of patterns should be valid
-                    if (hasGoodPatternQuality) templatesWithValidPatterns++;
-                }
-                regexPatternQuality = templatesWithValidPatterns >= createdTemplates.Count * 0.8; // 80% threshold
-            }
-            _logger.Error((regexPatternQuality ? "✅" : "❌") + " **TEMPLATE_SPEC_REGEX_PATTERNS**: " + 
-                (regexPatternQuality ? $"Regex pattern quality success - {templatesWithValidPatterns}/{createdTemplates.Count} templates have valid named capture group patterns" : 
-                $"Regex pattern quality failed - only {templatesWithValidPatterns}/{createdTemplates.Count} templates have valid patterns"));
-            
-            // **TEMPLATE_SPEC_4: Field-to-Database Mapping Validation**
-            bool fieldMappingValidation = true;
-            int templatesWithValidMappings = 0;
-            using (var mappingValidationContext = new OCRContext())
-            {
-                foreach (var template in createdTemplates)
-                {
-                    var fieldMappings = mappingValidationContext.Parts
-                        .Where(p => p.TemplateId == template.OcrTemplates?.Id)
-                        .SelectMany(p => p.Lines)
-                        .SelectMany(l => l.Fields)
-                        .Where(f => !string.IsNullOrEmpty(f.Field) && !string.IsNullOrEmpty(f.EntityType))
-                        .ToList();
-                    
-                    // Determine document type from template (default to Invoice for CreateInvoiceTemplateAsync)
-                    string documentType = template?.FileType?.FileImporterInfos?.EntryType ?? "Invoice";
-                    var expectedEntityTypes = DatabaseTemplateHelper.GetExpectedEntityTypesForDocumentType(documentType);
-                    var requiredFields = DatabaseTemplateHelper.GetRequiredFieldsForDocumentType(documentType);
-                    
-                    var validMappingCount = fieldMappings.Count(f => 
-                        expectedEntityTypes.Contains(f.EntityType, StringComparer.OrdinalIgnoreCase) &&
-                        (requiredFields.Contains(f.Field, StringComparer.OrdinalIgnoreCase) ||
-                         DatabaseTemplateHelper.IsFieldAppropriateForDocumentType(f.Field, documentType)));
-                    
-                    var hasValidMappings = validMappingCount > 0; // At least one valid field mapping
-                    if (hasValidMappings) templatesWithValidMappings++;
-                }
-                fieldMappingValidation = templatesWithValidMappings >= createdTemplates.Count * 0.9; // 90% threshold
-            }
-            _logger.Error((fieldMappingValidation ? "✅" : "❌") + " **TEMPLATE_SPEC_FIELD_MAPPING**: " + 
-                (fieldMappingValidation ? $"Field mapping validation success - {templatesWithValidMappings}/{createdTemplates.Count} templates have valid field-to-EntityType mappings" : 
-                $"Field mapping validation failed - only {templatesWithValidMappings}/{createdTemplates.Count} templates have valid mappings"));
-            
-            // **TEMPLATE_SPEC_5: Template Completeness Validation**
-            bool templateCompleteness = true;
-            int completeTemplates = 0;
-            using (var completenessContext = new OCRContext())
-            {
-                foreach (var template in createdTemplates)
-                {
-                    var hasTemplateData = template.OcrTemplates != null;
-                    var hasPartsData = completenessContext.Parts.Any(p => p.TemplateId == template.OcrTemplates?.Id);
-                    var hasLinesData = completenessContext.Parts
-                        .Where(p => p.TemplateId == template.OcrTemplates?.Id)
-                        .SelectMany(p => p.Lines)
-                        .Any();
-                    var hasFieldsData = completenessContext.Parts
-                        .Where(p => p.TemplateId == template.OcrTemplates?.Id)
-                        .SelectMany(p => p.Lines)
-                        .SelectMany(l => l.Fields)
-                        .Any();
-                    
-                    var isComplete = hasTemplateData && hasPartsData && hasLinesData && hasFieldsData;
-                    if (isComplete) completeTemplates++;
-                }
-                templateCompleteness = completeTemplates >= createdTemplates.Count; // All templates must be complete
-            }
-            _logger.Error((templateCompleteness ? "✅" : "❌") + " **TEMPLATE_SPEC_COMPLETENESS**: " + 
-                (templateCompleteness ? $"Template completeness success - {completeTemplates}/{createdTemplates.Count} templates are complete with all required components" : 
-                $"Template completeness failed - only {completeTemplates}/{createdTemplates.Count} templates are complete"));
+            // **TEMPLATE SPECIFICATION SUCCESS CRITERIA VALIDATION - OBJECT-ORIENTED FUNCTIONAL DUAL LAYER APPROACH**
+            _logger.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: Template creation dual-layer template specification compliance analysis");
+
+            // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
+            string documentType = createdTemplates.FirstOrDefault()?.FileType?.FileImporterInfos?.EntryType ?? "Invoice";
+            _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
+
+            // Create template specification object for document type with dual-layer validation
+            var templateSpec = TemplateSpecification.CreateForTemplateCreation(documentType, createdTemplates, pdfText);
+
+            // Fluent validation with short-circuiting - stops on first failure
+            var validatedSpec = templateSpec
+                .ValidateEntityTypeAwareness(null) // Template creation doesn't have AI recommendations
+                .ValidateFieldMappingEnhancement(null)
+                .ValidateDataTypeRecommendations(null)
+                .ValidatePatternQuality(null)
+                .ValidateTemplateOptimization(null);
+
+            // Log all validation results
+            validatedSpec.LogValidationResults(_logger);
+
+            // Extract overall success from validated specification
+            bool templateSpecificationSuccess = validatedSpec.IsValid;
             
             // **STEP 4: MANDATORY SUCCESS CRITERIA VALIDATION** ⭐ **ENHANCED WITH TEMPLATE SPECIFICATIONS**
             _logger.Error("🎯 **BUSINESS_SUCCESS_CRITERIA_VALIDATION**: Template creation success analysis with enhanced template specification validation");
