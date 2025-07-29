@@ -421,6 +421,23 @@ namespace WaterNut.DataSpace
             }
 
             /// <summary>
+            /// Creates a TemplateSpecification for template creation validation
+            /// Tailored for validating created Template objects against Template_Specifications.md
+            /// </summary>
+            public static TemplateSpecification CreateForTemplateCreation(string documentType, List<Template> createdTemplates, string pdfText)
+            {
+                return new TemplateSpecification
+                {
+                    DocumentType = documentType,
+                    RequiredEntityTypes = DatabaseTemplateHelper.GetExpectedEntityTypesForDocumentType(documentType),
+                    RequiredFields = DatabaseTemplateHelper.GetRequiredFieldsForDocumentType(documentType),
+                    RequiredCategories = new List<string> { "EntityType Validation", "Field Mapping", "Pattern Quality", "Template Completeness" },
+                    CreatedTemplates = createdTemplates,
+                    SourceText = pdfText
+                };
+            }
+
+            /// <summary>
             /// Gets the relevant EntityTypes for a specific document type
             /// Based on Template_Specifications.md EntityType mapping
             /// </summary>
