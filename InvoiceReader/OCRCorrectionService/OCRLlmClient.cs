@@ -600,7 +600,7 @@ namespace WaterNut.DataSpace
             var validatedSpec = templateSpec
                 .ValidateEntityTypeAwareness(null) // No AI recommendations for utility operations
                 .ValidateFieldMappingEnhancement(null)
-                .ValidateDataTypeRecommendations("Text") // Gemini response text operations
+                .ValidateDataTypeRecommendations(new List<PromptRecommendation>()) // Gemini response text operations
                 .ValidatePatternQuality(null)
                 .ValidateTemplateOptimization(null);
 
