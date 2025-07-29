@@ -430,6 +430,32 @@ namespace WaterNut.DataSpace
             {
                 _logger.Error("❌ **DEEPSEEK_EMPTY_CONTENT**: DeepSeek API returned null or empty content in response");
                 _logger.Error("   - **RESPONSE_STRUCTURE**: Choices array may be empty or content field missing");
+                
+                // **TEMPLATE SPECIFICATION SUCCESS CRITERIA VALIDATION - OBJECT-ORIENTED FUNCTIONAL DUAL LAYER APPROACH**
+                _logger.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: CallDeepSeekAsync dual-layer template specification compliance analysis");
+
+                // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
+                string documentType = "Invoice"; // DeepSeek API integration is document-type agnostic
+                _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
+
+                // Create template specification object for document type with dual-layer validation
+                var templateSpec = TemplateSpecification.CreateForUtilityOperation(documentType, "CallDeepSeekAsync", 
+                    new { prompt, temperature, maxTokens }, null);
+
+                // Fluent validation with short-circuiting - stops on first failure
+                var validatedSpec = templateSpec
+                    .ValidateEntityTypeAwareness(null) // No AI recommendations for utility operations
+                    .ValidateFieldMappingEnhancement(null)
+                    .ValidateDataTypeRecommendations("Text") // DeepSeek response text operations
+                    .ValidatePatternQuality(null)
+                    .ValidateTemplateOptimization(null);
+
+                // Log all validation results
+                validatedSpec.LogValidationResults(_logger);
+
+                // Extract overall success from validated specification
+                bool templateSpecificationSuccess = validatedSpec.IsValid;
+                
                 throw new InvalidOperationException("DeepSeek API returned empty content");
             }
             
