@@ -2137,7 +2137,7 @@ If you find no new omissions or corrections, return an empty errors array with d
             // **DUAL LAYER 1: AI RECOMMENDATION QUALITY VALIDATION**
             var entityTypeRecommendations = recommendations?.Where(r => 
                 spec.RequiredEntityTypes.Any(et => r.Description.Contains(et)) || 
-                r.Reasoning.Contains("EntityType")).ToList() ?? new List<PromptRecommendation>();
+                r.Reasoning.Contains("EntityType")).ToList() ?? new List<AITemplateService.PromptRecommendation>();
             
             bool aiRecommendationSuccess = entityTypeRecommendations.Any() || (recommendations?.Count ?? 0) == 0;
 
@@ -2239,7 +2239,7 @@ If you find no new omissions or corrections, return an empty errors array with d
             return true; // No invalid relationships found
         }
 
-        public static TemplateSpecification ValidateFieldMappingEnhancement(this TemplateSpecification spec, List<PromptRecommendation> recommendations)
+        public static TemplateSpecification ValidateFieldMappingEnhancement(this TemplateSpecification spec, List<AITemplateService.PromptRecommendation> recommendations)
         {
             if (spec.HasFailure) return spec; // Short-circuit if already failed
 
@@ -2248,7 +2248,7 @@ If you find no new omissions or corrections, return an empty errors array with d
             var fieldMappingRecommendations = recommendations?.Where(r => 
                 r.Description.Contains("field") || r.Description.Contains("mapping") || 
                 r.Category == "Field Mapping" ||
-                documentSpecificFields.Any(field => r.Description.Contains(field))).ToList() ?? new List<PromptRecommendation>();
+                documentSpecificFields.Any(field => r.Description.Contains(field))).ToList() ?? new List<AITemplateService.PromptRecommendation>();
             
             bool aiRecommendationSuccess = fieldMappingRecommendations.Any() || (recommendations?.Count ?? 0) == 0;
 
@@ -2446,14 +2446,14 @@ If you find no new omissions or corrections, return an empty errors array with d
             };
         }
 
-        public static TemplateSpecification ValidateDataTypeRecommendations(this TemplateSpecification spec, List<PromptRecommendation> recommendations)
+        public static TemplateSpecification ValidateDataTypeRecommendations(this TemplateSpecification spec, List<AITemplateService.PromptRecommendation> recommendations)
         {
             if (spec.HasFailure) return spec; // Short-circuit if already failed
 
             // **DUAL LAYER 1: AI RECOMMENDATION QUALITY VALIDATION**
             var dataTypeRecommendations = recommendations?.Where(r => 
                 r.Description.Contains("data type") || r.Description.Contains("validation") || 
-                r.Description.Contains("decimal") || r.Description.Contains("date")).ToList() ?? new List<PromptRecommendation>();
+                r.Description.Contains("decimal") || r.Description.Contains("date")).ToList() ?? new List<AITemplateService.PromptRecommendation>();
             
             bool aiRecommendationSuccess = dataTypeRecommendations.Any() || (recommendations?.Count ?? 0) == 0;
             
