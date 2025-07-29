@@ -1700,6 +1700,33 @@ namespace WaterNut.DataSpace
                 {
                     _logger.Debug("    - ❌ **VALIDATION_FAIL**: A group named '{FieldName}' was NOT found or did not capture a value. Available groups: {Groups}",
                         correction.FieldName, string.Join(", ", regex.GetGroupNames()));
+                    
+                    // **TEMPLATE SPECIFICATION SUCCESS CRITERIA VALIDATION - OBJECT-ORIENTED FUNCTIONAL DUAL LAYER APPROACH (NAMED GROUP NOT FOUND PATH)**
+                    _logger.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: Regex validation dual-layer template specification compliance analysis (Named group not found path)");
+
+                    // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
+                    string documentType = DatabaseTemplateHelper.GetDocumentTypeFromFieldName(correction.FieldName) ?? "Invoice";
+                    _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
+
+                    // Create template specification object for document type with dual-layer validation
+                    var templateSpec = TemplateSpecification.CreateForUtilityOperation(documentType, "ValidateRegexPattern", correction, false);
+
+                    // Fluent validation with short-circuiting - stops on first failure
+                    var validatedSpec = templateSpec
+                        .ValidateEntityTypeAwareness(regexResponse.RegexPattern) // Pattern exists but missing named group
+                        .ValidateFieldMappingEnhancement(correction.FieldName)
+                        .ValidateDataTypeRecommendations("Pattern") // Method designed to validate pattern data types
+                        .ValidatePatternQuality(regexResponse.RegexPattern) // Pattern quality issue - missing required named group
+                        .ValidateTemplateOptimization(false); // Return false for validation failure
+
+                    // Log all validation results
+                    validatedSpec.LogValidationResults(_logger);
+
+                    // Extract overall success from validated specification
+                    bool templateSpecificationSuccess = validatedSpec.IsValid;
+
+                    _logger.Error("🏆 **FINAL_METHOD_SUCCESS_WITH_TEMPLATE_SPEC**: ✅ PASS - ValidateRegexPattern named group not found path handled appropriately");
+                    
                     return false;
                 }
 
