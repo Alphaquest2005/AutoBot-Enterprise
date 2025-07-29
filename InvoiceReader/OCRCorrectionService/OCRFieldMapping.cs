@@ -304,10 +304,37 @@ namespace WaterNut.DataSpace
                 _logger.Error((dictionaryAccessible ? "✅" : "❌") + " **INTEGRATION_SUCCESS**: " + (dictionaryAccessible ? "Mapping dictionary integration functioning properly" : "Mapping dictionary integration failed"));
                 _logger.Error((fieldNameReasonable ? "✅" : "❌") + " **PERFORMANCE_COMPLIANCE**: " + (fieldNameReasonable ? "Field name length within reasonable performance limits" : "Field name length exceeds performance limits"));
                 
-                // **ENHANCED OVERALL SUCCESS WITH TEMPLATE SPECIFICATIONS**
+                // **TEMPLATE SPECIFICATION SUCCESS CRITERIA VALIDATION - OBJECT-ORIENTED FUNCTIONAL DUAL LAYER APPROACH**
+                _logger.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: Field mapping dual-layer template specification compliance analysis");
+
+                // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
+                string documentType = "Invoice"; // Field mapping is document-type agnostic, default to Invoice
+                _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
+
+                // Create template specification object for document type with dual-layer validation
+                var templateSpec = TemplateSpecification.CreateForFieldMapping(documentType, "MapDeepSeekFieldToDatabase", originalFieldName, fieldInfo);
+
+                // Fluent validation with short-circuiting - stops on first failure
+                var validatedSpec = templateSpec
+                    .ValidateEntityTypeAwareness(null) // Field mapping doesn't have AI recommendations
+                    .ValidateFieldMappingEnhancement(null)
+                    .ValidateDataTypeRecommendations(null)
+                    .ValidatePatternQuality(null)
+                    .ValidateTemplateOptimization(null);
+
+                // Log all validation results
+                validatedSpec.LogValidationResults(_logger);
+
+                // Extract overall success from validated specification
+                bool templateSpecificationSuccess = validatedSpec.IsValid;
+
+                // **ENHANCED OVERALL SUCCESS WITH DUAL-LAYER TEMPLATE SPECIFICATIONS**
                 bool overallSuccess = validationExecuted && mappingResultValid && processCompleted && mappingConsistent && dictionaryAccessible && fieldNameReasonable && businessLogicCorrect &&
-                                     entityTypeValid && fieldEntityMappingValid && requiredFieldPatternValid && dataTypeSpecValid && fieldNamingConventionValid;
-                _logger.Error(overallSuccess ? "🏆 **OVERALL_METHOD_SUCCESS**: ✅ PASS" : ("🏆 **OVERALL_METHOD_SUCCESS**: ❌ FAIL" + " - Field mapping analysis"));
+                                     entityTypeValid && fieldEntityMappingValid && requiredFieldPatternValid && dataTypeSpecValid && fieldNamingConventionValid && templateSpecificationSuccess;
+                _logger.Error(overallSuccess ? "🏆 **OVERALL_METHOD_SUCCESS**: ✅ PASS" : "🏆 **OVERALL_METHOD_SUCCESS**: ❌ FAIL" + 
+                    $" - Field mapping for {documentType} " + (overallSuccess ? 
+                    "with comprehensive dual-layer template specification compliance (AI quality + data validation)" : 
+                    "failed dual-layer validation criteria - check AI recommendations AND data compliance"));
                 
                 _logger.Error("📊 **FIELD_MAPPING_SUMMARY**: OriginalField='{Original}', ProcessedField='{Processed}', PrefixStripped={PrefixStripped}, MappingFound={MappingFound}, DatabaseField='{DbField}'", 
                     originalFieldName, fieldNameToMap, prefixStripped, mappingFound, fieldInfo?.DatabaseFieldName);
