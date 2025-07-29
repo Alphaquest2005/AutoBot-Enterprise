@@ -421,6 +421,11 @@ namespace WaterNut.DataSpace
             public RegexUpdateRequest DatabaseRequest { get; set; }
             public DatabaseUpdateResult DatabaseResult { get; set; }
             
+            // Utility operation specific properties
+            public string UtilityOperation { get; set; }
+            public object UtilityInputData { get; set; }
+            public object UtilityOutputData { get; set; }
+            
             public bool IsValid => ValidationResults.All(r => r.IsSuccess);
             public bool HasFailure => ValidationResults.Any(r => !r.IsSuccess);
 
