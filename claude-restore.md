@@ -943,4 +943,86 @@ InvoiceTotal (166.30) - Calculated (166.30) = TotalsZero (0.00) ✅
 
 ---
 
+## 🚀 QUICK REFERENCE FOR CLAUDE {#quick-reference}
+
+### **🔥 MOST CRITICAL COMMANDS**
+
+#### **MANGO Test (Primary OCR Test)**
+```bash
+"/mnt/c/Program Files/Microsoft Visual Studio/2022/Enterprise/Common7/IDE/CommonExtensions/Microsoft/TestWindow/vstest.console.exe" "./AutoBotUtilities.Tests/bin/x64/Debug/net48/AutoBotUtilities.Tests.dll" /TestCaseFilter:"FullyQualifiedName=AutoBotUtilities.Tests.PDFImportTests.CanImportMango03152025TotalAmount_AfterLearning" "/Logger:console;verbosity=detailed"
+```
+
+#### **Build Command (WSL)**
+```bash
+"/mnt/c/Program Files/Microsoft Visual Studio/2022/Enterprise/MSBuild/Current/Bin/MSBuild.exe" "AutoBotUtilities.Tests/AutoBotUtilities.Tests.csproj" /t:Rebuild /p:Configuration=Debug /p:Platform=x64
+```
+
+#### **Log Analysis (MANDATORY)**
+```bash
+# ALWAYS read log files, never console output
+tail -100 "./AutoBotUtilities.Tests/bin/x64/Debug/net48/Logs/AutoBotTests-YYYYMMDD.log"
+
+# Search for completion markers
+grep -A5 -B5 "TEST_RESULT\|FINAL_STATUS\|STRATEGY_COMPLETE" LogFile.log
+```
+
+### **📁 CRITICAL FILE PATHS**
+
+**Repository Root**: `/mnt/c/Insight Software/AutoBot-Enterprise/`
+
+**Key OCR Files**:
+- `/mnt/c/Insight Software/AutoBot-Enterprise/InvoiceReader/OCRCorrectionService/OCRCorrectionService.cs`
+- `/mnt/c/Insight Software/AutoBot-Enterprise/InvoiceReader/OCRCorrectionService/OCRErrorDetection.cs`
+- `/mnt/c/Insight Software/AutoBot-Enterprise/InvoiceReader/OCRCorrectionService/OCRPromptCreation.cs`
+
+**Critical Analysis Files**:
+- `COMPLETE-DEEPSEEK-INTEGRATION-ANALYSIS.md` - Complete pipeline analysis
+- `ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v4.2.md` - Logging standards
+- `Claude OCR Correction Knowledge.md` - Extended knowledge base
+
+### **⚠️ CRITICAL MANDATES**
+
+1. **ALWAYS USE LOG FILES** - Console output truncates and hides failures
+2. **NEVER DEGRADE CODE** - Fix compilation by correcting syntax, not removing functionality  
+3. **RESPECT ESTABLISHED PATTERNS** - Research existing code before creating new solutions
+4. **COMPREHENSIVE LOGGING** - Every method includes business success criteria validation
+
+### **🎯 SUCCESS CRITERIA FRAMEWORK**
+
+Every method must validate these 8 dimensions:
+1. 🎯 **PURPOSE_FULFILLMENT** - Method achieves stated business objective
+2. 📊 **OUTPUT_COMPLETENESS** - Returns complete, well-formed data structures
+3. ⚙️ **PROCESS_COMPLETION** - All required processing steps executed
+4. 🔍 **DATA_QUALITY** - Output meets business rules and validation
+5. 🛡️ **ERROR_HANDLING** - Appropriate error detection and recovery
+6. 💼 **BUSINESS_LOGIC** - Behavior aligns with business requirements
+7. 🔗 **INTEGRATION_SUCCESS** - External dependencies respond appropriately
+8. ⚡ **PERFORMANCE_COMPLIANCE** - Execution within reasonable timeframes
+
+### **📋 REFERENCED DOCUMENTATION FILES**
+
+All these files are intact and contain comprehensive information:
+
+- ✅ **ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v4.2.md** - Logging standards v4.2
+- ✅ **COMPLETE-DEEPSEEK-INTEGRATION-ANALYSIS.md** - Complete pipeline analysis  
+- ✅ **Claude OCR Correction Knowledge.md** - Extended knowledge base
+- ✅ **DEEPSEEK_OCR_TEMPLATE_CREATION_KNOWLEDGEBASE.md** - Template creation system
+- ✅ **Logging-Unification-Implementation-Plan.md** - Logging implementation status
+
+---
+
+## 📖 RESTORATION SUMMARY
+
+**Purpose**: This file restores the complete CLAUDE.md content that was lost, combining all historical versions from 3 months of git history and optimizing for Claude usage.
+
+**Content Sources**:
+- **Latest Version**: AI-powered template system implementation (July 2025)
+- **Comprehensive Version**: Complete technical documentation from commit 2cb129677 (1500+ lines)
+- **Session Management**: Advanced continuity protocol from commit 0921f2cbf
+- **Critical Mandates**: Logging and development standards from multiple historical versions
+
+**Verification**: All referenced files exist and contain complete content - no data was lost.
+
+**Structure**: Organized with table of contents, anchor links, and quick reference for optimal Claude navigation.
+
 *This comprehensive restoration combines all historical CLAUDE.md content with the latest AI-powered template system implementation. All referenced files and their complete functionality have been preserved and optimized for Claude usage.*
