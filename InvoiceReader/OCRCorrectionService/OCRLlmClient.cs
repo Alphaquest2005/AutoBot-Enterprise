@@ -1036,7 +1036,7 @@ namespace WaterNut.DataSpace
                 var validatedSpec = templateSpec
                     .ValidateEntityTypeAwareness(null) // No AI recommendations for utility operations
                     .ValidateFieldMappingEnhancement(null)
-                    .ValidateDataTypeRecommendations("Boolean") // Boolean disposal state operations
+                    .ValidateDataTypeRecommendations(new List<PromptRecommendation>()) // Boolean disposal state operations
                     .ValidatePatternQuality(null)
                     .ValidateTemplateOptimization(null);
 
