@@ -427,7 +427,7 @@ namespace WaterNut.DataSpace
                 var templateSpec4 = TemplateSpecification.CreateForUtilityOperation(documentType, "CreateDecimalSeparatorPattern", o, result);
 
                 // Fluent validation with short-circuiting - stops on first failure
-                var validatedSpec4 = templateSpec
+                var validatedSpec4 = templateSpec4
                     .ValidateEntityTypeAwareness(result.Item1)
                     .ValidateFieldMappingEnhancement(null) // No specific field mapping for pattern creation
                     .ValidateDataTypeRecommendations(new List<PromptRecommendation>())
@@ -479,7 +479,7 @@ namespace WaterNut.DataSpace
             var templateSpec5 = TemplateSpecification.CreateForUtilityOperation(documentType, "CreateDecimalSeparatorPattern", o, null);
 
             // Fluent validation with short-circuiting - stops on first failure
-            var validatedSpec5 = templateSpec
+            var validatedSpec5 = templateSpec5
                 .ValidateEntityTypeAwareness(null) // No pattern output due to no conversion
                 .ValidateFieldMappingEnhancement(null) // No field mapping due to no conversion
                 .ValidateDataTypeRecommendations(null) // No data type recommendations due to no conversion
@@ -592,7 +592,7 @@ namespace WaterNut.DataSpace
                 var templateSpec6 = TemplateSpecification.CreateForUtilityOperation(documentType, "CreateCurrencySymbolPattern", o, result);
 
                 // Fluent validation with short-circuiting - stops on first failure
-                var validatedSpec6 = templateSpec
+                var validatedSpec6 = templateSpec6
                     .ValidateEntityTypeAwareness(result.Item1)
                     .ValidateFieldMappingEnhancement(null) // No specific field mapping for pattern creation
                     .ValidateDataTypeRecommendations(new List<PromptRecommendation>())
@@ -644,7 +644,7 @@ namespace WaterNut.DataSpace
             var templateSpec7 = TemplateSpecification.CreateForUtilityOperation(documentType, "CreateCurrencySymbolPattern", o, null);
 
             // Fluent validation with short-circuiting - stops on first failure
-            var validatedSpec7 = templateSpec
+            var validatedSpec7 = templateSpec7
                 .ValidateEntityTypeAwareness(null) // No pattern output due to no pattern applicable
                 .ValidateFieldMappingEnhancement(null) // No field mapping due to no pattern
                 .ValidateDataTypeRecommendations(null) // No data type recommendations due to no pattern
@@ -743,7 +743,7 @@ namespace WaterNut.DataSpace
                 var templateSpec8 = TemplateSpecification.CreateForUtilityOperation(documentType, "CreateNegativeNumberPattern", o, result);
 
                 // Fluent validation with short-circuiting - stops on first failure
-                var validatedSpec8 = templateSpec
+                var validatedSpec8 = templateSpec8
                     .ValidateEntityTypeAwareness(result.Item1)
                     .ValidateFieldMappingEnhancement(null) // No specific field mapping for pattern creation
                     .ValidateDataTypeRecommendations(new List<PromptRecommendation>())
@@ -810,7 +810,7 @@ namespace WaterNut.DataSpace
                 var templateSpec9 = TemplateSpecification.CreateForUtilityOperation(documentType, "CreateNegativeNumberPattern", o, result);
 
                 // Fluent validation with short-circuiting - stops on first failure
-                var validatedSpec9 = templateSpec
+                var validatedSpec9 = templateSpec9
                     .ValidateEntityTypeAwareness(result.Item1)
                     .ValidateFieldMappingEnhancement(null) // No specific field mapping for pattern creation
                     .ValidateDataTypeRecommendations(new List<PromptRecommendation>()) // Method processes numeric data types
@@ -862,7 +862,7 @@ namespace WaterNut.DataSpace
             var templateSpec10 = TemplateSpecification.CreateForUtilityOperation(documentType, "CreateNegativeNumberPattern", o, null);
 
             // Fluent validation with short-circuiting - stops on first failure
-            var validatedSpec10 = templateSpec
+            var validatedSpec10 = templateSpec10
                 .ValidateEntityTypeAwareness(null) // No pattern output due to no conversion
                 .ValidateFieldMappingEnhancement(null) // No field mapping for pattern creation
                 .ValidateDataTypeRecommendations(new List<PromptRecommendation>()) // Method designed to process numeric data types
