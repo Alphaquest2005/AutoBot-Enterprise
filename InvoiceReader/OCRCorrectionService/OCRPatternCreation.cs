@@ -1402,7 +1402,7 @@ namespace WaterNut.DataSpace
                         validatedSpec.LogValidationResults(_logger);
 
                         // Extract overall success from validated specification
-                        bool templateSpecificationSuccess18 = validatedSpec.IsValid;
+                        bool templateSpecificationSuccess18 = validatedSpec18.IsValid;
 
                         _logger.Error("🏆 **FINAL_METHOD_SUCCESS_WITH_TEMPLATE_SPEC**: ✅ PASS - ValidatePatternInternal regex syntax error path handled appropriately");
                         
@@ -1456,7 +1456,7 @@ namespace WaterNut.DataSpace
                 validatedSpec.LogValidationResults(_logger);
 
                 // Extract overall success from validated specification
-                bool templateSpecificationSuccess19 = validatedSpec.IsValid;
+                bool templateSpecificationSuccess19 = validatedSpec19.IsValid;
 
                 // Update overall success to include template specification validation
                 overallSuccess = overallSuccess && templateSpecificationSuccess;
@@ -1510,7 +1510,7 @@ namespace WaterNut.DataSpace
                 validatedSpec.LogValidationResults(_logger);
 
                 // Extract overall success from validated specification
-                bool templateSpecificationSuccess20 = validatedSpec.IsValid;
+                bool templateSpecificationSuccess20 = validatedSpec20.IsValid;
 
                 _logger.Error("🏆 **FINAL_METHOD_SUCCESS_WITH_TEMPLATE_SPEC**: ❌ FAIL - ValidatePatternInternal exception path with template specification validation failed");
                 
@@ -1606,7 +1606,7 @@ namespace WaterNut.DataSpace
                 validatedSpec.LogValidationResults(_logger);
 
                 // Extract overall success from validated specification
-                bool templateSpecificationSuccess21 = validatedSpec.IsValid;
+                bool templateSpecificationSuccess21 = validatedSpec21.IsValid;
 
                 _logger.Error("🏆 **FINAL_METHOD_SUCCESS_WITH_TEMPLATE_SPEC**: ✅ PASS - ValidateRegexPattern null input path handled appropriately");
                 
@@ -1653,7 +1653,7 @@ namespace WaterNut.DataSpace
                     validatedSpec.LogValidationResults(_logger);
 
                     // Extract overall success from validated specification
-                    bool templateSpecificationSuccess22 = validatedSpec.IsValid;
+                    bool templateSpecificationSuccess22 = validatedSpec22.IsValid;
 
                     _logger.Error("🏆 **FINAL_METHOD_SUCCESS_WITH_TEMPLATE_SPEC**: ✅ PASS - ValidateRegexPattern no text available path handled appropriately");
                     
@@ -1687,7 +1687,7 @@ namespace WaterNut.DataSpace
                     validatedSpec.LogValidationResults(_logger);
 
                     // Extract overall success from validated specification
-                    bool templateSpecificationSuccess23 = validatedSpec.IsValid;
+                    bool templateSpecificationSuccess23 = validatedSpec23.IsValid;
 
                     _logger.Error("🏆 **FINAL_METHOD_SUCCESS_WITH_TEMPLATE_SPEC**: ✅ PASS - ValidateRegexPattern pattern didn't match path handled appropriately");
                     
@@ -1724,7 +1724,7 @@ namespace WaterNut.DataSpace
                     validatedSpec.LogValidationResults(_logger);
 
                     // Extract overall success from validated specification
-                    bool templateSpecificationSuccess24 = validatedSpec.IsValid;
+                    bool templateSpecificationSuccess24 = validatedSpec24.IsValid;
 
                     _logger.Error("🏆 **FINAL_METHOD_SUCCESS_WITH_TEMPLATE_SPEC**: ✅ PASS - ValidateRegexPattern named group not found path handled appropriately");
                     
