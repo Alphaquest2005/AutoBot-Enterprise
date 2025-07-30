@@ -57,12 +57,13 @@ namespace WaterNut.DataSpace
         /// </summary>
         public OCRLlmClient(ILogger logger)
         {
+            // **CRITICAL FIX**: Assign logger FIRST before any logging calls
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            
             // 🧠 **ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v5**: Complete constructor initialization narrative
             _logger.Information("🏗️ **CONSTRUCTOR_INIT_START**: OCRLlmClient constructor beginning with dependency injection and provider discovery");
             _logger.Information("   - **ARCHITECTURAL_INTENT**: Self-contained LLM client with DeepSeek primary + Gemini fallback for OCR processing reliability");
             _logger.Information("   - **DESIGN_BACKSTORY**: Replaces single-provider DeepSeekInvoiceApi with intelligent failover capability");
-            
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _logger.Information("✅ **DEPENDENCY_INJECTION_SUCCESS**: Logger dependency successfully injected and validated");
             
             // **LOG_THE_WHAT**: Environment variable discovery for API authentication
