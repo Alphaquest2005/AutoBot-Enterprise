@@ -1115,10 +1115,10 @@ namespace WaterNut.DataSpace
 
             // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
             string documentType12 = "Invoice"; // Pattern creation is document-type agnostic
-            _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
+            _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType12} - Using DatabaseTemplateHelper document-specific validation rules");
 
             // Create template specification object for document type with dual-layer validation
-            var templateSpec13 = TemplateSpecification.CreateForUtilityOperation(documentType, "CreateSpaceManipulationPattern", o, null);
+            var templateSpec13 = TemplateSpecification.CreateForUtilityOperation(documentType12, "CreateSpaceManipulationPattern", o, null);
 
             // Fluent validation with short-circuiting - stops on first failure
             var validatedSpec13 = templateSpec13
@@ -1206,10 +1206,10 @@ namespace WaterNut.DataSpace
 
                 // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
                 string documentType13 = "Invoice"; // Pattern validation is document-type agnostic
-                _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
+                _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType13} - Using DatabaseTemplateHelper document-specific validation rules");
 
                 // Create template specification object for document type with dual-layer validation
-                var templateSpec14 = TemplateSpecification.CreateForUtilityOperation(documentType, "ValidatePatternInternal", null, null);
+                var templateSpec14 = TemplateSpecification.CreateForUtilityOperation(documentType13, "ValidatePatternInternal", null, null);
 
                 // Fluent validation with short-circuiting - stops on first failure
                 var validatedSpec14 = templateSpec14
