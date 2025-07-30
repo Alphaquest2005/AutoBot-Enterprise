@@ -768,8 +768,8 @@ namespace WaterNut.DataSpace
 
                 // Fluent validation with short-circuiting - stops on first failure
                 var validatedSpec = templateSpec
-                    .ValidateEntityTypeAwareness(parsedResponse?.RegexPattern)
-                    .ValidateFieldMappingEnhancement(correction.FieldName)
+                    .ValidateEntityTypeAwareness(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
+                    .ValidateFieldMappingEnhancement(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                     .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                     .ValidatePatternQuality(parsedResponse?.RegexPattern)
                     .ValidateTemplateOptimization(parsedResponse);
@@ -1079,8 +1079,8 @@ namespace WaterNut.DataSpace
 
                 // Fluent validation with short-circuiting - stops on first failure
                 var validatedSpec = templateSpec
-                    .ValidateEntityTypeAwareness(parsedResponse?.RegexPattern)
-                    .ValidateFieldMappingEnhancement(correction.FieldName)
+                    .ValidateEntityTypeAwareness(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
+                    .ValidateFieldMappingEnhancement(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                     .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                     .ValidatePatternQuality(parsedResponse?.RegexPattern)
                     .ValidateTemplateOptimization(parsedResponse);
