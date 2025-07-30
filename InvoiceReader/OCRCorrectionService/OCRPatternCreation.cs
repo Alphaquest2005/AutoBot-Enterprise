@@ -757,7 +757,7 @@ namespace WaterNut.DataSpace
                 bool templateSpecificationSuccess9 = validatedSpec9.IsValid;
 
                 // Update overall success to include template specification validation
-                overallSuccess = overallSuccess && templateSpecificationSuccess;
+                overallSuccess = overallSuccess && templateSpecificationSuccess9;
 
                 _logger.Error("🏆 **FINAL_METHOD_SUCCESS_WITH_TEMPLATE_SPEC**: {Status} - CreateNegativeNumberPattern with template specification validation {Result}", 
                     overallSuccess ? "✅ PASS" : "❌ FAIL", 
@@ -824,7 +824,7 @@ namespace WaterNut.DataSpace
                 bool templateSpecificationSuccess10 = validatedSpec10.IsValid;
 
                 // Update overall success to include template specification validation
-                overallSuccess = overallSuccess && templateSpecificationSuccess;
+                overallSuccess = overallSuccess && templateSpecificationSuccess10;
 
                 _logger.Error("🏆 **FINAL_METHOD_SUCCESS_WITH_TEMPLATE_SPEC**: {Status} - CreateNegativeNumberPattern with template specification validation {Result}", 
                     overallSuccess ? "✅ PASS" : "❌ FAIL", 
