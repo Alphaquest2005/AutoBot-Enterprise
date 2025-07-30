@@ -451,10 +451,10 @@ namespace WaterNut.DataSpace
                     .ValidateTemplateOptimization(null);
 
                 // Log all validation results
-                validatedSpec.LogValidationResults(_logger);
+                validatedSpecApiCall.LogValidationResults(_logger);
 
                 // Extract overall success from validated specification
-                bool templateSpecificationSuccess = validatedSpec.IsValid;
+                bool templateSpecificationApiCallSuccess = validatedSpecApiCall.IsValid;
                 
                 throw new InvalidOperationException("DeepSeek API returned empty content");
             }
