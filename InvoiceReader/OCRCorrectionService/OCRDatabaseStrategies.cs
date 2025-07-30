@@ -190,26 +190,26 @@ namespace WaterNut.DataSpace
                 _logger.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: GetOrCreateRegexAsync dual-layer template specification compliance analysis");
 
                 // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
-                string documentType = "Invoice"; // Regex entity management is document-type agnostic
-                _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
+                string newRegexDocumentType = "Invoice"; // Regex entity management is document-type agnostic
+                _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {newRegexDocumentType} - Using DatabaseTemplateHelper document-specific validation rules");
 
                 // Create template specification object for document type with dual-layer validation
-                var templateSpec = TemplateSpecification.CreateForUtilityOperation(documentType, "GetOrCreateRegexAsync", 
+                var newRegexTemplateSpec = TemplateSpecification.CreateForUtilityOperation(newRegexDocumentType, "GetOrCreateRegexAsync", 
                     new { pattern, multiLine, maxLines, description }, newRegex);
 
                 // Fluent validation with short-circuiting - stops on first failure
-                var validatedSpec = templateSpec
+                var newRegexValidatedSpec = newRegexTemplateSpec
                     .ValidateEntityTypeAwareness(null) // No AI recommendations for utility operations
                     .ValidateFieldMappingEnhancement(null)
-                    .ValidateDataTypeRecommendations("Object") // Regex entity operations return objects
+                    .ValidateDataTypeRecommendations(new List<PromptRecommendation>()) // Regex entity operations return objects
                     .ValidatePatternQuality(null)
                     .ValidateTemplateOptimization(null);
 
                 // Log all validation results
-                validatedSpec.LogValidationResults(_logger);
+                newRegexValidatedSpec.LogValidationResults(_logger);
 
                 // Extract overall success from validated specification
-                bool templateSpecificationSuccess = validatedSpec.IsValid;
+                bool newRegexTemplateSpecificationSuccess = newRegexValidatedSpec.IsValid;
                 
                 return newRegex;
             }
