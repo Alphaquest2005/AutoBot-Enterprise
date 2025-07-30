@@ -318,7 +318,7 @@ namespace WaterNut.DataSpace
                 var validatedSpec = templateSpec
                     .ValidateEntityTypeAwareness(null) // Field mapping doesn't have AI recommendations
                     .ValidateFieldMappingEnhancement(null)
-                    .ValidateDataTypeRecommendations(null)
+                    .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                     .ValidatePatternQuality(null)
                     .ValidateTemplateOptimization(null);
 
@@ -509,7 +509,7 @@ namespace WaterNut.DataSpace
                 var validatedSpec = templateSpec
                     .ValidateEntityTypeAwareness(null) // Field enumeration doesn't have AI recommendations
                     .ValidateFieldMappingEnhancement(null)
-                    .ValidateDataTypeRecommendations(null)
+                    .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                     .ValidatePatternQuality(null)
                     .ValidateTemplateOptimization(null);
 
@@ -809,7 +809,7 @@ namespace WaterNut.DataSpace
                 var validatedSpec = templateSpec
                     .ValidateEntityTypeAwareness(null) // Regex field retrieval doesn't have AI recommendations
                     .ValidateFieldMappingEnhancement(null)
-                    .ValidateDataTypeRecommendations(null)
+                    .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                     .ValidatePatternQuality(null)
                     .ValidateTemplateOptimization(null);
 
@@ -1037,7 +1037,7 @@ namespace WaterNut.DataSpace
                 var validatedSpec = templateSpec
                     .ValidateEntityTypeAwareness(null) // No AI recommendations for existence validation
                     .ValidateFieldMappingEnhancement(fieldMapping)
-                    .ValidateDataTypeRecommendations(null)
+                    .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                     .ValidatePatternQuality(null)
                     .ValidateTemplateOptimization(null);
 
@@ -1269,7 +1269,7 @@ namespace WaterNut.DataSpace
                 var validatedSpec = templateSpec
                     .ValidateEntityTypeAwareness(null) // No AI recommendations for enhanced mapping
                     .ValidateFieldMappingEnhancement(enhancedInfo)
-                    .ValidateDataTypeRecommendations(null)
+                    .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                     .ValidatePatternQuality(null)
                     .ValidateTemplateOptimization(null);
 
