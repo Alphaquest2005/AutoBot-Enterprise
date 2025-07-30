@@ -216,17 +216,17 @@ namespace WaterNut.DataSpace
                 using (var context = new CoreEntities.Business.Entities.CoreEntitiesContext())
                 {
                     // **SCHEMA ALIGNMENT**: Query updated to work with actual OCR_TemplateTableMapping structure
+                    // Uses discovered actual columns: Id, DocumentType, TargetTable, RequiredFields, OptionalFields, FileTypeId, IsActive
                     var query = @"
                         SELECT 
                             ottm.[FileTypeId],
                             ottm.[DocumentType],
-                            'ShipmentInvoice' as [PrimaryEntityType], -- Map from actual table structure
+                            'ShipmentInvoice' as [PrimaryEntityType], -- Map from actual table structure  
                             'InvoiceDetails,ShipmentInvoiceFreight' as [SecondaryEntityTypes], -- Standard invoice entities
                             ottm.[RequiredFields],
                             '{}' as [ValidationRules] -- Default empty JSON rules
                         FROM [dbo].[OCR_TemplateTableMapping] ottm
                         WHERE ottm.[DocumentType] = @DocumentType 
-                            AND ottm.[ApplicationSettingsId] = @ApplicationSettingsId
                             AND ottm.[IsActive] = 1
                         ORDER BY ottm.[FileTypeId]";
 
