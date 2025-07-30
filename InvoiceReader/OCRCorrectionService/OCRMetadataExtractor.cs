@@ -334,15 +334,15 @@ namespace WaterNut.DataSpace
             _logger.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: GetInvoiceContext dual-layer template specification compliance analysis");
 
             // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
-            string documentType = "Invoice"; // Invoice context extraction is document-type agnostic
-            _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
+            string documentType3 = "Invoice"; // Invoice context extraction is document-type agnostic
+            _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType3} - Using DatabaseTemplateHelper document-specific validation rules");
 
             // Create template specification object for document type with dual-layer validation
-            var templateSpec = TemplateSpecification.CreateForUtilityOperation(documentType, "GetInvoiceContext", 
+            var templateSpec3 = TemplateSpecification.CreateForUtilityOperation(documentType3, "GetInvoiceContext", 
                 template, context);
 
             // Fluent validation with short-circuiting - stops on first failure
-            var validatedSpec = templateSpec
+            var validatedSpec3 = templateSpec3
                 .ValidateEntityTypeAwareness(null) // No AI recommendations for utility operations
                 .ValidateFieldMappingEnhancement(null)
                 .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()) // Invoice context entity operations
@@ -350,10 +350,10 @@ namespace WaterNut.DataSpace
                 .ValidateTemplateOptimization(null);
 
             // Log all validation results
-            validatedSpec.LogValidationResults(_logger);
+            validatedSpec3.LogValidationResults(_logger);
 
             // Extract overall success from validated specification
-            bool templateSpecificationSuccess = validatedSpec.IsValid;
+            bool templateSpecificationSuccess3 = validatedSpec3.IsValid;
             
             return context;
         }
