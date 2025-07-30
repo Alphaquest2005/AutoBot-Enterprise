@@ -167,7 +167,7 @@ namespace WaterNut.DataSpace
                                 // Parse validation rules JSON
                                 var validationRulesJson = reader.IsDBNull(reader.GetOrdinal("ValidationRules")) 
                                     ? string.Empty 
-                                    : reader.GetString("ValidationRules");
+                                    : reader.GetString(reader.GetOrdinal("ValidationRules"));
                                 if (!string.IsNullOrEmpty(validationRulesJson))
                                 {
                                     try
@@ -269,7 +269,7 @@ namespace WaterNut.DataSpace
                                 // Parse validation rules JSON
                                 var validationRulesJson = reader.IsDBNull(reader.GetOrdinal("ValidationRules")) 
                                     ? string.Empty 
-                                    : reader.GetString("ValidationRules");
+                                    : reader.GetString(reader.GetOrdinal("ValidationRules"));
                                 if (!string.IsNullOrEmpty(validationRulesJson))
                                 {
                                     try
