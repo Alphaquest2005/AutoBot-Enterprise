@@ -1832,7 +1832,7 @@ namespace WaterNut.DataSpace
                     .ValidateTemplateOptimization(false); // Return false for validation failure
 
                 // Log all validation results
-                validatedSpec.LogValidationResults(_logger);
+                validatedSpec26.LogValidationResults(_logger);
 
                 // Extract overall success from validated specification
                 bool templateSpecificationSuccess27 = validatedSpec.IsValid;
