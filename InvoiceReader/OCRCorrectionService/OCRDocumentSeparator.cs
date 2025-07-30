@@ -273,7 +273,7 @@ Return your analysis in this exact JSON format:
                         var result = new DocumentTypeResult
                         {
                             Type = docType.type?.ToString() ?? "Unknown",
-                            Confidence = double.TryParse(docType.confidence?.ToString(), out var conf) ? conf : 0.5,
+                            Confidence = double.TryParse(docType.confidence?.ToString(), out double conf) ? conf : 0.5,
                             Reasoning = docType.reasoning?.ToString() ?? "No reasoning provided"
                         };
                         
