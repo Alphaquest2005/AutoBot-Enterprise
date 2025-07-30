@@ -254,15 +254,15 @@ namespace WaterNut.DataSpace
                 _logger.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: GetInvoiceContext dual-layer template specification compliance analysis");
 
                 // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
-                string documentType = "Invoice"; // Invoice context extraction is document-type agnostic
-                _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
+                string documentType1 = "Invoice"; // Invoice context extraction is document-type agnostic
+                _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType1} - Using DatabaseTemplateHelper document-specific validation rules");
 
                 // Create template specification object for document type with dual-layer validation
-                var templateSpec = TemplateSpecification.CreateForUtilityOperation(documentType, "GetInvoiceContext", 
+                var templateSpec1 = TemplateSpecification.CreateForUtilityOperation(documentType1, "GetInvoiceContext", 
                     template, new InvoiceContext());
 
                 // Fluent validation with short-circuiting - stops on first failure
-                var validatedSpec = templateSpec
+                var validatedSpec1 = templateSpec1
                     .ValidateEntityTypeAwareness(null) // No AI recommendations for utility operations
                     .ValidateFieldMappingEnhancement(null)
                     .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()) // Invoice context entity operations
@@ -270,10 +270,10 @@ namespace WaterNut.DataSpace
                     .ValidateTemplateOptimization(null);
 
                 // Log all validation results
-                validatedSpec.LogValidationResults(_logger);
+                validatedSpec1.LogValidationResults(_logger);
 
                 // Extract overall success from validated specification
-                bool templateSpecificationSuccess = validatedSpec.IsValid;
+                bool templateSpecificationSuccess1 = validatedSpec1.IsValid;
                 
                 return new InvoiceContext();
             }
