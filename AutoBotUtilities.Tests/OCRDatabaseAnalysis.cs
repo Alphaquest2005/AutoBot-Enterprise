@@ -17,7 +17,6 @@ namespace AutoBotUtilities.Tests
     public class OCRDatabaseAnalysis
     {
         private static ILogger _logger;
-        private readonly string _connectionString = "data source=MINIJOE\\SQLDEVELOPER2022;initial catalog=WebSource-AutoBot;user=sa;password=pa$word;Connect Timeout=30;MultipleActiveResultSets=True";
 
         [OneTimeSetUp]
         public void Setup()
