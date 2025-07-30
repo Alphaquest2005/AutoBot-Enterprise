@@ -1430,7 +1430,7 @@ namespace WaterNut.DataSpace
                 var inferredValueValidatedSpec = inferredValueTemplateSpec
                     .ValidateEntityTypeAwareness(null) // Database strategy doesn't have AI recommendations
                     .ValidateFieldMappingEnhancement(null)
-                    .ValidateDataTypeRecommendations(null)
+                    .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                     .ValidatePatternQuality(null)
                     .ValidateTemplateOptimization(null);
 
@@ -1558,7 +1558,7 @@ namespace WaterNut.DataSpace
                     var factoryValidatedSpec = factoryTemplateSpec
                         .ValidateEntityTypeAwareness(null) // Factory initialization doesn't have AI recommendations
                         .ValidateFieldMappingEnhancement(null)
-                        .ValidateDataTypeRecommendations(null)
+                        .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                         .ValidatePatternQuality(null)
                         .ValidateTemplateOptimization(null);
 
