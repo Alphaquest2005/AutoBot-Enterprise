@@ -1275,7 +1275,7 @@ namespace WaterNut.DataSpace
                         .ValidateFieldMappingEnhancement(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                         .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()) // Method designed to validate pattern data types
                         .ValidatePatternQuality(null) // No pattern due to field not supported
-                        .ValidateTemplateOptimization(correction); // Return correction object with failure status
+                        .ValidateTemplateOptimization(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()); // Return correction object with failure status
 
                     // Log all validation results
                     validatedSpec15.LogValidationResults(_logger);
@@ -1336,7 +1336,7 @@ namespace WaterNut.DataSpace
                             .ValidateFieldMappingEnhancement(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                             .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()) // Method designed to validate pattern data types
                             .ValidatePatternQuality(null) // No pattern due to format mismatch
-                            .ValidateTemplateOptimization(correction); // Return correction object with failure status
+                            .ValidateTemplateOptimization(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()); // Return correction object with failure status
 
                         // Log all validation results
                         validatedSpec16.LogValidationResults(_logger);
@@ -1396,7 +1396,7 @@ namespace WaterNut.DataSpace
                             .ValidateFieldMappingEnhancement(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                             .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()) // Method designed to validate pattern data types
                             .ValidatePatternQuality(null) // No valid pattern due to regex syntax error
-                            .ValidateTemplateOptimization(correction); // Return correction object with failure status
+                            .ValidateTemplateOptimization(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()); // Return correction object with failure status
 
                         // Log all validation results
                         validatedSpec17.LogValidationResults(_logger);
@@ -1450,7 +1450,7 @@ namespace WaterNut.DataSpace
                     .ValidateFieldMappingEnhancement(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                     .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()) // Method designed to validate pattern data types
                     .ValidatePatternQuality(correction.SuggestedRegex)
-                    .ValidateTemplateOptimization(correction); // Return validated correction object
+                    .ValidateTemplateOptimization(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()); // Return validated correction object
 
                 // Log all validation results
                 validatedSpec18.LogValidationResults(_logger);
@@ -1504,7 +1504,7 @@ namespace WaterNut.DataSpace
                     .ValidateFieldMappingEnhancement(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                     .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()) // Method designed to validate pattern data types
                     .ValidatePatternQuality(null) // No pattern due to exception
-                    .ValidateTemplateOptimization(correction); // Return correction object with failure status
+                    .ValidateTemplateOptimization(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()); // Return correction object with failure status
 
                 // Log all validation results
                 validatedSpec19.LogValidationResults(_logger);
@@ -1600,7 +1600,7 @@ namespace WaterNut.DataSpace
                     .ValidateFieldMappingEnhancement(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                     .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()) // Method designed to validate pattern data types
                     .ValidatePatternQuality(null) // No pattern due to null input
-                    .ValidateTemplateOptimization(false); // Return false for validation failure
+                    .ValidateTemplateOptimization(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()); // Return false for validation failure
 
                 // Log all validation results
                 validatedSpec20.LogValidationResults(_logger);
@@ -1647,7 +1647,7 @@ namespace WaterNut.DataSpace
                         .ValidateFieldMappingEnhancement(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                         .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()) // Method designed to validate pattern data types
                         .ValidatePatternQuality(regexResponse.RegexPattern) // Pattern quality can be assessed
-                        .ValidateTemplateOptimization(false); // Return false for validation failure
+                        .ValidateTemplateOptimization(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()); // Return false for validation failure
 
                     // Log all validation results
                     validatedSpec21.LogValidationResults(_logger);
@@ -1681,7 +1681,7 @@ namespace WaterNut.DataSpace
                         .ValidateFieldMappingEnhancement(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                         .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()) // Method designed to validate pattern data types
                         .ValidatePatternQuality(regexResponse.RegexPattern) // Pattern quality issue - failed to match
-                        .ValidateTemplateOptimization(false); // Return false for validation failure
+                        .ValidateTemplateOptimization(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()); // Return false for validation failure
 
                     // Log all validation results
                     validatedSpec22.LogValidationResults(_logger);
@@ -1718,7 +1718,7 @@ namespace WaterNut.DataSpace
                         .ValidateFieldMappingEnhancement(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                         .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()) // Method designed to validate pattern data types
                         .ValidatePatternQuality(regexResponse.RegexPattern) // Pattern quality issue - missing required named group
-                        .ValidateTemplateOptimization(false); // Return false for validation failure
+                        .ValidateTemplateOptimization(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()); // Return false for validation failure
 
                     // Log all validation results
                     validatedSpec23.LogValidationResults(_logger);
@@ -1761,7 +1761,7 @@ namespace WaterNut.DataSpace
                         .ValidateFieldMappingEnhancement(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                         .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()) // Method designed to validate pattern data types
                         .ValidatePatternQuality(regexResponse.RegexPattern) // Pattern quality verified through successful extraction
-                        .ValidateTemplateOptimization(isMatch); // Return result based on numeric match
+                        .ValidateTemplateOptimization(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()); // Return result based on numeric match
 
                     // Log all validation results
                     validatedSpec24.LogValidationResults(_logger);
@@ -1796,7 +1796,7 @@ namespace WaterNut.DataSpace
                     .ValidateFieldMappingEnhancement(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                     .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()) // Method designed to validate pattern data types
                     .ValidatePatternQuality(regexResponse.RegexPattern) // Pattern quality verified through successful extraction
-                    .ValidateTemplateOptimization(stringMatch); // Return result based on string match
+                    .ValidateTemplateOptimization(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()); // Return result based on string match
 
                 // Log all validation results
                 validatedSpec25.LogValidationResults(_logger);
@@ -1830,7 +1830,7 @@ namespace WaterNut.DataSpace
                     .ValidateFieldMappingEnhancement(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                     .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()) // Method designed to validate pattern data types
                     .ValidatePatternQuality(regexResponse.RegexPattern) // Pattern quality issue - syntax error
-                    .ValidateTemplateOptimization(false); // Return false for validation failure
+                    .ValidateTemplateOptimization(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()); // Return false for validation failure
 
                 // Log all validation results
                 validatedSpec26.LogValidationResults(_logger);
