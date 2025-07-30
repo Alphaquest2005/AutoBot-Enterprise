@@ -225,7 +225,7 @@ namespace WaterNut.DataSpace
                 var validatedSpec = templateSpec
                     .ValidateEntityTypeAwareness(null) // Utility operation doesn't have AI recommendations
                     .ValidateFieldMappingEnhancement(null)
-                    .ValidateDataTypeRecommendations(null)
+                    .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                     .ValidatePatternQuality(null)
                     .ValidateTemplateOptimization(null);
 
@@ -467,7 +467,7 @@ namespace WaterNut.DataSpace
                 var validatedSpec = templateSpec
                     .ValidateEntityTypeAwareness(null) // Utility operation doesn't have AI recommendations
                     .ValidateFieldMappingEnhancement(null)
-                    .ValidateDataTypeRecommendations(null)
+                    .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                     .ValidatePatternQuality(null)
                     .ValidateTemplateOptimization(null);
 
@@ -1008,7 +1008,7 @@ namespace WaterNut.DataSpace
                 var validatedSpec = templateSpec
                     .ValidateEntityTypeAwareness(null) // Utility operation doesn't have AI recommendations
                     .ValidateFieldMappingEnhancement(null)
-                    .ValidateDataTypeRecommendations(null)
+                    .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                     .ValidatePatternQuality(null)
                     .ValidateTemplateOptimization(null);
 
