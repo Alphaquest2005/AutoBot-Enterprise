@@ -600,10 +600,10 @@ namespace WaterNut.DataSpace
                     .ValidateTemplateOptimization(result);
 
                 // Log all validation results
-                validatedSpec7.LogValidationResults(_logger);
+                validatedSpec6.LogValidationResults(_logger);
 
                 // Extract overall success from validated specification
-                bool templateSpecificationSuccess7 = validatedSpec7.IsValid;
+                bool templateSpecificationSuccess7 = validatedSpec6.IsValid;
 
                 // Update overall success to include template specification validation
                 overallSuccess = overallSuccess && templateSpecificationSuccess7;
@@ -652,10 +652,10 @@ namespace WaterNut.DataSpace
                 .ValidateTemplateOptimization(null); // No optimization due to no pattern
 
             // Log all validation results
-            validatedSpec8.LogValidationResults(_logger);
+            validatedSpec7.LogValidationResults(_logger);
 
             // Extract overall success from validated specification
-            bool templateSpecificationSuccess8 = validatedSpec8.IsValid;
+            bool templateSpecificationSuccess8 = validatedSpec7.IsValid;
 
             _logger.Error("🏆 **FINAL_METHOD_SUCCESS_WITH_TEMPLATE_SPEC**: ✅ PASS - CreateCurrencySymbolPattern no pattern path handled appropriately");
             
@@ -751,10 +751,10 @@ namespace WaterNut.DataSpace
                     .ValidateTemplateOptimization(result);
 
                 // Log all validation results
-                validatedSpec9.LogValidationResults(_logger);
+                validatedSpec8.LogValidationResults(_logger);
 
                 // Extract overall success from validated specification
-                bool templateSpecificationSuccess9 = validatedSpec9.IsValid;
+                bool templateSpecificationSuccess9 = validatedSpec8.IsValid;
 
                 // Update overall success to include template specification validation
                 overallSuccess = overallSuccess && templateSpecificationSuccess9;
@@ -818,10 +818,10 @@ namespace WaterNut.DataSpace
                     .ValidateTemplateOptimization(result);
 
                 // Log all validation results
-                validatedSpec10.LogValidationResults(_logger);
+                validatedSpec9.LogValidationResults(_logger);
 
                 // Extract overall success from validated specification
-                bool templateSpecificationSuccess10 = validatedSpec10.IsValid;
+                bool templateSpecificationSuccess10 = validatedSpec9.IsValid;
 
                 // Update overall success to include template specification validation
                 overallSuccess = overallSuccess && templateSpecificationSuccess10;
@@ -870,10 +870,10 @@ namespace WaterNut.DataSpace
                 .ValidateTemplateOptimization(null); // No optimization due to no conversion
 
             // Log all validation results
-            validatedSpec11.LogValidationResults(_logger);
+            validatedSpec10.LogValidationResults(_logger);
 
             // Extract overall success from validated specification
-            bool templateSpecificationSuccess11 = validatedSpec11.IsValid;
+            bool templateSpecificationSuccess11 = validatedSpec10.IsValid;
 
             _logger.Error("🏆 **FINAL_METHOD_SUCCESS_WITH_TEMPLATE_SPEC**: ✅ PASS - CreateNegativeNumberPattern no conversion path handled appropriately");
             
