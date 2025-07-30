@@ -512,6 +512,9 @@ namespace WaterNut.DataSpace
                 filePath, pdfText.Length);
             _logger.Error("🔍 **PATTERN_ANALYSIS**: Input validation successful, enabling AI-powered template creation processing");
 
+            // Declare variable outside try block for proper scope
+            var separatedDocuments = new List<SeparatedDocument>();
+
             try
             {
                 // **v4.2 TEMPLATE CREATION PROCESSING**: Enhanced template creation with comprehensive tracking
@@ -519,7 +522,7 @@ namespace WaterNut.DataSpace
                 _logger.Error("📊 **LOGGING_ENHANCEMENTS**: Enhanced processing with document separation and template generation verification");
                 // **STEP 1**: Use AI document separator to detect and separate document types
                 _logger.Information("🤖 **DOCUMENT_SEPARATION_START**: Using AI-powered document separator to detect multiple document types");
-                var separatedDocuments = await SeparateDocumentsAsync(pdfText);
+                separatedDocuments = await SeparateDocumentsAsync(pdfText);
                 
                 _logger.Information("📊 **DOCUMENT_SEPARATION_COMPLETE**: Found {Count} document types", separatedDocuments.Count);
                 foreach (var doc in separatedDocuments)
