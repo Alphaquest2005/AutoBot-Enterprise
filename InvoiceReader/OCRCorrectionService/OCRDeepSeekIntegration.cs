@@ -1010,11 +1010,11 @@ namespace WaterNut.DataSpace
                     _logger.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: AI regex correction dual-layer template specification compliance analysis (Empty response path)");
 
                     // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
-                    string documentType = "Invoice"; // Default document type for AI regex creation
-                    _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
+                    string documentTypeEmpty = "Invoice"; // Default document type for AI regex creation
+                    _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentTypeEmpty} - Using DatabaseTemplateHelper document-specific validation rules");
 
                     // Create template specification object for document type with dual-layer validation
-                    var templateSpec = TemplateSpecification.CreateForUtilityOperation(documentType, "RequestRegexCorrectionFromDeepSeek", correction, null);
+                    var templateSpecEmpty = TemplateSpecification.CreateForUtilityOperation(documentTypeEmpty, "RequestRegexCorrectionFromDeepSeek", correction, null);
 
                     // Fluent validation with short-circuiting - stops on first failure
                     var validatedSpec = templateSpec
