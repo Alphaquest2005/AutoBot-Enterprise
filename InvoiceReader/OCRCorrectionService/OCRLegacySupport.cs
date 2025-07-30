@@ -166,7 +166,7 @@ namespace WaterNut.DataSpace
             var validatedSpec = templateSpec
                 .ValidateEntityTypeAwareness(null) // No AI recommendations for utility operations
                 .ValidateFieldMappingEnhancement(null)
-                .ValidateDataTypeRecommendations("Numeric") // Financial balance validation operations
+                .ValidateDataTypeRecommendations(new List<PromptRecommendation>()) // Financial balance validation operations
                 .ValidatePatternQuality(null)
                 .ValidateTemplateOptimization(null);
 
