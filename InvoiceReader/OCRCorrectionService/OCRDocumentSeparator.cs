@@ -637,7 +637,7 @@ IMPORTANT: Each document's content should be complete and self-contained. Includ
                     {
                         var docType = doc.document_type?.ToString() ?? "Unknown";
                         var content = doc.content?.ToString() ?? "";
-                        var aiConfidence = double.TryParse(doc.confidence?.ToString(), out var conf) ? conf : 0.5;
+                        var aiConfidence = double.TryParse(doc.confidence?.ToString(), out double conf) ? conf : 0.5;
                         var reasoning = doc.reasoning?.ToString() ?? "No reasoning provided";
                         
                         // Use AI confidence, fallback to original detection confidence
