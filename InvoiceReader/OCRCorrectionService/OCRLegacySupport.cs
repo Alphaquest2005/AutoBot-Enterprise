@@ -87,15 +87,15 @@ namespace WaterNut.DataSpace
                 log.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: TotalsZero dual-layer template specification compliance analysis");
 
                 // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
-                string documentType = "Invoice"; // Balance validation is document-type agnostic
-                log.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
+                string documentType1 = "Invoice"; // Balance validation is document-type agnostic
+                log.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType1} - Using DatabaseTemplateHelper document-specific validation rules");
 
                 // Create template specification object for document type with dual-layer validation
-                var templateSpec = TemplateSpecification.CreateForUtilityOperation(documentType, "TotalsZero", 
+                var templateSpec1 = TemplateSpecification.CreateForUtilityOperation(documentType1, "TotalsZero", 
                     invoice, false);
 
                 // Fluent validation with short-circuiting - stops on first failure
-                var validatedSpec = templateSpec
+                var validatedSpec1 = templateSpec1
                     .ValidateEntityTypeAwareness(null) // No AI recommendations for utility operations
                     .ValidateFieldMappingEnhancement(null)
                     .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()) // Financial balance validation operations
@@ -103,10 +103,10 @@ namespace WaterNut.DataSpace
                     .ValidateTemplateOptimization(null);
 
                 // Log all validation results
-                validatedSpec.LogValidationResults(log);
+                validatedSpec1.LogValidationResults(log);
 
                 // Extract overall success from validated specification
-                bool templateSpecificationSuccess = validatedSpec.IsValid;
+                bool templateSpecificationSuccess1 = validatedSpec1.IsValid;
                 
                 return false;
             }
@@ -155,15 +155,15 @@ namespace WaterNut.DataSpace
             log.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: TotalsZero dual-layer template specification compliance analysis");
 
             // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
-            string documentType = "Invoice"; // Balance validation is document-type agnostic
-            log.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
+            string documentType2 = "Invoice"; // Balance validation is document-type agnostic
+            log.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType2} - Using DatabaseTemplateHelper document-specific validation rules");
 
             // Create template specification object for document type with dual-layer validation
-            var templateSpec = TemplateSpecification.CreateForUtilityOperation(documentType, "TotalsZero", 
+            var templateSpec2 = TemplateSpecification.CreateForUtilityOperation(documentType2, "TotalsZero", 
                 invoice, isZero);
 
             // Fluent validation with short-circuiting - stops on first failure
-            var validatedSpec = templateSpec
+            var validatedSpec2 = templateSpec2
                 .ValidateEntityTypeAwareness(null) // No AI recommendations for utility operations
                 .ValidateFieldMappingEnhancement(null)
                 .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()) // Financial balance validation operations
@@ -171,10 +171,10 @@ namespace WaterNut.DataSpace
                 .ValidateTemplateOptimization(null);
 
             // Log all validation results
-            validatedSpec.LogValidationResults(log);
+            validatedSpec2.LogValidationResults(log);
 
             // Extract overall success from validated specification
-            bool templateSpecificationSuccess = validatedSpec.IsValid;
+            bool templateSpecificationSuccess2 = validatedSpec2.IsValid;
             
             return isZero;
         }
@@ -240,15 +240,15 @@ namespace WaterNut.DataSpace
                 log.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: TotalsZero dynamic dual-layer template specification compliance analysis");
 
                 // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
-                string documentType = "Invoice"; // Dynamic balance validation is document-type agnostic
-                log.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
+                string documentType3 = "Invoice"; // Dynamic balance validation is document-type agnostic
+                log.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType3} - Using DatabaseTemplateHelper document-specific validation rules");
 
                 // Create template specification object for document type with dual-layer validation
-                var templateSpec = TemplateSpecification.CreateForUtilityOperation(documentType, "TotalsZero", 
+                var templateSpec3 = TemplateSpecification.CreateForUtilityOperation(documentType3, "TotalsZero", 
                     dynamicInvoiceResults, true);
 
                 // Fluent validation with short-circuiting - stops on first failure
-                var validatedSpec = templateSpec
+                var validatedSpec3 = templateSpec3
                     .ValidateEntityTypeAwareness(null) // No AI recommendations for utility operations
                     .ValidateFieldMappingEnhancement(null)
                     .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()) // Dynamic balance validation operations
@@ -256,10 +256,10 @@ namespace WaterNut.DataSpace
                     .ValidateTemplateOptimization(null);
 
                 // Log all validation results
-                validatedSpec.LogValidationResults(log);
+                validatedSpec3.LogValidationResults(log);
 
                 // Extract overall success from validated specification
-                bool templateSpecificationSuccess = validatedSpec.IsValid;
+                bool templateSpecificationSuccess3 = validatedSpec3.IsValid;
                 
                 return true;
             }
@@ -298,15 +298,15 @@ namespace WaterNut.DataSpace
                 log.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: TotalsZero dynamic dual-layer template specification compliance analysis");
 
                 // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
-                string documentType = "Invoice"; // Dynamic balance validation is document-type agnostic
-                log.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
+                string documentType4 = "Invoice"; // Dynamic balance validation is document-type agnostic
+                log.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType4} - Using DatabaseTemplateHelper document-specific validation rules");
 
                 // Create template specification object for document type with dual-layer validation
-                var templateSpec = TemplateSpecification.CreateForUtilityOperation(documentType, "TotalsZero", 
+                var templateSpec4 = TemplateSpecification.CreateForUtilityOperation(documentType4, "TotalsZero", 
                     dictionaries, true);
 
                 // Fluent validation with short-circuiting - stops on first failure
-                var validatedSpec = templateSpec
+                var validatedSpec4 = templateSpec4
                     .ValidateEntityTypeAwareness(null) // No AI recommendations for utility operations
                     .ValidateFieldMappingEnhancement(null)
                     .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()) // Dynamic balance validation operations
@@ -314,10 +314,10 @@ namespace WaterNut.DataSpace
                     .ValidateTemplateOptimization(null);
 
                 // Log all validation results
-                validatedSpec.LogValidationResults(log);
+                validatedSpec4.LogValidationResults(log);
 
                 // Extract overall success from validated specification
-                bool templateSpecificationSuccess = validatedSpec.IsValid;
+                bool templateSpecificationSuccess4 = validatedSpec4.IsValid;
                 
                 return true;
             }
@@ -336,15 +336,15 @@ namespace WaterNut.DataSpace
                 log.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: TotalsZero dynamic dual-layer template specification compliance analysis");
 
                 // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
-                string documentType = "Invoice"; // Dynamic balance validation is document-type agnostic
-                log.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
+                string documentType5 = "Invoice"; // Dynamic balance validation is document-type agnostic
+                log.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType5} - Using DatabaseTemplateHelper document-specific validation rules");
 
                 // Create template specification object for document type with dual-layer validation
-                var templateSpec = TemplateSpecification.CreateForUtilityOperation(documentType, "TotalsZero", 
+                var templateSpec5 = TemplateSpecification.CreateForUtilityOperation(documentType5, "TotalsZero", 
                     dictionaries.First(), true);
 
                 // Fluent validation with short-circuiting - stops on first failure
-                var validatedSpec = templateSpec
+                var validatedSpec5 = templateSpec5
                     .ValidateEntityTypeAwareness(null) // No AI recommendations for utility operations
                     .ValidateFieldMappingEnhancement(null)
                     .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()) // Dynamic balance validation operations
@@ -352,10 +352,10 @@ namespace WaterNut.DataSpace
                     .ValidateTemplateOptimization(null);
 
                 // Log all validation results
-                validatedSpec.LogValidationResults(log);
+                validatedSpec5.LogValidationResults(log);
 
                 // Extract overall success from validated specification
-                bool templateSpecificationSuccess = validatedSpec.IsValid;
+                bool templateSpecificationSuccess5 = validatedSpec5.IsValid;
                 
                 return true; // Default to balanced if conversion fails
             }
@@ -371,15 +371,15 @@ namespace WaterNut.DataSpace
             log.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: TotalsZero dynamic dual-layer template specification compliance analysis");
 
             // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
-            string documentType = "Invoice"; // Dynamic balance validation is document-type agnostic
-            log.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
+            string documentType6 = "Invoice"; // Dynamic balance validation is document-type agnostic
+            log.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType6} - Using DatabaseTemplateHelper document-specific validation rules");
 
             // Create template specification object for document type with dual-layer validation
-            var templateSpec = TemplateSpecification.CreateForUtilityOperation(documentType, "TotalsZero", 
+            var templateSpec6 = TemplateSpecification.CreateForUtilityOperation(documentType6, "TotalsZero", 
                 tempInvoice, isBalanced);
 
             // Fluent validation with short-circuiting - stops on first failure
-            var validatedSpec = templateSpec
+            var validatedSpec6 = templateSpec6
                 .ValidateEntityTypeAwareness(null) // No AI recommendations for utility operations
                 .ValidateFieldMappingEnhancement(null)
                 .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()) // Dynamic balance validation operations
@@ -387,10 +387,10 @@ namespace WaterNut.DataSpace
                 .ValidateTemplateOptimization(null);
 
             // Log all validation results
-            validatedSpec.LogValidationResults(log);
+            validatedSpec6.LogValidationResults(log);
 
             // Extract overall success from validated specification
-            bool templateSpecificationSuccess = validatedSpec.IsValid;
+            bool templateSpecificationSuccess6 = validatedSpec6.IsValid;
             
             return isBalanced;
         }
