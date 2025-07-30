@@ -151,6 +151,132 @@ namespace AutoBotUtilities.Tests
             _logger.Information("✅ **OCR_TEMPLATE_ANALYSIS**: Database analysis completed successfully");
         }
 
+        [Test]
+        public async Task CreateOCRTemplateTableMappingAndInsertInvoiceData()
+        {
+            _logger.Information("🚀 **DATABASE_SETUP**: Creating OCR_TemplateTableMapping table and inserting Invoice template mapping data");
+
+            // 1. Check if OCR_TemplateTableMapping table exists
+            var tableExistsScript = @"
+                SELECT COUNT(*) as TableExists
+                FROM INFORMATION_SCHEMA.TABLES 
+                WHERE TABLE_SCHEMA = 'dbo' 
+                AND TABLE_NAME = 'OCR_TemplateTableMapping';
+            ";
+
+            var tableExistsResult = await ExecuteSqlScript(tableExistsScript, "Check if OCR_TemplateTableMapping table exists").ConfigureAwait(false);
+            
+            // 2. Create OCR_TemplateTableMapping table if it doesn't exist
+            var createTableScript = @"
+                IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'OCR_TemplateTableMapping')
+                BEGIN
+                    CREATE TABLE [dbo].[OCR_TemplateTableMapping] (
+                        [Id] INT PRIMARY KEY IDENTITY(1,1),
+                        [FileTypeId] INT NOT NULL,
+                        [DocumentType] NVARCHAR(50) NOT NULL,
+                        [PrimaryEntityType] NVARCHAR(100) NOT NULL,
+                        [SecondaryEntityTypes] NVARCHAR(500) NULL,
+                        [RequiredFields] NVARCHAR(1000) NULL,
+                        [ValidationRules] NVARCHAR(MAX) NULL,
+                        [ApplicationSettingsId] INT NOT NULL DEFAULT(1),
+                        [IsActive] BIT NOT NULL DEFAULT(1),
+                        [CreatedDate] DATETIME2 NOT NULL DEFAULT(GETUTCDATE())
+                    );
+                    
+                    PRINT '✅ OCR_TemplateTableMapping table created successfully';
+                END
+                ELSE
+                BEGIN
+                    PRINT '⚠️ OCR_TemplateTableMapping table already exists';
+                END
+            ";
+
+            await ExecuteSqlScript(createTableScript, "Create OCR_TemplateTableMapping table").ConfigureAwait(false);
+
+            // 3. Insert Invoice template mapping data
+            var insertInvoiceDataScript = @"
+                -- Check if Invoice mapping already exists
+                IF NOT EXISTS (SELECT 1 FROM [dbo].[OCR_TemplateTableMapping] WHERE [DocumentType] = 'Invoice')
+                BEGIN
+                    INSERT INTO [dbo].[OCR_TemplateTableMapping] 
+                    ([FileTypeId], [DocumentType], [PrimaryEntityType], [SecondaryEntityTypes], [RequiredFields], [ValidationRules], [ApplicationSettingsId], [IsActive])
+                    VALUES 
+                    (1, 'Invoice', 'ShipmentInvoice', 'InvoiceDetails,ShipmentInvoiceFreight', 
+                     'InvoiceNo,SupplierName,InvoiceDate,InvoiceTotal,SubTotal,Currency', 
+                     '{""EntityTypes"":[""ShipmentInvoice"",""InvoiceDetails""],""DataTypes"":{""InvoiceNo"":""string"",""InvoiceTotal"":""decimal"",""SubTotal"":""decimal""},""BusinessRules"":{""required_fields"":{""InvoiceNo"":true,""InvoiceTotal"":true}}}', 
+                     1, 1);
+                    
+                    PRINT '✅ Invoice template mapping data inserted successfully';
+                END
+                ELSE
+                BEGIN
+                    PRINT '⚠️ Invoice template mapping already exists';
+                END
+            ";
+
+            await ExecuteSqlScript(insertInvoiceDataScript, "Insert Invoice template mapping data").ConfigureAwait(false);
+
+            // 4. Create performance indexes
+            var createIndexesScript = @"
+                -- Create index for DocumentType lookups if it doesn't exist
+                IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'IX_OCR_TemplateTableMapping_DocumentType' AND object_id = OBJECT_ID('dbo.OCR_TemplateTableMapping'))
+                BEGIN
+                    CREATE NONCLUSTERED INDEX IX_OCR_TemplateTableMapping_DocumentType 
+                    ON [dbo].[OCR_TemplateTableMapping] ([DocumentType], [ApplicationSettingsId], [IsActive])
+                    INCLUDE ([PrimaryEntityType], [SecondaryEntityTypes], [RequiredFields]);
+                    
+                    PRINT '✅ Performance index created successfully';
+                END
+                ELSE
+                BEGIN
+                    PRINT '⚠️ Performance index already exists';
+                END
+            ";
+
+            await ExecuteSqlScript(createIndexesScript, "Create performance indexes").ConfigureAwait(false);
+
+            // 5. Verify the data was inserted correctly
+            var verifyDataScript = @"
+                SELECT 
+                    Id,
+                    FileTypeId,
+                    DocumentType,
+                    PrimaryEntityType,
+                    SecondaryEntityTypes,
+                    RequiredFields,
+                    ValidationRules,
+                    ApplicationSettingsId,
+                    IsActive,
+                    CreatedDate
+                FROM [dbo].[OCR_TemplateTableMapping]
+                WHERE DocumentType = 'Invoice'
+                ORDER BY Id;
+            ";
+
+            await ExecuteSqlScript(verifyDataScript, "Verify Invoice template mapping data").ConfigureAwait(false);
+
+            // 6. Test the DatabaseTemplateHelper integration
+            _logger.Information("🧪 **TESTING_DATABASE_HELPER**: Testing DatabaseTemplateHelper integration with new data");
+            
+            try 
+            {
+                var mappings = WaterNut.DataSpace.DatabaseTemplateHelper.GetTemplateMappingsByDocumentType("Invoice");
+                _logger.Information("✅ **DATABASE_HELPER_SUCCESS**: Retrieved {Count} Invoice template mappings", mappings.Count);
+                
+                foreach (var mapping in mappings)
+                {
+                    _logger.Information("📋 **MAPPING_DETAILS**: FileTypeId={FileTypeId}, DocumentType={DocumentType}, PrimaryEntity={PrimaryEntity}", 
+                        mapping.FileTypeId, mapping.DocumentType, mapping.PrimaryEntityType);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "❌ **DATABASE_HELPER_ERROR**: Failed to test DatabaseTemplateHelper integration");
+            }
+
+            _logger.Information("🎯 **DATABASE_SETUP_COMPLETE**: OCR_TemplateTableMapping table and Invoice data setup completed successfully");
+        }
+
         /// <summary>
         /// Execute a SQL script with parameters
         /// </summary>
