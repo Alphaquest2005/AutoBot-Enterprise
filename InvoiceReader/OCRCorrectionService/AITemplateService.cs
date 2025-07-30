@@ -552,7 +552,7 @@ namespace WaterNut.DataSpace
                 _logger.Error("✅ **RECOMMENDATION_SUCCESS**: Generated and saved {Count} AI template improvement suggestions for {Provider}", 
                     recommendations.Count, provider);
                 
-                return recommendations ?? new List<PromptRecommendation>();
+                return recommendations ?? new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>();
             }
             catch (Exception ex)
             {
@@ -570,7 +570,7 @@ namespace WaterNut.DataSpace
                 _logger.Error("❌ **PERFORMANCE_COMPLIANCE**: Performance affected by exception handling");
                 _logger.Error("🏆 **OVERALL_METHOD_SUCCESS**: ❌ FAIL - AI template recommendations failed due to exception");
                 
-                return new List<PromptRecommendation>();
+                return new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>();
             }
         }
 
@@ -1797,12 +1797,12 @@ Return your suggestions as JSON in this exact format:
                     Example = imp.Example,
                     Impact = imp.Impact,
                     Timestamp = DateTime.UtcNow
-                }).ToList() ?? new List<PromptRecommendation>();
+                }).ToList() ?? new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>();
             }
             catch (Exception ex)
             {
                 _logger.Warning(ex, "Failed to parse recommendations from {Provider}", provider);
-                return new List<PromptRecommendation>();
+                return new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>();
             }
         }
 
@@ -1828,11 +1828,11 @@ Return your suggestions as JSON in this exact format:
             var filePath = Path.Combine(_recommendationsPath, $"{provider}-suggestions.json");
             
             // Load existing recommendations
-            var existingRecommendations = new List<PromptRecommendation>();
+            var existingRecommendations = new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>();
             if (File.Exists(filePath))
             {
                 var existingJson = File.ReadAllText(filePath);
-                existingRecommendations = JsonSerializer.Deserialize<List<PromptRecommendation>>(existingJson) ?? new List<PromptRecommendation>();
+                existingRecommendations = JsonSerializer.Deserialize<List<PromptRecommendation>>(existingJson) ?? new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>();
             }
             
             // Add new recommendations
