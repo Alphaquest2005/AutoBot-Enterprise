@@ -114,6 +114,7 @@ namespace WaterNut.DataSpace
 
                 using (var context = new CoreEntities.Business.Entities.CoreEntitiesContext())
                 {
+                    // **SCHEMA ALIGNMENT**: Query updated to work with actual OCR_TemplateTableMapping structure
                     var query = @"
                         SELECT 
                             ottm.[FileTypeId],
@@ -129,7 +130,6 @@ namespace WaterNut.DataSpace
                     using (var command = new SqlCommand(query, context.Database.Connection as SqlConnection))
                     {
                         command.Parameters.Add(new SqlParameter("@FileTypeId", fileTypeId));
-                        command.Parameters.Add(new SqlParameter("@ApplicationSettingsId", applicationSettingsId));
 
                         if (context.Database.Connection.State != System.Data.ConnectionState.Open)
                             context.Database.Connection.Open();
