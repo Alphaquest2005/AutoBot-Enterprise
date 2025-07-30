@@ -958,15 +958,15 @@ namespace WaterNut.DataSpace
                 _logger.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: ValidateUpdateRequest dual-layer template specification compliance analysis");
 
                 // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
-                string documentType = "Invoice"; // Request validation is document-type agnostic
-                _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
+                string documentTypeNullCase = "Invoice"; // Request validation is document-type agnostic
+                _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentTypeNullCase} - Using DatabaseTemplateHelper document-specific validation rules");
 
                 // Create template specification object for document type with dual-layer validation
-                var templateSpec = TemplateSpecification.CreateForUtilityOperation(documentType, "ValidateUpdateRequest", 
+                var templateSpecNullCase = TemplateSpecification.CreateForUtilityOperation(documentTypeNullCase, "ValidateUpdateRequest", 
                     request, new FieldValidationInfo { IsValid = false, ErrorMessage = "Request object is null." });
 
                 // Fluent validation with short-circuiting - stops on first failure
-                var validatedSpec = templateSpec
+                var validatedSpecNullCase = templateSpecNullCase
                     .ValidateEntityTypeAwareness(null) // No AI recommendations for utility operations
                     .ValidateFieldMappingEnhancement(null)
                     .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()) // Request validation operations return objects
@@ -974,10 +974,10 @@ namespace WaterNut.DataSpace
                     .ValidateTemplateOptimization(null);
 
                 // Log all validation results
-                validatedSpec.LogValidationResults(_logger);
+                validatedSpecNullCase.LogValidationResults(_logger);
 
                 // Extract overall success from validated specification
-                bool templateSpecificationSuccess = validatedSpec.IsValid;
+                bool templateSpecificationSuccessNullCase = validatedSpecNullCase.IsValid;
                 
                 return new FieldValidationInfo { IsValid = false, ErrorMessage = "Request object is null." };
             }
@@ -1003,15 +1003,15 @@ namespace WaterNut.DataSpace
                 _logger.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: ValidateUpdateRequest dual-layer template specification compliance analysis");
 
                 // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
-                string documentType = "Invoice"; // Request validation is document-type agnostic
-                _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
+                string documentTypeFieldName = "Invoice"; // Request validation is document-type agnostic
+                _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentTypeFieldName} - Using DatabaseTemplateHelper document-specific validation rules");
 
                 // Create template specification object for document type with dual-layer validation
-                var templateSpec = TemplateSpecification.CreateForUtilityOperation(documentType, "ValidateUpdateRequest", 
+                var templateSpecFieldName = TemplateSpecification.CreateForUtilityOperation(documentTypeFieldName, "ValidateUpdateRequest", 
                     request, new FieldValidationInfo { IsValid = false, ErrorMessage = "Field name is required." });
 
                 // Fluent validation with short-circuiting - stops on first failure
-                var validatedSpec = templateSpec
+                var validatedSpecFieldName = templateSpecFieldName
                     .ValidateEntityTypeAwareness(null) // No AI recommendations for utility operations
                     .ValidateFieldMappingEnhancement(null)
                     .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()) // Request validation operations return objects
@@ -1019,10 +1019,10 @@ namespace WaterNut.DataSpace
                     .ValidateTemplateOptimization(null);
 
                 // Log all validation results
-                validatedSpec.LogValidationResults(_logger);
+                validatedSpecFieldName.LogValidationResults(_logger);
 
                 // Extract overall success from validated specification
-                bool templateSpecificationSuccess = validatedSpec.IsValid;
+                bool templateSpecificationSuccessFieldName = validatedSpecFieldName.IsValid;
                 
                 return new FieldValidationInfo { IsValid = false, ErrorMessage = "Field name is required." };
             }
@@ -1050,15 +1050,15 @@ namespace WaterNut.DataSpace
                 _logger.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: ValidateUpdateRequest dual-layer template specification compliance analysis");
 
                 // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
-                string documentType = "Invoice"; // Request validation is document-type agnostic
-                _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
+                string documentTypeFieldSupport = "Invoice"; // Request validation is document-type agnostic
+                _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentTypeFieldSupport} - Using DatabaseTemplateHelper document-specific validation rules");
 
                 // Create template specification object for document type with dual-layer validation
-                var templateSpec = TemplateSpecification.CreateForUtilityOperation(documentType, "ValidateUpdateRequest", 
+                var templateSpecFieldSupport = TemplateSpecification.CreateForUtilityOperation(documentTypeFieldSupport, "ValidateUpdateRequest", 
                     request, new FieldValidationInfo { IsValid = false, ErrorMessage = $"Field '{request.FieldName}' is not supported." });
 
                 // Fluent validation with short-circuiting - stops on first failure
-                var validatedSpec = templateSpec
+                var validatedSpecFieldSupport = templateSpecFieldSupport
                     .ValidateEntityTypeAwareness(null) // No AI recommendations for utility operations
                     .ValidateFieldMappingEnhancement(null)
                     .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()) // Request validation operations return objects
@@ -1066,10 +1066,10 @@ namespace WaterNut.DataSpace
                     .ValidateTemplateOptimization(null);
 
                 // Log all validation results
-                validatedSpec.LogValidationResults(_logger);
+                validatedSpecFieldSupport.LogValidationResults(_logger);
 
                 // Extract overall success from validated specification
-                bool templateSpecificationSuccess = validatedSpec.IsValid;
+                bool templateSpecificationSuccessFieldSupport = validatedSpecFieldSupport.IsValid;
                 
                 return new FieldValidationInfo { IsValid = false, ErrorMessage = $"Field '{request.FieldName}' is not supported." };
             }
