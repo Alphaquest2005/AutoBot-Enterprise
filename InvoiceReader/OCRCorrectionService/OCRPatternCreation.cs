@@ -873,7 +873,7 @@ namespace WaterNut.DataSpace
             validatedSpec.LogValidationResults(_logger);
 
             // Extract overall success from validated specification
-            bool templateSpecificationSuccess11 = validatedSpec.IsValid;
+            bool templateSpecificationSuccess11 = validatedSpec11.IsValid;
 
             _logger.Error("🏆 **FINAL_METHOD_SUCCESS_WITH_TEMPLATE_SPEC**: ✅ PASS - CreateNegativeNumberPattern no conversion path handled appropriately");
             
@@ -983,7 +983,7 @@ namespace WaterNut.DataSpace
             validatedSpec.LogValidationResults(_logger);
 
             // Extract overall success from validated specification
-            bool templateSpecificationSuccess12 = validatedSpec.IsValid;
+            bool templateSpecificationSuccess12 = validatedSpec12.IsValid;
 
             _logger.Error("🏆 **FINAL_METHOD_SUCCESS_WITH_TEMPLATE_SPEC**: ✅ PASS - CreateSpecificOCRCharacterConfusionPattern placeholder implementation handled appropriately");
             
@@ -1086,7 +1086,7 @@ namespace WaterNut.DataSpace
                 validatedSpec.LogValidationResults(_logger);
 
                 // Extract overall success from validated specification
-                bool templateSpecificationSuccess13 = validatedSpec.IsValid;
+                bool templateSpecificationSuccess13 = validatedSpec13.IsValid;
 
                 // Update overall success to include template specification validation
                 overallSuccess = overallSuccess && templateSpecificationSuccess;
@@ -1132,7 +1132,7 @@ namespace WaterNut.DataSpace
             validatedSpec.LogValidationResults(_logger);
 
             // Extract overall success from validated specification
-            bool templateSpecificationSuccess14 = validatedSpec.IsValid;
+            bool templateSpecificationSuccess14 = validatedSpec14.IsValid;
 
             _logger.Error("🏆 **FINAL_METHOD_SUCCESS_WITH_TEMPLATE_SPEC**: ✅ PASS - CreateSpaceManipulationPattern no pattern path handled appropriately");
             
@@ -1223,7 +1223,7 @@ namespace WaterNut.DataSpace
                 validatedSpec.LogValidationResults(_logger);
 
                 // Extract overall success from validated specification
-                bool templateSpecificationSuccess15 = validatedSpec.IsValid;
+                bool templateSpecificationSuccess15 = validatedSpec15.IsValid;
 
                 _logger.Error("🏆 **FINAL_METHOD_SUCCESS_WITH_TEMPLATE_SPEC**: ✅ PASS - ValidatePatternInternal null correction path handled appropriately");
                 
@@ -1281,7 +1281,7 @@ namespace WaterNut.DataSpace
                     validatedSpec.LogValidationResults(_logger);
 
                     // Extract overall success from validated specification
-                    bool templateSpecificationSuccess16 = validatedSpec.IsValid;
+                    bool templateSpecificationSuccess16 = validatedSpec16.IsValid;
 
                     _logger.Error("🏆 **FINAL_METHOD_SUCCESS_WITH_TEMPLATE_SPEC**: ✅ PASS - ValidatePatternInternal field not supported path handled appropriately");
                     
@@ -1342,7 +1342,7 @@ namespace WaterNut.DataSpace
                         validatedSpec.LogValidationResults(_logger);
 
                         // Extract overall success from validated specification
-                        bool templateSpecificationSuccess17 = validatedSpec.IsValid;
+                        bool templateSpecificationSuccess17 = validatedSpec17.IsValid;
 
                         _logger.Error("🏆 **FINAL_METHOD_SUCCESS_WITH_TEMPLATE_SPEC**: ✅ PASS - ValidatePatternInternal format mismatch path handled appropriately");
                         
