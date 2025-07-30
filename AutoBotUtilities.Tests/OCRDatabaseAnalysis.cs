@@ -155,22 +155,35 @@ namespace AutoBotUtilities.Tests
         {
             _logger.Information("🔧 **REGEX_PATTERN_FIX**: Fixing MANGO template regex patterns to match actual OCR text format");
 
-            // Fix InvoiceNo pattern: "order UCSJB6 shortly" -> Extract UCSJB6
-            var fixInvoiceNoScript = @"
-                UPDATE [OCR-RegularExpressions] 
-                SET RegEx = 'order\s+(?<InvoiceNo>[A-Za-z0-9]+)\s+shortly'
-                WHERE Id IN (
-                    SELECT r.Id FROM [OCR-RegularExpressions] r
-                    INNER JOIN [OCR-Lines] l ON r.Id = l.RegularExpressionsId
-                    INNER JOIN [OCR-Parts] p ON l.PartId = p.Id
-                    INNER JOIN [OCR-Invoices] t ON p.TemplateId = t.Id
-                    INNER JOIN [OCR-Fields] f ON l.Id = f.LineId
-                    WHERE t.Name = '03152025_TOTAL_AMOUNT_GENERIC_DOCUMENT'
-                    AND f.Field = 'InvoiceNo'
-                );
-                SELECT @@ROWCOUNT as RowsUpdated;";
+            // First, let's check the actual table structure to understand the schema
+            var checkSchemaScript = @"
+                -- Check OCR-Lines table structure
+                SELECT 
+                    COLUMN_NAME, 
+                    DATA_TYPE, 
+                    IS_NULLABLE
+                FROM INFORMATION_SCHEMA.COLUMNS 
+                WHERE TABLE_NAME = 'OCR-Lines' 
+                ORDER BY ORDINAL_POSITION;";
 
-            await ExecuteSqlScript(fixInvoiceNoScript, "Fix InvoiceNo pattern for MANGO template").ConfigureAwait(false);
+            await ExecuteSqlScript(checkSchemaScript, "Check OCR-Lines table structure").ConfigureAwait(false);
+
+            // Check existing template structure
+            var checkTemplateScript = @"
+                -- Check the actual template structure
+                SELECT TOP 5
+                    t.Id as TemplateId, t.Name as TemplateName,
+                    p.Id as PartId, p.Name as PartName,
+                    l.Id as LineId, l.Name as LineName,
+                    f.Id as FieldId, f.Field as FieldName
+                FROM [OCR-Invoices] t
+                INNER JOIN [OCR-Parts] p ON t.Id = p.TemplateId  
+                INNER JOIN [OCR-Lines] l ON p.Id = l.PartId
+                INNER JOIN [OCR-Fields] f ON l.Id = f.LineId
+                WHERE t.Name = '03152025_TOTAL_AMOUNT_GENERIC_DOCUMENT'
+                ORDER BY p.Id, l.Id, f.Id;";
+
+            await ExecuteSqlScript(checkTemplateScript, "Check current MANGO template structure").ConfigureAwait(false);
 
             // Fix SupplierName pattern: "MANGO OUTLET"
             var fixSupplierNameScript = @"
