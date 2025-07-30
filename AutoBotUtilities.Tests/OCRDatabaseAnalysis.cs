@@ -151,6 +151,115 @@ namespace AutoBotUtilities.Tests
         }
 
         [Test]
+        public async Task FixMangoTemplateRegexPatterns()
+        {
+            _logger.Information("🔧 **REGEX_PATTERN_FIX**: Fixing MANGO template regex patterns to match actual OCR text format");
+
+            // Fix InvoiceNo pattern: "order UCSJB6 shortly" -> Extract UCSJB6
+            var fixInvoiceNoScript = @"
+                UPDATE [OCR-RegularExpressions] 
+                SET RegEx = 'order\s+(?<InvoiceNo>[A-Za-z0-9]+)\s+shortly'
+                WHERE Id IN (
+                    SELECT r.Id FROM [OCR-RegularExpressions] r
+                    INNER JOIN [OCR-Lines] l ON r.Id = l.RegularExpressionsId
+                    INNER JOIN [OCR-Parts] p ON l.PartId = p.Id
+                    INNER JOIN [OCR-Invoices] t ON p.TemplateId = t.Id
+                    INNER JOIN [OCR-Fields] f ON l.Id = f.LineId
+                    WHERE t.Name = '03152025_TOTAL_AMOUNT_GENERIC_DOCUMENT'
+                    AND f.Field = 'InvoiceNo'
+                );
+                SELECT @@ROWCOUNT as RowsUpdated;";
+
+            await ExecuteSqlScript(fixInvoiceNoScript, "Fix InvoiceNo pattern for MANGO template").ConfigureAwait(false);
+
+            // Fix SupplierName pattern: "MANGO OUTLET"
+            var fixSupplierNameScript = @"
+                UPDATE [OCR-RegularExpressions] 
+                SET RegEx = '(?<SupplierName>MANGO\s+OUTLET)'
+                WHERE Id IN (
+                    SELECT r.Id FROM [OCR-RegularExpressions] r
+                    INNER JOIN [OCR-Lines] l ON r.Id = l.RegularExpressionsId
+                    INNER JOIN [OCR-Parts] p ON l.PartId = p.Id
+                    INNER JOIN [OCR-Invoices] t ON p.TemplateId = t.Id
+                    INNER JOIN [OCR-Fields] f ON l.Id = f.LineId
+                    WHERE t.Name = '03152025_TOTAL_AMOUNT_GENERIC_DOCUMENT'
+                    AND f.Field = 'SupplierName'
+                );
+                SELECT @@ROWCOUNT as RowsUpdated;";
+
+            await ExecuteSqlScript(fixSupplierNameScript, "Fix SupplierName pattern for MANGO template").ConfigureAwait(false);
+
+            // Fix SubTotal pattern: "Subtotal USS 196.33" (handles USS or US$)
+            var fixSubTotalScript = @"
+                UPDATE [OCR-RegularExpressions] 
+                SET RegEx = 'Subtotal\s+US[S$]\s*(?<SubTotal>\d+\.\d{2})'
+                WHERE Id IN (
+                    SELECT r.Id FROM [OCR-RegularExpressions] r
+                    INNER JOIN [OCR-Lines] l ON r.Id = l.RegularExpressionsId
+                    INNER JOIN [OCR-Parts] p ON l.PartId = p.Id
+                    INNER JOIN [OCR-Invoices] t ON p.TemplateId = t.Id
+                    INNER JOIN [OCR-Fields] f ON l.Id = f.LineId
+                    WHERE t.Name = '03152025_TOTAL_AMOUNT_GENERIC_DOCUMENT'
+                    AND f.Field = 'SubTotal'
+                );
+                SELECT @@ROWCOUNT as RowsUpdated;";
+
+            await ExecuteSqlScript(fixSubTotalScript, "Fix SubTotal pattern for MANGO template").ConfigureAwait(false);
+
+            // Fix InvoiceTotal pattern: "TOTAL AMOUNT US$ 210.08"
+            var fixInvoiceTotalScript = @"
+                UPDATE [OCR-RegularExpressions] 
+                SET RegEx = 'TOTAL\s+AMOUNT\s+US\$\s*(?<InvoiceTotal>\d+\.\d{2})'
+                WHERE Id IN (
+                    SELECT r.Id FROM [OCR-RegularExpressions] r
+                    INNER JOIN [OCR-Lines] l ON r.Id = l.RegularExpressionsId
+                    INNER JOIN [OCR-Parts] p ON l.PartId = p.Id
+                    INNER JOIN [OCR-Invoices] t ON p.TemplateId = t.Id
+                    INNER JOIN [OCR-Fields] f ON l.Id = f.LineId
+                    WHERE t.Name = '03152025_TOTAL_AMOUNT_GENERIC_DOCUMENT'
+                    AND f.Field = 'InvoiceTotal'
+                );
+                SELECT @@ROWCOUNT as RowsUpdated;";
+
+            await ExecuteSqlScript(fixInvoiceTotalScript, "Fix InvoiceTotal pattern for MANGO template").ConfigureAwait(false);
+
+            // Fix TotalOtherCost pattern: "Estimated Tax US$ 13.74"
+            var fixTotalOtherCostScript = @"
+                UPDATE [OCR-RegularExpressions] 
+                SET RegEx = 'Estimated\s+Tax\s+US\$\s*(?<TotalOtherCost>\d+\.\d{2})'
+                WHERE Id IN (
+                    SELECT r.Id FROM [OCR-RegularExpressions] r
+                    INNER JOIN [OCR-Lines] l ON r.Id = l.RegularExpressionsId
+                    INNER JOIN [OCR-Parts] p ON l.PartId = p.Id
+                    INNER JOIN [OCR-Invoices] t ON p.TemplateId = t.Id
+                    INNER JOIN [OCR-Fields] f ON l.Id = f.LineId
+                    WHERE t.Name = '03152025_TOTAL_AMOUNT_GENERIC_DOCUMENT'
+                    AND f.Field = 'TotalOtherCost'
+                );
+                SELECT @@ROWCOUNT as RowsUpdated;";
+
+            await ExecuteSqlScript(fixTotalOtherCostScript, "Fix TotalOtherCost pattern for MANGO template").ConfigureAwait(false);
+
+            // Verify the updates
+            var verifyUpdatesScript = @"
+                SELECT 
+                    t.Name as TemplateName,
+                    f.Field as FieldName,
+                    r.RegEx as UpdatedPattern
+                FROM [OCR-Invoices] t
+                INNER JOIN [OCR-Parts] p ON t.Id = p.TemplateId
+                INNER JOIN [OCR-Lines] l ON p.Id = l.PartId
+                INNER JOIN [OCR-RegularExpressions] r ON l.RegularExpressionsId = r.Id
+                INNER JOIN [OCR-Fields] f ON l.Id = f.LineId
+                WHERE t.Name = '03152025_TOTAL_AMOUNT_GENERIC_DOCUMENT'
+                ORDER BY f.Field;";
+
+            await ExecuteSqlScript(verifyUpdatesScript, "Verify updated MANGO template patterns").ConfigureAwait(false);
+
+            _logger.Information("✅ **REGEX_PATTERN_FIX_COMPLETE**: MANGO template patterns updated to match actual OCR text format");
+        }
+
+        [Test]
         public async Task CreateOCRTemplateTableMappingAndInsertInvoiceData()
         {
             _logger.Information("🚀 **DATABASE_SETUP**: Creating OCR_TemplateTableMapping table and inserting Invoice template mapping data");
