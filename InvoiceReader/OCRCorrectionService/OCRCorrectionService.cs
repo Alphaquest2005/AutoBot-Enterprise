@@ -951,7 +951,7 @@ namespace WaterNut.DataSpace
 
             // **LOG_THE_WHAT_IF**: Process all standard ShipmentInvoice fields with comprehensive logging
             _logger.Information("🔄 **FIELD_ITERATION_START**: Processing all ShipmentInvoice fields for metadata extraction");
-            var fieldsToProcess = new[]
+            var fieldsToProcess = new (string fieldName, object fieldValue)[]
             {
                 ("InvoiceNo", shipmentInvoice.InvoiceNo),
                 ("InvoiceDate", shipmentInvoice.InvoiceDate),
