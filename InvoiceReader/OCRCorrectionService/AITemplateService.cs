@@ -1838,7 +1838,7 @@ Return your suggestions as JSON in this exact format:
             
             // Keep only recent recommendations (last 100)
             var recentRecommendations = existingRecommendations
-                .OrderByDescending(r => r.Timestamp)
+                .OrderByDescending(r => r.Priority)  // Order by priority instead of timestamp
                 .Take(100)
                 .ToList();
             
