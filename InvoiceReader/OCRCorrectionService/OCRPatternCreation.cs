@@ -421,10 +421,10 @@ namespace WaterNut.DataSpace
 
                 // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
                 string documentType3 = "Invoice"; // Pattern creation is document-type agnostic
-                _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
+                _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType3} - Using DatabaseTemplateHelper document-specific validation rules");
 
                 // Create template specification object for document type with dual-layer validation
-                var templateSpec4 = TemplateSpecification.CreateForUtilityOperation(documentType, "CreateDecimalSeparatorPattern", o, result);
+                var templateSpec4 = TemplateSpecification.CreateForUtilityOperation(documentType3, "CreateDecimalSeparatorPattern", o, result);
 
                 // Fluent validation with short-circuiting - stops on first failure
                 var validatedSpec4 = templateSpec4
