@@ -1650,10 +1650,10 @@ namespace WaterNut.DataSpace
                         .ValidateTemplateOptimization(false); // Return false for validation failure
 
                     // Log all validation results
-                    validatedSpec22.LogValidationResults(_logger);
+                    validatedSpec21.LogValidationResults(_logger);
 
                     // Extract overall success from validated specification
-                    bool templateSpecificationSuccess22 = validatedSpec22.IsValid;
+                    bool templateSpecificationSuccess22 = validatedSpec21.IsValid;
 
                     _logger.Error("🏆 **FINAL_METHOD_SUCCESS_WITH_TEMPLATE_SPEC**: ✅ PASS - ValidateRegexPattern no text available path handled appropriately");
                     
@@ -1684,10 +1684,10 @@ namespace WaterNut.DataSpace
                         .ValidateTemplateOptimization(false); // Return false for validation failure
 
                     // Log all validation results
-                    validatedSpec23.LogValidationResults(_logger);
+                    validatedSpec22.LogValidationResults(_logger);
 
                     // Extract overall success from validated specification
-                    bool templateSpecificationSuccess23 = validatedSpec23.IsValid;
+                    bool templateSpecificationSuccess23 = validatedSpec22.IsValid;
 
                     _logger.Error("🏆 **FINAL_METHOD_SUCCESS_WITH_TEMPLATE_SPEC**: ✅ PASS - ValidateRegexPattern pattern didn't match path handled appropriately");
                     
@@ -1721,10 +1721,10 @@ namespace WaterNut.DataSpace
                         .ValidateTemplateOptimization(false); // Return false for validation failure
 
                     // Log all validation results
-                    validatedSpec24.LogValidationResults(_logger);
+                    validatedSpec23.LogValidationResults(_logger);
 
                     // Extract overall success from validated specification
-                    bool templateSpecificationSuccess24 = validatedSpec24.IsValid;
+                    bool templateSpecificationSuccess24 = validatedSpec23.IsValid;
 
                     _logger.Error("🏆 **FINAL_METHOD_SUCCESS_WITH_TEMPLATE_SPEC**: ✅ PASS - ValidateRegexPattern named group not found path handled appropriately");
                     
