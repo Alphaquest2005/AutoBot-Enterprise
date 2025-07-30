@@ -233,7 +233,6 @@ namespace WaterNut.DataSpace
                     using (var command = new SqlCommand(query, context.Database.Connection as SqlConnection))
                     {
                         command.Parameters.Add(new SqlParameter("@DocumentType", documentType));
-                        command.Parameters.Add(new SqlParameter("@ApplicationSettingsId", applicationSettingsId));
 
                         if (context.Database.Connection.State != System.Data.ConnectionState.Open)
                             context.Database.Connection.Open();
