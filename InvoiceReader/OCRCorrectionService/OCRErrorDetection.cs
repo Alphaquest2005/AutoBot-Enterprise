@@ -985,7 +985,7 @@ namespace WaterNut.DataSpace
                     bool templateSpecificationSuccessLineCalc = validatedSpecLineCalc.IsValid;
 
                     // Update overall success to include template specification validation
-                    overallSuccess = overallSuccess && templateSpecificationSuccess;
+                    overallSuccess = overallSuccess && templateSpecificationSuccessLineCalc;
 
                     _logger.Error("🏆 **FINAL_METHOD_SUCCESS_WITH_TEMPLATE_SPEC**: {Status} - GetLineNumberForMatch with template specification validation {Result}", 
                         overallSuccess ? "✅ PASS" : "❌ FAIL", 
