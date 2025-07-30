@@ -1129,7 +1129,7 @@ namespace WaterNut.DataSpace
                 .ValidateTemplateOptimization(null); // No optimization due to no pattern applicable
 
             // Log all validation results
-            validatedSpec.LogValidationResults(_logger);
+            validatedSpec14.LogValidationResults(_logger);
 
             // Extract overall success from validated specification
             bool templateSpecificationSuccess14 = validatedSpec14.IsValid;
@@ -1220,7 +1220,7 @@ namespace WaterNut.DataSpace
                     .ValidateTemplateOptimization(null); // No optimization due to null correction
 
                 // Log all validation results
-                validatedSpec.LogValidationResults(_logger);
+                validatedSpec15.LogValidationResults(_logger);
 
                 // Extract overall success from validated specification
                 bool templateSpecificationSuccess15 = validatedSpec15.IsValid;
@@ -1278,7 +1278,7 @@ namespace WaterNut.DataSpace
                         .ValidateTemplateOptimization(correction); // Return correction object with failure status
 
                     // Log all validation results
-                    validatedSpec.LogValidationResults(_logger);
+                    validatedSpec16.LogValidationResults(_logger);
 
                     // Extract overall success from validated specification
                     bool templateSpecificationSuccess16 = validatedSpec16.IsValid;
@@ -1339,7 +1339,7 @@ namespace WaterNut.DataSpace
                             .ValidateTemplateOptimization(correction); // Return correction object with failure status
 
                         // Log all validation results
-                        validatedSpec.LogValidationResults(_logger);
+                        validatedSpec17.LogValidationResults(_logger);
 
                         // Extract overall success from validated specification
                         bool templateSpecificationSuccess17 = validatedSpec17.IsValid;
@@ -1399,7 +1399,7 @@ namespace WaterNut.DataSpace
                             .ValidateTemplateOptimization(correction); // Return correction object with failure status
 
                         // Log all validation results
-                        validatedSpec.LogValidationResults(_logger);
+                        validatedSpec18.LogValidationResults(_logger);
 
                         // Extract overall success from validated specification
                         bool templateSpecificationSuccess18 = validatedSpec18.IsValid;
@@ -1453,7 +1453,7 @@ namespace WaterNut.DataSpace
                     .ValidateTemplateOptimization(correction); // Return validated correction object
 
                 // Log all validation results
-                validatedSpec.LogValidationResults(_logger);
+                validatedSpec19.LogValidationResults(_logger);
 
                 // Extract overall success from validated specification
                 bool templateSpecificationSuccess19 = validatedSpec19.IsValid;
