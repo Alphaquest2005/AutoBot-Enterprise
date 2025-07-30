@@ -942,7 +942,7 @@ namespace WaterNut.DataSpace
                 // **v4.2 CORRECTION PROMPT GENERATION**: Enhanced correction prompt creation with failure analysis
                 _logger.Error("🔧 **CORRECTION_PROMPT_GENERATION_START**: Creating AI correction prompt with failure analysis");
                 _logger.Error("📋 **AVAILABLE_LOG_DATA**: Correction context - FailedRegex='{FailedRegex}', FailureReason='{FailureReason}'", 
-                    failedResponse?.SuggestedRegex ?? "NULL", failureReason ?? "NULL");
+                    failedResponse?.RegexPattern ?? "NULL", failureReason ?? "NULL");
                 
                 var prompt = this.CreateRegexCorrectionPrompt(correction, lineContext, failedResponse, failureReason);
                 
