@@ -117,7 +117,7 @@ namespace WaterNut.DataSpace
                 var validatedSpec1 = templateSpec1
                     .ValidateEntityTypeAwareness(null) // No pattern output due to input validation failure
                     .ValidateFieldMappingEnhancement(null) // No field mapping due to invalid input
-                    .ValidateDataTypeRecommendations(null) // No data type recommendations due to invalid input
+                    .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()) // No data type recommendations due to invalid input
                     .ValidatePatternQuality(null) // No pattern due to input validation failure
                     .ValidateTemplateOptimization(null); // No optimization due to input validation failure
 
@@ -263,7 +263,7 @@ namespace WaterNut.DataSpace
             var validatedSpec2 = templateSpec2
                 .ValidateEntityTypeAwareness(null) // No pattern output due to no strategy match
                 .ValidateFieldMappingEnhancement(null) // No field mapping due to no strategy match
-                .ValidateDataTypeRecommendations(null) // No data type recommendations due to no strategy match
+                .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()) // No data type recommendations due to no strategy match
                 .ValidatePatternQuality(null) // No pattern due to no strategy match
                 .ValidateTemplateOptimization(null); // No optimization due to no strategy match
 
@@ -482,7 +482,7 @@ namespace WaterNut.DataSpace
             var validatedSpec5 = templateSpec5
                 .ValidateEntityTypeAwareness(null) // No pattern output due to no conversion
                 .ValidateFieldMappingEnhancement(null) // No field mapping due to no conversion
-                .ValidateDataTypeRecommendations(null) // No data type recommendations due to no conversion
+                .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()) // No data type recommendations due to no conversion
                 .ValidatePatternQuality(null) // No pattern due to no conversion
                 .ValidateTemplateOptimization(null); // No optimization due to no conversion
 
@@ -647,7 +647,7 @@ namespace WaterNut.DataSpace
             var validatedSpec7 = templateSpec7
                 .ValidateEntityTypeAwareness(null) // No pattern output due to no pattern applicable
                 .ValidateFieldMappingEnhancement(null) // No field mapping due to no pattern
-                .ValidateDataTypeRecommendations(null) // No data type recommendations due to no pattern
+                .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()) // No data type recommendations due to no pattern
                 .ValidatePatternQuality(null) // No pattern due to no pattern applicable
                 .ValidateTemplateOptimization(null); // No optimization due to no pattern
 
