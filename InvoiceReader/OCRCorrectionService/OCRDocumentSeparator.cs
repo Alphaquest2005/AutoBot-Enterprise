@@ -239,7 +239,7 @@ Return your analysis in this exact JSON format:
                 // Use the existing OCR correction service's LLM client infrastructure
                 // This leverages the same API configuration and error handling
                 var llmClient = new OCRLlmClient(_logger);
-                var response = await llmClient.CallDeepSeekAsync(prompt, "document_type_detection");
+                var response = await llmClient.GetResponseAsync(prompt, 0.3, 1000, CancellationToken.None);
                 
                 _logger.Information("✅ **DEEPSEEK_RESPONSE_RECEIVED**: {Length} characters returned", response?.Length ?? 0);
                 return response;
