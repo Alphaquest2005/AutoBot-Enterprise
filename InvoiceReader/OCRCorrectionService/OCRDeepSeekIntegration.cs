@@ -1017,18 +1017,18 @@ namespace WaterNut.DataSpace
                     var templateSpecEmpty = TemplateSpecification.CreateForUtilityOperation(documentTypeEmpty, "RequestRegexCorrectionFromDeepSeek", correction, null);
 
                     // Fluent validation with short-circuiting - stops on first failure
-                    var validatedSpec = templateSpec
+                    var validatedSpecEmpty = templateSpecEmpty
                         .ValidateEntityTypeAwareness(null) // No AI output due to empty response
-                        .ValidateFieldMappingEnhancement(correction.FieldName)
+                        .ValidateFieldMappingEnhancement(null) // No field mapping enhancement for empty response
                         .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                         .ValidatePatternQuality(null) // No pattern due to empty response
                         .ValidateTemplateOptimization(null); // No response due to empty response
 
                     // Log all validation results
-                    validatedSpec.LogValidationResults(_logger);
+                    validatedSpecEmpty.LogValidationResults(_logger);
 
                     // Extract overall success from validated specification
-                    bool templateSpecificationSuccess = validatedSpec.IsValid;
+                    bool templateSpecificationSuccessEmpty = validatedSpecEmpty.IsValid;
 
                     _logger.Error("🏆 **FINAL_METHOD_SUCCESS_WITH_TEMPLATE_SPEC**: ❌ FAIL - RequestRegexCorrectionFromDeepSeek empty response path with template specification validation failed");
                     
