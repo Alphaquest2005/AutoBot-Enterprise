@@ -870,7 +870,7 @@ namespace WaterNut.DataSpace
                 .ValidateTemplateOptimization(null); // No optimization due to no conversion
 
             // Log all validation results
-            validatedSpec.LogValidationResults(_logger);
+            validatedSpec11.LogValidationResults(_logger);
 
             // Extract overall success from validated specification
             bool templateSpecificationSuccess11 = validatedSpec11.IsValid;
@@ -980,7 +980,7 @@ namespace WaterNut.DataSpace
                 .ValidateTemplateOptimization(null); // No optimization due to placeholder implementation
 
             // Log all validation results
-            validatedSpec.LogValidationResults(_logger);
+            validatedSpec12.LogValidationResults(_logger);
 
             // Extract overall success from validated specification
             bool templateSpecificationSuccess12 = validatedSpec12.IsValid;
@@ -1083,7 +1083,7 @@ namespace WaterNut.DataSpace
                     .ValidateTemplateOptimization(result);
 
                 // Log all validation results
-                validatedSpec.LogValidationResults(_logger);
+                validatedSpec13.LogValidationResults(_logger);
 
                 // Extract overall success from validated specification
                 bool templateSpecificationSuccess13 = validatedSpec13.IsValid;
