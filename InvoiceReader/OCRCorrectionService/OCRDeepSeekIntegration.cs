@@ -825,7 +825,7 @@ namespace WaterNut.DataSpace
                 // Fluent validation with short-circuiting - stops on first failure
                 var validatedSpec = templateSpec
                     .ValidateEntityTypeAwareness(null) // No AI output due to exception
-                    .ValidateFieldMappingEnhancement(correction.FieldName)
+                    .ValidateFieldMappingEnhancement(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                     .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                     .ValidatePatternQuality(null) // No pattern due to exception
                     .ValidateTemplateOptimization(null); // No response due to exception
@@ -916,7 +916,7 @@ namespace WaterNut.DataSpace
                 // Fluent validation with short-circuiting - stops on first failure
                 var validatedSpec = templateSpec
                     .ValidateEntityTypeAwareness(null) // No AI output due to input validation failure
-                    .ValidateFieldMappingEnhancement(correction?.FieldName)
+                    .ValidateFieldMappingEnhancement(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                     .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                     .ValidatePatternQuality(null) // No pattern due to input validation failure
                     .ValidateTemplateOptimization(null); // No response due to input validation failure
@@ -1136,7 +1136,7 @@ namespace WaterNut.DataSpace
                 // Fluent validation with short-circuiting - stops on first failure
                 var validatedSpec = templateSpec
                     .ValidateEntityTypeAwareness(null) // No AI output due to exception
-                    .ValidateFieldMappingEnhancement(correction.FieldName)
+                    .ValidateFieldMappingEnhancement(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                     .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                     .ValidatePatternQuality(null) // No pattern due to exception
                     .ValidateTemplateOptimization(null); // No response due to exception
