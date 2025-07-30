@@ -1419,7 +1419,7 @@ namespace WaterNut.DataSpace
                 _logger.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: Database strategy dual-layer template specification compliance analysis");
 
                 // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
-                string inferredValueDocumentType = request?.FileType ?? "Invoice";
+                string inferredValueDocumentType = request?.InvoiceType ?? "Invoice";
                 _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {inferredValueDocumentType} - Using DatabaseTemplateHelper document-specific validation rules");
 
                 // Create template specification object for document type with dual-layer validation
