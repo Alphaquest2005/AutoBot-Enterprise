@@ -143,7 +143,7 @@ namespace WaterNut.DataSpace
                                 {
                                     FileTypeId = reader.GetInt32(reader.GetOrdinal("FileTypeId")),
                                     DocumentType = reader.GetString(reader.GetOrdinal("DocumentType")),
-                                    PrimaryEntityType = reader.GetString("PrimaryEntityType")
+                                    PrimaryEntityType = reader.GetString(reader.GetOrdinal("PrimaryEntityType"))
                                 };
 
                                 // Parse secondary entity types
@@ -245,7 +245,7 @@ namespace WaterNut.DataSpace
                                 {
                                     FileTypeId = reader.GetInt32(reader.GetOrdinal("FileTypeId")),
                                     DocumentType = reader.GetString(reader.GetOrdinal("DocumentType")),
-                                    PrimaryEntityType = reader.GetString("PrimaryEntityType")
+                                    PrimaryEntityType = reader.GetString(reader.GetOrdinal("PrimaryEntityType"))
                                 };
 
                                 // Parse secondary entity types
