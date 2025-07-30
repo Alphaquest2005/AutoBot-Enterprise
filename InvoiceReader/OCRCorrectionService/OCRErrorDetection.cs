@@ -979,10 +979,10 @@ namespace WaterNut.DataSpace
                         .ValidateTemplateOptimization(null);
 
                     // Log all validation results
-                    validatedSpec.LogValidationResults(_logger);
+                    validatedSpecLineCalc.LogValidationResults(_logger);
 
                     // Extract overall success from validated specification
-                    bool templateSpecificationSuccess = validatedSpec.IsValid;
+                    bool templateSpecificationSuccessLineCalc = validatedSpecLineCalc.IsValid;
 
                     // Update overall success to include template specification validation
                     overallSuccess = overallSuccess && templateSpecificationSuccess;
