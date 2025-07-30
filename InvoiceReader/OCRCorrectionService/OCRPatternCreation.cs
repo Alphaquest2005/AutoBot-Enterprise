@@ -1089,7 +1089,7 @@ namespace WaterNut.DataSpace
                 bool templateSpecificationSuccess13 = validatedSpec13.IsValid;
 
                 // Update overall success to include template specification validation
-                overallSuccess = overallSuccess && templateSpecificationSuccess;
+                overallSuccess = overallSuccess && templateSpecificationSuccess13;
 
                 _logger.Error("🏆 **FINAL_METHOD_SUCCESS_WITH_TEMPLATE_SPEC**: {Status} - CreateSpaceManipulationPattern with template specification validation {Result}", 
                     overallSuccess ? "✅ PASS" : "❌ FAIL", 
@@ -1459,7 +1459,7 @@ namespace WaterNut.DataSpace
                 bool templateSpecificationSuccess19 = validatedSpec19.IsValid;
 
                 // Update overall success to include template specification validation
-                overallSuccess = overallSuccess && templateSpecificationSuccess;
+                overallSuccess = overallSuccess && templateSpecificationSuccess19;
 
                 _logger.Error("🏆 **FINAL_METHOD_SUCCESS_WITH_TEMPLATE_SPEC**: {Status} - ValidatePatternInternal with template specification validation {Result}", 
                     overallSuccess ? "✅ PASS" : "❌ FAIL", 
