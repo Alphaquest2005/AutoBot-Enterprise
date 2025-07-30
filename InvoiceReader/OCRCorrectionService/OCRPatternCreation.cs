@@ -606,7 +606,7 @@ namespace WaterNut.DataSpace
                 bool templateSpecificationSuccess7 = validatedSpec7.IsValid;
 
                 // Update overall success to include template specification validation
-                overallSuccess = overallSuccess && templateSpecificationSuccess;
+                overallSuccess = overallSuccess && templateSpecificationSuccess7;
 
                 _logger.Error("🏆 **FINAL_METHOD_SUCCESS_WITH_TEMPLATE_SPEC**: {Status} - CreateCurrencySymbolPattern with template specification validation {Result}", 
                     overallSuccess ? "✅ PASS" : "❌ FAIL", 
