@@ -118,13 +118,12 @@ namespace WaterNut.DataSpace
                         SELECT 
                             ottm.[FileTypeId],
                             ottm.[DocumentType],
-                            ottm.[PrimaryEntityType],
-                            ottm.[SecondaryEntityTypes],
+                            'ShipmentInvoice' as [PrimaryEntityType], -- Map from actual table structure
+                            'InvoiceDetails,ShipmentInvoiceFreight' as [SecondaryEntityTypes], -- Standard invoice entities
                             ottm.[RequiredFields],
-                            ottm.[ValidationRules]
+                            '{}' as [ValidationRules] -- Default empty JSON rules
                         FROM [dbo].[OCR_TemplateTableMapping] ottm
                         WHERE ottm.[FileTypeId] = @FileTypeId 
-                            AND ottm.[ApplicationSettingsId] = @ApplicationSettingsId
                             AND ottm.[IsActive] = 1";
 
                     using (var command = new SqlCommand(query, context.Database.Connection as SqlConnection))
