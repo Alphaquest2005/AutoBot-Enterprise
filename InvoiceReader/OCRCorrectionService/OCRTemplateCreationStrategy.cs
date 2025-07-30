@@ -280,7 +280,7 @@ namespace WaterNut.DataSpace
                 var validatedSpecInputFail = templateSpecInputFail
                     .ValidateEntityTypeAwareness(null) // No AI recommendations for template management
                     .ValidateFieldMappingEnhancement(null)
-                    .ValidateDataTypeRecommendations(null)
+                    .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                     .ValidatePatternQuality(null)
                     .ValidateTemplateOptimization(null);
 
@@ -349,7 +349,7 @@ namespace WaterNut.DataSpace
                     var validatedSpecExisting = templateSpecExisting
                         .ValidateEntityTypeAwareness(null) // No AI recommendations for template management
                         .ValidateFieldMappingEnhancement(null)
-                        .ValidateDataTypeRecommendations(null)
+                        .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                         .ValidatePatternQuality(null)
                         .ValidateTemplateOptimization(null);
 
@@ -425,7 +425,7 @@ namespace WaterNut.DataSpace
                 var validatedSpecNew = templateSpecNew
                     .ValidateEntityTypeAwareness(null) // No AI recommendations for template management
                     .ValidateFieldMappingEnhancement(null)
-                    .ValidateDataTypeRecommendations(null)
+                    .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                     .ValidatePatternQuality(null)
                     .ValidateTemplateOptimization(null);
 
@@ -484,7 +484,7 @@ namespace WaterNut.DataSpace
                 var validatedSpecException = templateSpecException
                     .ValidateEntityTypeAwareness(null) // No AI recommendations for template management
                     .ValidateFieldMappingEnhancement(null)
-                    .ValidateDataTypeRecommendations(null)
+                    .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                     .ValidatePatternQuality(null)
                     .ValidateTemplateOptimization(null);
 
