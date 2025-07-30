@@ -980,10 +980,10 @@ namespace WaterNut.DataSpace
                 .ValidateTemplateOptimization(null); // No optimization due to placeholder implementation
 
             // Log all validation results
-            validatedSpec12.LogValidationResults(_logger);
+            validatedSpec11.LogValidationResults(_logger);
 
             // Extract overall success from validated specification
-            bool templateSpecificationSuccess12 = validatedSpec12.IsValid;
+            bool templateSpecificationSuccess12 = validatedSpec11.IsValid;
 
             _logger.Error("🏆 **FINAL_METHOD_SUCCESS_WITH_TEMPLATE_SPEC**: ✅ PASS - CreateSpecificOCRCharacterConfusionPattern placeholder implementation handled appropriately");
             
@@ -1083,10 +1083,10 @@ namespace WaterNut.DataSpace
                     .ValidateTemplateOptimization(result);
 
                 // Log all validation results
-                validatedSpec13.LogValidationResults(_logger);
+                validatedSpec12.LogValidationResults(_logger);
 
                 // Extract overall success from validated specification
-                bool templateSpecificationSuccess13 = validatedSpec13.IsValid;
+                bool templateSpecificationSuccess13 = validatedSpec12.IsValid;
 
                 // Update overall success to include template specification validation
                 overallSuccess = overallSuccess && templateSpecificationSuccess13;
@@ -1129,10 +1129,10 @@ namespace WaterNut.DataSpace
                 .ValidateTemplateOptimization(null); // No optimization due to no pattern applicable
 
             // Log all validation results
-            validatedSpec14.LogValidationResults(_logger);
+            validatedSpec13.LogValidationResults(_logger);
 
             // Extract overall success from validated specification
-            bool templateSpecificationSuccess14 = validatedSpec14.IsValid;
+            bool templateSpecificationSuccess14 = validatedSpec13.IsValid;
 
             _logger.Error("🏆 **FINAL_METHOD_SUCCESS_WITH_TEMPLATE_SPEC**: ✅ PASS - CreateSpaceManipulationPattern no pattern path handled appropriately");
             
@@ -1220,10 +1220,10 @@ namespace WaterNut.DataSpace
                     .ValidateTemplateOptimization(null); // No optimization due to null correction
 
                 // Log all validation results
-                validatedSpec15.LogValidationResults(_logger);
+                validatedSpec14.LogValidationResults(_logger);
 
                 // Extract overall success from validated specification
-                bool templateSpecificationSuccess15 = validatedSpec15.IsValid;
+                bool templateSpecificationSuccess15 = validatedSpec14.IsValid;
 
                 _logger.Error("🏆 **FINAL_METHOD_SUCCESS_WITH_TEMPLATE_SPEC**: ✅ PASS - ValidatePatternInternal null correction path handled appropriately");
                 
@@ -1278,10 +1278,10 @@ namespace WaterNut.DataSpace
                         .ValidateTemplateOptimization(correction); // Return correction object with failure status
 
                     // Log all validation results
-                    validatedSpec16.LogValidationResults(_logger);
+                    validatedSpec15.LogValidationResults(_logger);
 
                     // Extract overall success from validated specification
-                    bool templateSpecificationSuccess16 = validatedSpec16.IsValid;
+                    bool templateSpecificationSuccess16 = validatedSpec15.IsValid;
 
                     _logger.Error("🏆 **FINAL_METHOD_SUCCESS_WITH_TEMPLATE_SPEC**: ✅ PASS - ValidatePatternInternal field not supported path handled appropriately");
                     
