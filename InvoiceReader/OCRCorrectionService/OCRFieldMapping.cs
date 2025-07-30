@@ -309,10 +309,10 @@ namespace WaterNut.DataSpace
 
                 // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
                 string documentTypeMapping = "Invoice"; // Field mapping is document-type agnostic, default to Invoice
-                _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
+                _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentTypeMapping} - Using DatabaseTemplateHelper document-specific validation rules");
 
                 // Create template specification object for document type with dual-layer validation
-                var templateSpec = TemplateSpecification.CreateForFieldMapping(documentType, "MapDeepSeekFieldToDatabase", originalFieldName, fieldInfo);
+                var templateSpec = TemplateSpecification.CreateForFieldMapping(documentTypeMapping, "MapDeepSeekFieldToDatabase", originalFieldName, fieldInfo);
 
                 // Fluent validation with short-circuiting - stops on first failure
                 var validatedSpec = templateSpec
