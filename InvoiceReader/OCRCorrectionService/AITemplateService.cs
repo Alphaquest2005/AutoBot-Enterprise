@@ -1791,12 +1791,10 @@ Return your suggestions as JSON in this exact format:
                 var recommendationData = JsonSerializer.Deserialize<RecommendationResponse>(jsonContent);
                 return recommendationData?.Improvements?.Select(imp => new PromptRecommendation
                 {
-                    Provider = provider,
-                    Type = imp.Type,
                     Description = imp.Description,
-                    Example = imp.Example,
-                    Impact = imp.Impact,
-                    Timestamp = DateTime.UtcNow
+                    Reasoning = imp.Example ?? "No reasoning provided",
+                    Category = imp.Type ?? "General",
+                    Priority = 1 // Default priority
                 }).ToList() ?? new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>();
             }
             catch (Exception ex)
