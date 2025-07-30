@@ -355,10 +355,10 @@ namespace WaterNut.DataSpace
                 _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentTypeDecimal1} - Using DatabaseTemplateHelper document-specific validation rules");
 
                 // Create template specification object for document type with dual-layer validation
-                var templateSpec3 = TemplateSpecification.CreateForUtilityOperation(documentType, "CreateDecimalSeparatorPattern", o, result);
+                var templateSpec3 = TemplateSpecification.CreateForUtilityOperation(documentTypeDecimal1, "CreateDecimalSeparatorPattern", o, result);
 
                 // Fluent validation with short-circuiting - stops on first failure
-                var validatedSpec3 = templateSpec
+                var validatedSpec3 = templateSpec3
                     .ValidateEntityTypeAwareness(result.Item1)
                     .ValidateFieldMappingEnhancement(null) // No specific field mapping for pattern creation
                     .ValidateDataTypeRecommendations(new List<PromptRecommendation>())
