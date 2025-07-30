@@ -485,7 +485,7 @@ namespace WaterNut.DataSpace
                     validatedSpec.LogValidationResults(log);
 
                     // Extract overall success from validated specification
-                    bool templateSpecificationSuccess = validatedSpec.IsValid;
+                    bool templateSpecificationSuccess1 = validatedSpec.IsValid;
                     
                     return res;
                 }
