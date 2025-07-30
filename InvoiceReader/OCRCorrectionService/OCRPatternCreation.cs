@@ -1787,7 +1787,7 @@ namespace WaterNut.DataSpace
                 _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType24} - Using DatabaseTemplateHelper document-specific validation rules");
 
                 // Create template specification object for document type with dual-layer validation
-                var templateSpec25 = TemplateSpecification.CreateForUtilityOperation(documentType, "ValidateRegexPattern", correction, stringMatch);
+                var templateSpec25 = TemplateSpecification.CreateForUtilityOperation(documentType24, "ValidateRegexPattern", correction, stringMatch);
 
                 // Fluent validation with short-circuiting - stops on first failure
                 var validatedSpec25 = templateSpec
