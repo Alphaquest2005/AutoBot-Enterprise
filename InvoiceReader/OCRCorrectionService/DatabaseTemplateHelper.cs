@@ -158,7 +158,7 @@ namespace WaterNut.DataSpace
                                 // Parse required fields
                                 var requiredFields = reader.IsDBNull(reader.GetOrdinal("RequiredFields")) 
                                     ? string.Empty 
-                                    : reader.GetString("RequiredFields");
+                                    : reader.GetString(reader.GetOrdinal("RequiredFields"));
                                 if (!string.IsNullOrEmpty(requiredFields))
                                 {
                                     mapping.RequiredFields = requiredFields.Split(',').Select(s => s.Trim()).ToList();
@@ -260,7 +260,7 @@ namespace WaterNut.DataSpace
                                 // Parse required fields
                                 var requiredFields = reader.IsDBNull(reader.GetOrdinal("RequiredFields")) 
                                     ? string.Empty 
-                                    : reader.GetString("RequiredFields");
+                                    : reader.GetString(reader.GetOrdinal("RequiredFields"));
                                 if (!string.IsNullOrEmpty(requiredFields))
                                 {
                                     mapping.RequiredFields = requiredFields.Split(',').Select(s => s.Trim()).ToList();
