@@ -1749,7 +1749,7 @@ namespace WaterNut.DataSpace
 
                     // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
                     string documentType23 = "Invoice";
-                    _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
+                    _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType23} - Using DatabaseTemplateHelper document-specific validation rules");
 
                     // Create template specification object for document type with dual-layer validation
                     var templateSpec24 = TemplateSpecification.CreateForUtilityOperation(documentType, "ValidateRegexPattern", correction, isMatch);
