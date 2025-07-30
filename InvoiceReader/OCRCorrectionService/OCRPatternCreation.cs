@@ -1824,10 +1824,10 @@ namespace WaterNut.DataSpace
                 var templateSpec26 = TemplateSpecification.CreateForUtilityOperation(documentType25, "ValidateRegexPattern", correction, false);
 
                 // Fluent validation with short-circuiting - stops on first failure
-                var validatedSpec26 = templateSpec
+                var validatedSpec26 = templateSpec26
                     .ValidateEntityTypeAwareness(regexResponse.RegexPattern) // Pattern exists but has syntax error
                     .ValidateFieldMappingEnhancement(correction.FieldName)
-                    .ValidateDataTypeRecommendations(new List<PromptRecommendation>()) // Method designed to validate pattern data types
+                    .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()) // Method designed to validate pattern data types
                     .ValidatePatternQuality(regexResponse.RegexPattern) // Pattern quality issue - syntax error
                     .ValidateTemplateOptimization(false); // Return false for validation failure
 
