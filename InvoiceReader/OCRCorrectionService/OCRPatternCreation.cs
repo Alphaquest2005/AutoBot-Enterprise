@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 using Serilog;
 using Serilog.Events;
 using Core.Common.Extensions;
-using WaterNut.DataSpace.AITemplateService;
+using WaterNut.DataSpace;
 
 namespace WaterNut.DataSpace
 {
