@@ -364,7 +364,7 @@ namespace WaterNut.DataSpace
                     .ValidateFieldMappingEnhancement(null) // No specific field mapping for pattern creation
                     .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                     .ValidatePatternQuality(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
-                    .ValidateTemplateOptimization(result);
+                    .ValidateTemplateOptimization(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>());
 
                 // Log all validation results
                 validatedSpec3.LogValidationResults(_logger);
@@ -432,7 +432,7 @@ namespace WaterNut.DataSpace
                     .ValidateFieldMappingEnhancement(null) // No specific field mapping for pattern creation
                     .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                     .ValidatePatternQuality(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
-                    .ValidateTemplateOptimization(result);
+                    .ValidateTemplateOptimization(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>());
 
                 // Log all validation results
                 validatedSpec4.LogValidationResults(_logger);
@@ -597,7 +597,7 @@ namespace WaterNut.DataSpace
                     .ValidateFieldMappingEnhancement(null) // No specific field mapping for pattern creation
                     .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                     .ValidatePatternQuality(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
-                    .ValidateTemplateOptimization(result);
+                    .ValidateTemplateOptimization(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>());
 
                 // Log all validation results
                 validatedSpec6.LogValidationResults(_logger);
@@ -748,7 +748,7 @@ namespace WaterNut.DataSpace
                     .ValidateFieldMappingEnhancement(null) // No specific field mapping for pattern creation
                     .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                     .ValidatePatternQuality(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
-                    .ValidateTemplateOptimization(result);
+                    .ValidateTemplateOptimization(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>());
 
                 // Log all validation results
                 validatedSpec8.LogValidationResults(_logger);
@@ -815,7 +815,7 @@ namespace WaterNut.DataSpace
                     .ValidateFieldMappingEnhancement(null) // No specific field mapping for pattern creation
                     .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()) // Method processes numeric data types
                     .ValidatePatternQuality(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
-                    .ValidateTemplateOptimization(result);
+                    .ValidateTemplateOptimization(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>());
 
                 // Log all validation results
                 validatedSpec9.LogValidationResults(_logger);
@@ -1080,7 +1080,7 @@ namespace WaterNut.DataSpace
                     .ValidateFieldMappingEnhancement(null) // No specific field mapping for pattern creation
                     .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()) // Method designed to process text data types
                     .ValidatePatternQuality(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
-                    .ValidateTemplateOptimization(result);
+                    .ValidateTemplateOptimization(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>());
 
                 // Log all validation results
                 validatedSpec12.LogValidationResults(_logger);
