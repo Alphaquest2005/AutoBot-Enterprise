@@ -878,15 +878,15 @@ namespace WaterNut.DataSpace
                 logger.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: UpdateDynamicResultsWithCorrections dual-layer template specification compliance analysis");
 
                 // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
-                string documentType = "Invoice"; // Dynamic sync is document-type agnostic
-                logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
+                string documentType12 = "Invoice"; // Dynamic sync is document-type agnostic
+                logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType12} - Using DatabaseTemplateHelper document-specific validation rules");
 
                 // Create template specification object for document type with dual-layer validation
-                var templateSpec = TemplateSpecification.CreateForUtilityOperation(documentType, "UpdateDynamicResultsWithCorrections", 
+                var templateSpec12 = TemplateSpecification.CreateForUtilityOperation(documentType12, "UpdateDynamicResultsWithCorrections", 
                     new { dynamicItems, correctedInvoices }, null);
 
                 // Fluent validation with short-circuiting - stops on first failure
-                var validatedSpec = templateSpec
+                var validatedSpec12 = templateSpec12
                     .ValidateEntityTypeAwareness(null) // No AI recommendations for utility operations
                     .ValidateFieldMappingEnhancement(null)
                     .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()) // Dynamic sync data operations
@@ -894,10 +894,10 @@ namespace WaterNut.DataSpace
                     .ValidateTemplateOptimization(null);
 
                 // Log all validation results
-                validatedSpec.LogValidationResults(logger);
+                validatedSpec12.LogValidationResults(logger);
 
                 // Extract overall success from validated specification
-                bool templateSpecificationSuccess = validatedSpec.IsValid;
+                bool templateSpecificationSuccess12 = validatedSpec12.IsValid;
                 
                 return;
             }
@@ -1150,15 +1150,15 @@ namespace WaterNut.DataSpace
                 logger?.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: CreateTempShipmentInvoice dual-layer template specification compliance analysis");
 
                 // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
-                string documentType = "Invoice"; // Temp invoice creation is document-type agnostic
-                logger?.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
+                string documentType13 = "Invoice"; // Temp invoice creation is document-type agnostic
+                logger?.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType13} - Using DatabaseTemplateHelper document-specific validation rules");
 
                 // Create template specification object for document type with dual-layer validation
-                var templateSpec = TemplateSpecification.CreateForUtilityOperation(documentType, "CreateTempShipmentInvoice", 
+                var templateSpec13 = TemplateSpecification.CreateForUtilityOperation(documentType13, "CreateTempShipmentInvoice", 
                     x, invoice);
 
                 // Fluent validation with short-circuiting - stops on first failure
-                var validatedSpec = templateSpec
+                var validatedSpec13 = templateSpec13
                     .ValidateEntityTypeAwareness(null) // No AI recommendations for utility operations
                     .ValidateFieldMappingEnhancement(null)
                     .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()) // Temp invoice entity creation operations
@@ -1166,10 +1166,10 @@ namespace WaterNut.DataSpace
                     .ValidateTemplateOptimization(null);
 
                 // Log all validation results
-                validatedSpec.LogValidationResults(logger);
+                validatedSpec13.LogValidationResults(logger);
 
                 // Extract overall success from validated specification
-                bool templateSpecificationSuccess = validatedSpec.IsValid;
+                bool templateSpecificationSuccess13 = validatedSpec13.IsValid;
             }
             catch (Exception ex)
             {
@@ -1187,15 +1187,15 @@ namespace WaterNut.DataSpace
                 logger?.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: CreateTempShipmentInvoice dual-layer template specification compliance analysis");
 
                 // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
-                string documentType = "Invoice"; // Temp invoice creation is document-type agnostic
-                logger?.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
+                string documentType14 = "Invoice"; // Temp invoice creation is document-type agnostic
+                logger?.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType14} - Using DatabaseTemplateHelper document-specific validation rules");
 
                 // Create template specification object for document type with dual-layer validation
-                var templateSpec = TemplateSpecification.CreateForUtilityOperation(documentType, "CreateTempShipmentInvoice", 
+                var templateSpec14 = TemplateSpecification.CreateForUtilityOperation(documentType14, "CreateTempShipmentInvoice", 
                     x, null);
 
                 // Fluent validation with short-circuiting - stops on first failure
-                var validatedSpec = templateSpec
+                var validatedSpec14 = templateSpec14
                     .ValidateEntityTypeAwareness(null) // No AI recommendations for utility operations
                     .ValidateFieldMappingEnhancement(null)
                     .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()) // Temp invoice entity creation operations
@@ -1203,10 +1203,10 @@ namespace WaterNut.DataSpace
                     .ValidateTemplateOptimization(null);
 
                 // Log all validation results
-                validatedSpec.LogValidationResults(logger);
+                validatedSpec14.LogValidationResults(logger);
 
                 // Extract overall success from validated specification
-                bool templateSpecificationSuccess = validatedSpec.IsValid;
+                bool templateSpecificationSuccess14 = validatedSpec14.IsValid;
                 
                 return null;
             }
