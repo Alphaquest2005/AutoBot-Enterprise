@@ -487,10 +487,10 @@ namespace WaterNut.DataSpace
                 .ValidateTemplateOptimization(null); // No optimization due to no conversion
 
             // Log all validation results
-            validatedSpec6.LogValidationResults(_logger);
+            validatedSpec5.LogValidationResults(_logger);
 
             // Extract overall success from validated specification
-            bool templateSpecificationSuccess6 = validatedSpec6.IsValid;
+            bool templateSpecificationSuccess6 = validatedSpec5.IsValid;
 
             _logger.Error("🏆 **FINAL_METHOD_SUCCESS_WITH_TEMPLATE_SPEC**: ✅ PASS - CreateDecimalSeparatorPattern no conversion path handled appropriately");
             
