@@ -382,7 +382,7 @@ namespace WaterNut.DataSpace
             var validatedSpec = templateSpec
                 .ValidateEntityTypeAwareness(null) // No AI recommendations for utility operations
                 .ValidateFieldMappingEnhancement(null)
-                .ValidateDataTypeRecommendations("Numeric") // Dynamic balance validation operations
+                .ValidateDataTypeRecommendations(new List<PromptRecommendation>()) // Dynamic balance validation operations
                 .ValidatePatternQuality(null)
                 .ValidateTemplateOptimization(null);
 
