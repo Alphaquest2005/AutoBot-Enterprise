@@ -65,15 +65,15 @@ namespace WaterNut.DataSpace
             _logger.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: UpdateRegexPatternsAsync dual-layer template specification compliance analysis");
 
             // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
-            string documentType = "Invoice"; // Database update operations are document-type agnostic
-            _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
+            string publicUpdateDocumentType = "Invoice"; // Database update operations are document-type agnostic
+            _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {publicUpdateDocumentType} - Using DatabaseTemplateHelper document-specific validation rules");
 
             // Create template specification object for document type with dual-layer validation
-            var templateSpec = TemplateSpecification.CreateForUtilityOperation(documentType, "UpdateRegexPatternsAsync", 
+            var publicUpdateTemplateSpec = TemplateSpecification.CreateForUtilityOperation(publicUpdateDocumentType, "UpdateRegexPatternsAsync", 
                 regexUpdateRequests, null);
 
             // Fluent validation with short-circuiting - stops on first failure
-            var validatedSpec = templateSpec
+            var publicUpdateValidatedSpec = publicUpdateTemplateSpec
                 .ValidateEntityTypeAwareness(null) // No AI recommendations for utility operations
                 .ValidateFieldMappingEnhancement(null)
                 .ValidateDataTypeRecommendations(new List<PromptRecommendation>()) // Database update operations process object collections
@@ -81,10 +81,10 @@ namespace WaterNut.DataSpace
                 .ValidateTemplateOptimization(null);
 
             // Log all validation results
-            validatedSpec.LogValidationResults(_logger);
+            publicUpdateValidatedSpec.LogValidationResults(_logger);
 
             // Extract overall success from validated specification
-            bool templateSpecificationSuccess = validatedSpec.IsValid;
+            bool publicUpdateTemplateSpecificationSuccess = publicUpdateValidatedSpec.IsValid;
         }
 
         /// <summary>
