@@ -2649,7 +2649,7 @@ If you find no new omissions or corrections, return an empty errors array with d
                 }
                 
                 // Validate Header-Details relationships (e.g., Invoice → InvoiceDetails)
-                return ValidateHeaderDetailsRelationships(spec.RequiredEntityTypes.ToList(), documentType);
+                return ValidateEntityTypeRelationships(spec.RequiredEntityTypes.ToList(), documentType);
             }
             catch (Exception)
             {
