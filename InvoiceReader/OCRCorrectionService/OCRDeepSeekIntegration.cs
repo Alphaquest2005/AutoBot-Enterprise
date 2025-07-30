@@ -968,18 +968,18 @@ namespace WaterNut.DataSpace
                     var templateSpecFailure = TemplateSpecification.CreateForUtilityOperation(documentTypeFailure, "RequestRegexCorrectionFromDeepSeek", correction, null);
 
                     // Fluent validation with short-circuiting - stops on first failure
-                    var validatedSpec = templateSpec
+                    var validatedSpecFailure = templateSpecFailure
                         .ValidateEntityTypeAwareness(null) // No AI output due to prompt failure
-                        .ValidateFieldMappingEnhancement(correction.FieldName)
+                        .ValidateFieldMappingEnhancement(null) // No field mapping enhancement for prompt failure
                         .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                         .ValidatePatternQuality(null) // No pattern due to prompt failure
                         .ValidateTemplateOptimization(null); // No response due to prompt failure
 
                     // Log all validation results
-                    validatedSpec.LogValidationResults(_logger);
+                    validatedSpecFailure.LogValidationResults(_logger);
 
                     // Extract overall success from validated specification
-                    bool templateSpecificationSuccess = validatedSpec.IsValid;
+                    bool templateSpecificationSuccessFailure = validatedSpecFailure.IsValid;
 
                     _logger.Error("🏆 **FINAL_METHOD_SUCCESS_WITH_TEMPLATE_SPEC**: ❌ FAIL - RequestRegexCorrectionFromDeepSeek prompt failure path with template specification validation failed");
                     
