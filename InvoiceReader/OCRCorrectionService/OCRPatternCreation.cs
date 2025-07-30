@@ -1798,7 +1798,7 @@ namespace WaterNut.DataSpace
                     .ValidateTemplateOptimization(stringMatch); // Return result based on string match
 
                 // Log all validation results
-                validatedSpec.LogValidationResults(_logger);
+                validatedSpec25.LogValidationResults(_logger);
 
                 // Extract overall success from validated specification
                 bool templateSpecificationSuccess26 = validatedSpec.IsValid;
