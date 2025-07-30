@@ -436,7 +436,7 @@ namespace WaterNut.DataSpace
             var validatedSpec = templateSpec
                 .ValidateEntityTypeAwareness(null) // No AI recommendations for utility operations
                 .ValidateFieldMappingEnhancement(null)
-                .ValidateDataTypeRecommendations("Object") // Database orchestrator operations process object collections
+                .ValidateDataTypeRecommendations(new List<PromptRecommendation>()) // Database orchestrator operations process object collections
                 .ValidatePatternQuality(null)
                 .ValidateTemplateOptimization(null);
 
