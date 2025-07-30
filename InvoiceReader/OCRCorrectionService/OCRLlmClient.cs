@@ -1120,11 +1120,11 @@ namespace WaterNut.DataSpace
                 string documentType = "Invoice"; // Text counting utility is document-type agnostic
                 
                 // Create template specification object for document type with dual-layer validation
-                var templateSpec = TemplateSpecification.CreateForUtilityOperation(documentType, "CountOccurrences", 
+                var templateSpecStringNull = TemplateSpecification.CreateForUtilityOperation(documentType, "CountOccurrences", 
                     new { text, substring }, 0);
 
                 // Fluent validation with short-circuiting - stops on first failure
-                var validatedSpec = templateSpec
+                var validatedSpecStringNull = templateSpecStringNull
                     .ValidateEntityTypeAwareness(null) // No AI recommendations for utility operations
                     .ValidateFieldMappingEnhancement(null)
                     .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()) // Text counting operations return numeric results
@@ -1132,7 +1132,7 @@ namespace WaterNut.DataSpace
                     .ValidateTemplateOptimization(null);
 
                 // Extract overall success from validated specification (no logging available)
-                bool templateSpecificationSuccess = validatedSpec.IsValid;
+                bool templateSpecificationSuccessStringNull = validatedSpecStringNull.IsValid;
                 
                 return 0;
             }
