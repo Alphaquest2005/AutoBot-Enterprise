@@ -1755,10 +1755,10 @@ namespace WaterNut.DataSpace
                     var templateSpec24 = TemplateSpecification.CreateForUtilityOperation(documentType23, "ValidateRegexPattern", correction, isMatch);
 
                     // Fluent validation with short-circuiting - stops on first failure
-                    var validatedSpec24 = templateSpec
+                    var validatedSpec24 = templateSpec24
                         .ValidateEntityTypeAwareness(regexResponse.RegexPattern) // Pattern successfully extracted value
                         .ValidateFieldMappingEnhancement(correction.FieldName)
-                        .ValidateDataTypeRecommendations(new List<PromptRecommendation>()) // Method designed to validate pattern data types
+                        .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()) // Method designed to validate pattern data types
                         .ValidatePatternQuality(regexResponse.RegexPattern) // Pattern quality verified through successful extraction
                         .ValidateTemplateOptimization(isMatch); // Return result based on numeric match
 
