@@ -1117,7 +1117,7 @@ namespace WaterNut.DataSpace
                 // Note: Static method - no logger available, validation performed without logging
                 
                 // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
-                string documentType = "Invoice"; // Text counting utility is document-type agnostic
+                string documentTypeStringEmpty = "Invoice"; // Text counting utility is document-type agnostic
                 
                 // Create template specification object for document type with dual-layer validation
                 var templateSpecStringNull = TemplateSpecification.CreateForUtilityOperation(documentType, "CountOccurrences", 
