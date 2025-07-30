@@ -443,7 +443,7 @@ namespace WaterNut.DataSpace
                     new { prompt, temperature, maxTokens }, null);
 
                 // Fluent validation with short-circuiting - stops on first failure
-                var validatedSpec = templateSpec
+                var validatedSpecApiCall = templateSpecApiCall
                     .ValidateEntityTypeAwareness(null) // No AI recommendations for utility operations
                     .ValidateFieldMappingEnhancement(null)
                     .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()) // DeepSeek response text operations
