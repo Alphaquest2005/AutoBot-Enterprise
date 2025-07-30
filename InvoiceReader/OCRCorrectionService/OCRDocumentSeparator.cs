@@ -131,7 +131,7 @@ namespace WaterNut.DataSpace
             var validatedSpec = templateSpec
                 .ValidateEntityTypeAwareness(null) // No AI recommendations for document separation
                 .ValidateFieldMappingEnhancement(null)
-                .ValidateDataTypeRecommendations("Text") // Document separation processes textual content
+                .ValidateDataTypeRecommendations(new List<PromptRecommendation>()) // Document separation processes textual content
                 .ValidatePatternQuality(null)
                 .ValidateTemplateOptimization(null);
 
