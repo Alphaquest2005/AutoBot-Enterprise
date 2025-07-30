@@ -370,7 +370,7 @@ namespace WaterNut.DataSpace
                 validatedSpec.LogValidationResults(_logger);
 
                 // Extract overall success from validated specification
-                bool templateSpecificationSuccess4 = validatedSpec.IsValid;
+                bool templateSpecificationSuccess4 = validatedSpec4.IsValid;
 
                 // Update overall success to include template specification validation
                 overallSuccess = overallSuccess && templateSpecificationSuccess;
@@ -438,7 +438,7 @@ namespace WaterNut.DataSpace
                 validatedSpec.LogValidationResults(_logger);
 
                 // Extract overall success from validated specification
-                bool templateSpecificationSuccess5 = validatedSpec.IsValid;
+                bool templateSpecificationSuccess5 = validatedSpec5.IsValid;
 
                 // Update overall success to include template specification validation
                 overallSuccess = overallSuccess && templateSpecificationSuccess;
@@ -490,7 +490,7 @@ namespace WaterNut.DataSpace
             validatedSpec.LogValidationResults(_logger);
 
             // Extract overall success from validated specification
-            bool templateSpecificationSuccess6 = validatedSpec.IsValid;
+            bool templateSpecificationSuccess6 = validatedSpec6.IsValid;
 
             _logger.Error("🏆 **FINAL_METHOD_SUCCESS_WITH_TEMPLATE_SPEC**: ✅ PASS - CreateDecimalSeparatorPattern no conversion path handled appropriately");
             
@@ -603,7 +603,7 @@ namespace WaterNut.DataSpace
                 validatedSpec.LogValidationResults(_logger);
 
                 // Extract overall success from validated specification
-                bool templateSpecificationSuccess7 = validatedSpec.IsValid;
+                bool templateSpecificationSuccess7 = validatedSpec7.IsValid;
 
                 // Update overall success to include template specification validation
                 overallSuccess = overallSuccess && templateSpecificationSuccess;
@@ -655,7 +655,7 @@ namespace WaterNut.DataSpace
             validatedSpec.LogValidationResults(_logger);
 
             // Extract overall success from validated specification
-            bool templateSpecificationSuccess8 = validatedSpec.IsValid;
+            bool templateSpecificationSuccess8 = validatedSpec8.IsValid;
 
             _logger.Error("🏆 **FINAL_METHOD_SUCCESS_WITH_TEMPLATE_SPEC**: ✅ PASS - CreateCurrencySymbolPattern no pattern path handled appropriately");
             
@@ -754,7 +754,7 @@ namespace WaterNut.DataSpace
                 validatedSpec.LogValidationResults(_logger);
 
                 // Extract overall success from validated specification
-                bool templateSpecificationSuccess9 = validatedSpec.IsValid;
+                bool templateSpecificationSuccess9 = validatedSpec9.IsValid;
 
                 // Update overall success to include template specification validation
                 overallSuccess = overallSuccess && templateSpecificationSuccess;
@@ -821,7 +821,7 @@ namespace WaterNut.DataSpace
                 validatedSpec.LogValidationResults(_logger);
 
                 // Extract overall success from validated specification
-                bool templateSpecificationSuccess10 = validatedSpec.IsValid;
+                bool templateSpecificationSuccess10 = validatedSpec10.IsValid;
 
                 // Update overall success to include template specification validation
                 overallSuccess = overallSuccess && templateSpecificationSuccess;
