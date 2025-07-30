@@ -107,7 +107,7 @@ namespace WaterNut.DataSpace
             var validatedSpec = templateSpec
                 .ValidateEntityTypeAwareness(null) // No AI recommendations for regex escaping
                 .ValidateFieldMappingEnhancement(null)
-                .ValidateDataTypeRecommendations(null)
+                .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                 .ValidatePatternQuality(null)
                 .ValidateTemplateOptimization(null);
 
@@ -217,7 +217,7 @@ namespace WaterNut.DataSpace
             var validatedSpec = templateSpec
                 .ValidateEntityTypeAwareness(null) // No AI recommendations for regex escaping
                 .ValidateFieldMappingEnhancement(null)
-                .ValidateDataTypeRecommendations(null)
+                .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                 .ValidatePatternQuality(null)
                 .ValidateTemplateOptimization(null);
 
@@ -327,7 +327,7 @@ namespace WaterNut.DataSpace
             var validatedSpec = templateSpec
                 .ValidateEntityTypeAwareness(null) // No AI recommendations for regex escaping
                 .ValidateFieldMappingEnhancement(null)
-                .ValidateDataTypeRecommendations(null)
+                .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                 .ValidatePatternQuality(null)
                 .ValidateTemplateOptimization(null);
 
@@ -437,7 +437,7 @@ namespace WaterNut.DataSpace
             var validatedSpec = templateSpec
                 .ValidateEntityTypeAwareness(null) // No AI recommendations for regex escaping
                 .ValidateFieldMappingEnhancement(null)
-                .ValidateDataTypeRecommendations(null)
+                .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                 .ValidatePatternQuality(null)
                 .ValidateTemplateOptimization(null);
 
@@ -828,7 +828,7 @@ If you return an empty errors array (no errors detected), you MUST include an ""
             var validatedSpec = templateSpec
                 .ValidateEntityTypeAwareness(null) // No AI recommendations for prompt creation
                 .ValidateFieldMappingEnhancement(null)
-                .ValidateDataTypeRecommendations(null)
+                .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                 .ValidatePatternQuality(null)
                 .ValidateTemplateOptimization(null);
 
@@ -962,7 +962,7 @@ If you return an empty errors array (no errors detected), you MUST include an ""
             var validatedSpec = templateSpec
                 .ValidateEntityTypeAwareness(null) // No AI recommendations for OCR section analysis
                 .ValidateFieldMappingEnhancement(null)
-                .ValidateDataTypeRecommendations(null)
+                .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                 .ValidatePatternQuality(null)
                 .ValidateTemplateOptimization(null);
 
@@ -1223,7 +1223,7 @@ STRICT JSON RESPONSE FORMAT (Same as before):
             var validatedSpec = templateSpec
                 .ValidateEntityTypeAwareness(null) // No AI recommendations for regex correction prompt
                 .ValidateFieldMappingEnhancement(null)
-                .ValidateDataTypeRecommendations(null)
+                .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                 .ValidatePatternQuality(null)
                 .ValidateTemplateOptimization(null);
 
@@ -1796,7 +1796,7 @@ STRICT JSON RESPONSE FORMAT (Same as before):
             var validatedSpec = templateSpec
                 .ValidateEntityTypeAwareness(null) // No AI recommendations for product error detection prompt
                 .ValidateFieldMappingEnhancement(null)
-                .ValidateDataTypeRecommendations(null)
+                .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                 .ValidatePatternQuality(null)
                 .ValidateTemplateOptimization(null);
 
@@ -1948,7 +1948,7 @@ Only propose changes that are directly supported by evidence in the ORIGINAL INV
             var validatedSpec = templateSpec
                 .ValidateEntityTypeAwareness(null) // No AI recommendations for direct data correction prompt
                 .ValidateFieldMappingEnhancement(null)
-                .ValidateDataTypeRecommendations(null)
+                .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                 .ValidatePatternQuality(null)
                 .ValidateTemplateOptimization(null);
 
