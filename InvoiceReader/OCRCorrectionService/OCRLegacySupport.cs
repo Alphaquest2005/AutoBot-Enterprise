@@ -466,15 +466,15 @@ namespace WaterNut.DataSpace
                     log.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: CorrectInvoices dual-layer template specification compliance analysis");
 
                     // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
-                    string documentType = "Invoice"; // Invoice correction is document-type agnostic
-                    log.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
+                    string documentType7 = "Invoice"; // Invoice correction is document-type agnostic
+                    log.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType7} - Using DatabaseTemplateHelper document-specific validation rules");
 
                     // Create template specification object for document type with dual-layer validation
-                    var templateSpec = TemplateSpecification.CreateForUtilityOperation(documentType, "CorrectInvoices", 
+                    var templateSpec7 = TemplateSpecification.CreateForUtilityOperation(documentType7, "CorrectInvoices", 
                         template, res);
 
                     // Fluent validation with short-circuiting - stops on first failure
-                    var validatedSpec = templateSpec
+                    var validatedSpec7 = templateSpec7
                         .ValidateEntityTypeAwareness(null) // No AI recommendations for utility operations
                         .ValidateFieldMappingEnhancement(null)
                         .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()) // Invoice correction data operations
@@ -482,10 +482,10 @@ namespace WaterNut.DataSpace
                         .ValidateTemplateOptimization(null);
 
                     // Log all validation results
-                    validatedSpec.LogValidationResults(log);
+                    validatedSpec7.LogValidationResults(log);
 
                     // Extract overall success from validated specification
-                    bool templateSpecificationSuccess1 = validatedSpec.IsValid;
+                    bool templateSpecificationSuccess7 = validatedSpec7.IsValid;
                     
                     return res;
                 }
@@ -498,15 +498,15 @@ namespace WaterNut.DataSpace
                     log.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: CorrectInvoices dual-layer template specification compliance analysis");
 
                     // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
-                    string documentType2 = "Invoice"; // Invoice correction is document-type agnostic
-                    log.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType2} - Using DatabaseTemplateHelper document-specific validation rules");
+                    string documentType8 = "Invoice"; // Invoice correction is document-type agnostic
+                    log.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType8} - Using DatabaseTemplateHelper document-specific validation rules");
 
                     // Create template specification object for document type with dual-layer validation
-                    var templateSpec2 = TemplateSpecification.CreateForUtilityOperation(documentType2, "CorrectInvoices", 
+                    var templateSpec8 = TemplateSpecification.CreateForUtilityOperation(documentType8, "CorrectInvoices", 
                         res, res);
 
                     // Fluent validation with short-circuiting - stops on first failure
-                    var validatedSpec2 = templateSpec2
+                    var validatedSpec8 = templateSpec8
                         .ValidateEntityTypeAwareness(null) // No AI recommendations for utility operations
                         .ValidateFieldMappingEnhancement(null)
                         .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()) // Invoice correction data operations
@@ -514,10 +514,10 @@ namespace WaterNut.DataSpace
                         .ValidateTemplateOptimization(null);
 
                     // Log all validation results
-                    validatedSpec2.LogValidationResults(log);
+                    validatedSpec8.LogValidationResults(log);
 
                     // Extract overall success from validated specification
-                    bool templateSpecificationSuccess2 = validatedSpec2.IsValid;
+                    bool templateSpecificationSuccess8 = validatedSpec8.IsValid;
                     
                     return res;
                 }
@@ -536,15 +536,15 @@ namespace WaterNut.DataSpace
                         log.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: CorrectInvoices dual-layer template specification compliance analysis");
 
                         // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
-                        string documentType3 = "Invoice"; // Invoice correction is document-type agnostic
-                        log.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType3} - Using DatabaseTemplateHelper document-specific validation rules");
+                        string documentType9 = "Invoice"; // Invoice correction is document-type agnostic
+                        log.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType9} - Using DatabaseTemplateHelper document-specific validation rules");
 
                         // Create template specification object for document type with dual-layer validation
-                        var templateSpec3 = TemplateSpecification.CreateForUtilityOperation(documentType3, "CorrectInvoices", 
+                        var templateSpec9 = TemplateSpecification.CreateForUtilityOperation(documentType9, "CorrectInvoices", 
                             actualInvoiceData, res);
 
                         // Fluent validation with short-circuiting - stops on first failure
-                        var validatedSpec3 = templateSpec3
+                        var validatedSpec9 = templateSpec9
                             .ValidateEntityTypeAwareness(null) // No AI recommendations for utility operations
                             .ValidateFieldMappingEnhancement(null)
                             .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()) // Invoice correction data operations
@@ -552,10 +552,10 @@ namespace WaterNut.DataSpace
                             .ValidateTemplateOptimization(null);
 
                         // Log all validation results
-                        validatedSpec3.LogValidationResults(log);
+                        validatedSpec9.LogValidationResults(log);
 
                         // Extract overall success from validated specification
-                        bool templateSpecificationSuccess3 = validatedSpec3.IsValid;
+                        bool templateSpecificationSuccess9 = validatedSpec9.IsValid;
                         
                         return res;
                     }
@@ -771,15 +771,15 @@ namespace WaterNut.DataSpace
                 log.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: CorrectInvoices dual-layer template specification compliance analysis");
 
                 // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
-                string documentType = "Invoice"; // Invoice correction is document-type agnostic
-                log.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
+                string documentType10 = "Invoice"; // Invoice correction is document-type agnostic
+                log.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType10} - Using DatabaseTemplateHelper document-specific validation rules");
 
                 // Create template specification object for document type with dual-layer validation
-                var templateSpec = TemplateSpecification.CreateForUtilityOperation(documentType, "CorrectInvoices", 
+                var templateSpec10 = TemplateSpecification.CreateForUtilityOperation(documentType10, "CorrectInvoices", 
                     res, finalResult);
 
                 // Fluent validation with short-circuiting - stops on first failure
-                var validatedSpec = templateSpec
+                var validatedSpec10 = templateSpec10
                     .ValidateEntityTypeAwareness(null) // No AI recommendations for utility operations
                     .ValidateFieldMappingEnhancement(null)
                     .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()) // Invoice correction data operations
@@ -787,10 +787,10 @@ namespace WaterNut.DataSpace
                     .ValidateTemplateOptimization(null);
 
                 // Log all validation results
-                validatedSpec.LogValidationResults(log);
+                validatedSpec10.LogValidationResults(log);
 
                 // Extract overall success from validated specification
-                bool templateSpecificationSuccess = validatedSpec.IsValid;
+                bool templateSpecificationSuccess10 = validatedSpec10.IsValid;
 
                 return finalResult;
 
@@ -803,15 +803,15 @@ namespace WaterNut.DataSpace
                 log.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: CorrectInvoices dual-layer template specification compliance analysis");
 
                 // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
-                string documentType = "Invoice"; // Invoice correction is document-type agnostic
-                log.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
+                string documentType11 = "Invoice"; // Invoice correction is document-type agnostic
+                log.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType11} - Using DatabaseTemplateHelper document-specific validation rules");
 
                 // Create template specification object for document type with dual-layer validation
-                var templateSpec = TemplateSpecification.CreateForUtilityOperation(documentType, "CorrectInvoices", 
+                var templateSpec11 = TemplateSpecification.CreateForUtilityOperation(documentType11, "CorrectInvoices", 
                     res, res);
 
                 // Fluent validation with short-circuiting - stops on first failure
-                var validatedSpec = templateSpec
+                var validatedSpec11 = templateSpec11
                     .ValidateEntityTypeAwareness(null) // No AI recommendations for utility operations
                     .ValidateFieldMappingEnhancement(null)
                     .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()) // Invoice correction data operations
@@ -819,10 +819,10 @@ namespace WaterNut.DataSpace
                     .ValidateTemplateOptimization(null);
 
                 // Log all validation results
-                validatedSpec.LogValidationResults(log);
+                validatedSpec11.LogValidationResults(log);
 
                 // Extract overall success from validated specification
-                bool templateSpecificationSuccess = validatedSpec.IsValid;
+                bool templateSpecificationSuccess11 = validatedSpec11.IsValid;
                 
                 return res; // Return original data on crash
             }
