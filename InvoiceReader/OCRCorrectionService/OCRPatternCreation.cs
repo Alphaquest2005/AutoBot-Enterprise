@@ -1763,7 +1763,7 @@ namespace WaterNut.DataSpace
                         .ValidateTemplateOptimization(isMatch); // Return result based on numeric match
 
                     // Log all validation results
-                    validatedSpec.LogValidationResults(_logger);
+                    validatedSpec24.LogValidationResults(_logger);
 
                     // Extract overall success from validated specification
                     bool templateSpecificationSuccess25 = validatedSpec.IsValid;
