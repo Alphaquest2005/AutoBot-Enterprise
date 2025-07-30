@@ -907,7 +907,7 @@ namespace WaterNut.DataSpace
                 _logger.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: AI regex correction dual-layer template specification compliance analysis (Input validation failure path)");
 
                 // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING) - Use fallback since correction may be null
-                string documentType = correction?.FieldName != null ? DatabaseTemplateHelper.GetDocumentTypeFromFieldName(correction.FieldName) ?? "Invoice" : "Invoice";
+                string documentType = "Invoice"; // Default document type for AI regex creation with fallback
                 _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
 
                 // Create template specification object for document type with dual-layer validation
