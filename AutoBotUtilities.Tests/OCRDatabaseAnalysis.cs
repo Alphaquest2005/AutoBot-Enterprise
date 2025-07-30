@@ -277,18 +277,16 @@ namespace AutoBotUtilities.Tests
         }
 
         /// <summary>
-        /// Execute a SQL script with parameters
+        /// Execute a SQL script with parameters using existing Entity Framework context
         /// </summary>
         public async Task<DataTable> ExecuteSqlScript(string script, string description = null, Dictionary<string, object> parameters = null)
         {
             _logger.Information("🔍 **SQL_EXECUTION**: {Description}", description ?? "Executing SQL script");
             _logger.Information("📄 **SQL_SCRIPT**: {Script}", script);
 
-            using (var connection = new SqlConnection(_connectionString))
+            using (var context = new CoreEntities.Business.Entities.CoreEntitiesContext())
             {
-                await connection.OpenAsync().ConfigureAwait(false);
-                
-                using (var command = new SqlCommand(script, connection))
+                using (var command = new SqlCommand(script, context.Database.Connection as SqlConnection))
                 {
                     // Add parameters if provided
                     if (parameters != null)
@@ -299,6 +297,9 @@ namespace AutoBotUtilities.Tests
                             _logger.Information("📝 **SQL_PARAMETER**: @{ParamName} = {ParamValue}", param.Key, param.Value);
                         }
                     }
+
+                    if (context.Database.Connection.State != System.Data.ConnectionState.Open)
+                        await context.Database.Connection.OpenAsync().ConfigureAwait(false);
 
                     using (var adapter = new SqlDataAdapter(command))
                     {
