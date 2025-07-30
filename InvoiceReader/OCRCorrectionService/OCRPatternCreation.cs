@@ -864,7 +864,7 @@ namespace WaterNut.DataSpace
             var validatedSpec = templateSpec
                 .ValidateEntityTypeAwareness(null) // No pattern output due to no conversion
                 .ValidateFieldMappingEnhancement(null) // No field mapping for pattern creation
-                .ValidateDataTypeRecommendations("Numeric") // Method designed to process numeric data types
+                .ValidateDataTypeRecommendations(new List<PromptRecommendation>()) // Method designed to process numeric data types
                 .ValidatePatternQuality(null) // No pattern due to no conversion
                 .ValidateTemplateOptimization(null); // No optimization due to no conversion
 
@@ -974,7 +974,7 @@ namespace WaterNut.DataSpace
             var validatedSpec = templateSpec
                 .ValidateEntityTypeAwareness(null) // No pattern output due to placeholder implementation
                 .ValidateFieldMappingEnhancement(null) // No field mapping for pattern creation
-                .ValidateDataTypeRecommendations("Text") // Method designed to process text/character data types
+                .ValidateDataTypeRecommendations(new List<PromptRecommendation>()) // Method designed to process text/character data types
                 .ValidatePatternQuality(null) // No pattern due to placeholder implementation
                 .ValidateTemplateOptimization(null); // No optimization due to placeholder implementation
 
@@ -1123,7 +1123,7 @@ namespace WaterNut.DataSpace
             var validatedSpec = templateSpec
                 .ValidateEntityTypeAwareness(null) // No pattern output due to no pattern applicable
                 .ValidateFieldMappingEnhancement(null) // No field mapping for pattern creation
-                .ValidateDataTypeRecommendations("Text") // Method designed to process text data types
+                .ValidateDataTypeRecommendations(new List<PromptRecommendation>()) // Method designed to process text data types
                 .ValidatePatternQuality(null) // No pattern due to no pattern applicable
                 .ValidateTemplateOptimization(null); // No optimization due to no pattern applicable
 
