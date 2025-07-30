@@ -544,7 +544,7 @@ namespace WaterNut.DataSpace
                             actualInvoiceData, res);
 
                         // Fluent validation with short-circuiting - stops on first failure
-                        var validatedSpec = templateSpec
+                        var validatedSpec3 = templateSpec3
                             .ValidateEntityTypeAwareness(null) // No AI recommendations for utility operations
                             .ValidateFieldMappingEnhancement(null)
                             .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()) // Invoice correction data operations
@@ -552,10 +552,10 @@ namespace WaterNut.DataSpace
                             .ValidateTemplateOptimization(null);
 
                         // Log all validation results
-                        validatedSpec.LogValidationResults(log);
+                        validatedSpec3.LogValidationResults(log);
 
                         // Extract overall success from validated specification
-                        bool templateSpecificationSuccess = validatedSpec.IsValid;
+                        bool templateSpecificationSuccess3 = validatedSpec3.IsValid;
                         
                         return res;
                     }
