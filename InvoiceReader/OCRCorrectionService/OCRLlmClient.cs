@@ -1120,7 +1120,7 @@ namespace WaterNut.DataSpace
                 string documentTypeStringEmpty = "Invoice"; // Text counting utility is document-type agnostic
                 
                 // Create template specification object for document type with dual-layer validation
-                var templateSpecStringNull = TemplateSpecification.CreateForUtilityOperation(documentType, "CountOccurrences", 
+                var templateSpecStringNull = TemplateSpecification.CreateForUtilityOperation(documentTypeStringEmpty, "CountOccurrences", 
                     new { text, substring }, 0);
 
                 // Fluent validation with short-circuiting - stops on first failure
