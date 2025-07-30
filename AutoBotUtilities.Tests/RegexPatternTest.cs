@@ -37,21 +37,21 @@ namespace AutoBotUtilities.Tests
             _logger.Information("=== TESTING CORRECTED PATTERNS (SHOULD MATCH) ===");
             
             // Test corrected patterns
-            Assert.IsTrue(TestPattern("InvoiceNo", @"order\s+(?<InvoiceNo>[A-Za-z0-9]+)\s+shortly", orderText, "UCSJB6"));
-            Assert.IsTrue(TestPattern("SupplierName", @"(?<SupplierName>MANGO\s+OUTLET)", supplierText, "MANGO OUTLET"));
-            Assert.IsTrue(TestPattern("InvoiceDate", @"(?<InvoiceDate>\w+,\s+\w+\s+\d{1,2},\s+\d{4})", dateText, "Tuesday, July 23, 2024"));
-            Assert.IsTrue(TestPattern("SubTotal", @"Subtotal\s+US[S$]\s*(?<SubTotal>\d+\.\d{2})", subtotalText, "196.33"));
-            Assert.IsTrue(TestPattern("InvoiceTotal", @"TOTAL\s+AMOUNT\s+US\$\s*(?<InvoiceTotal>\d+\.\d{2})", totalText, "210.08"));
-            Assert.IsTrue(TestPattern("TotalOtherCost", @"Estimated\s+Tax\s+US\$\s*(?<TotalOtherCost>\d+\.\d{2})", taxText, "13.74"));
+            Assert.That(TestPattern("InvoiceNo", @"order\s+(?<InvoiceNo>[A-Za-z0-9]+)\s+shortly", orderText, "UCSJB6"), Is.True);
+            Assert.That(TestPattern("SupplierName", @"(?<SupplierName>MANGO\s+OUTLET)", supplierText, "MANGO OUTLET"), Is.True);
+            Assert.That(TestPattern("InvoiceDate", @"(?<InvoiceDate>\w+,\s+\w+\s+\d{1,2},\s+\d{4})", dateText, "Tuesday, July 23, 2024"), Is.True);
+            Assert.That(TestPattern("SubTotal", @"Subtotal\s+US[S$]\s*(?<SubTotal>\d+\.\d{2})", subtotalText, "196.33"), Is.True);
+            Assert.That(TestPattern("InvoiceTotal", @"TOTAL\s+AMOUNT\s+US\$\s*(?<InvoiceTotal>\d+\.\d{2})", totalText, "210.08"), Is.True);
+            Assert.That(TestPattern("TotalOtherCost", @"Estimated\s+Tax\s+US\$\s*(?<TotalOtherCost>\d+\.\d{2})", taxText, "13.74"), Is.True);
             
             _logger.Information("=== TESTING ORIGINAL DEEPSEEK PATTERNS (SHOULD FAIL) ===");
             
             // Test original DeepSeek patterns (should fail)
-            Assert.IsFalse(TestPattern("InvoiceNo (Original)", @"Invoice No\.\s*(?<InvoiceNo>[A-Za-z0-9]+)", orderText, null));
-            Assert.IsFalse(TestPattern("SupplierName (Original)", @"OUTLET\s*(?<SupplierName>MANGO\s*OUTLET)", supplierText, null));
-            Assert.IsFalse(TestPattern("InvoiceDate (Original)", @"Date:\s*(?<InvoiceDate>\d{4}-\d{2}-\d{2})", dateText, null));
-            Assert.IsFalse(TestPattern("SubTotal (Original)", @"Subtotal\s*US\$\s*(?<SubTotal>\d+\.\d{2})", subtotalText, null));
-            Assert.IsFalse(TestPattern("InvoiceTotal (Original)", @"Order total\s*US\$\s*(?<InvoiceTotal>\d+\.\d{2})", totalText, null));
+            Assert.That(TestPattern("InvoiceNo (Original)", @"Invoice No\.\s*(?<InvoiceNo>[A-Za-z0-9]+)", orderText, null), Is.False);
+            Assert.That(TestPattern("SupplierName (Original)", @"OUTLET\s*(?<SupplierName>MANGO\s*OUTLET)", supplierText, null), Is.False);
+            Assert.That(TestPattern("InvoiceDate (Original)", @"Date:\s*(?<InvoiceDate>\d{4}-\d{2}-\d{2})", dateText, null), Is.False);
+            Assert.That(TestPattern("SubTotal (Original)", @"Subtotal\s*US\$\s*(?<SubTotal>\d+\.\d{2})", subtotalText, null), Is.False);
+            Assert.That(TestPattern("InvoiceTotal (Original)", @"Order total\s*US\$\s*(?<InvoiceTotal>\d+\.\d{2})", totalText, null), Is.False);
 
             _logger.Information("✅ **REGEX_PATTERN_TEST_COMPLETE**: All tests passed - corrected patterns work, original patterns fail as expected");
         }
