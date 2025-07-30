@@ -135,7 +135,7 @@ namespace WaterNut.DataSpace
                         if (context.Database.Connection.State != System.Data.ConnectionState.Open)
                             context.Database.Connection.Open();
 
-                        using (var reader = command.ExecuteReader())
+                        using (SqlDataReader reader = command.ExecuteReader())
                         {
                             if (reader.Read())
                             {
@@ -237,7 +237,7 @@ namespace WaterNut.DataSpace
                         if (context.Database.Connection.State != System.Data.ConnectionState.Open)
                             context.Database.Connection.Open();
 
-                        using (var reader = command.ExecuteReader())
+                        using (SqlDataReader reader = command.ExecuteReader())
                         {
                             while (reader.Read())
                             {
