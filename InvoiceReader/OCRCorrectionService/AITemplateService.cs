@@ -296,10 +296,10 @@ namespace WaterNut.DataSpace
                 // 2. Validate template
                 _logger.Information("🔍 **TEMPLATE_VALIDATING**: Validating template structure and required variables");
                 var validation = ValidateTemplate(template, provider);
-                if (!validation.IsValid)
+                if (!validation.IsSuccess)
                 {
-                    _logger.Warning("⚠️ **TEMPLATE_INVALID**: {Errors}, falling back to hardcoded", 
-                        string.Join("; ", validation.Errors));
+                    _logger.Warning("⚠️ **TEMPLATE_INVALID**: {Message}, falling back to hardcoded", 
+                        validation.Message);
                     return CreateFallbackPrompt(invoice, fileText, metadata);
                 }
                 _logger.Information("✅ **TEMPLATE_VALID**: Template validation passed");
