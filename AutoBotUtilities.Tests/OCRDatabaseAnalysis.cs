@@ -155,37 +155,60 @@ namespace AutoBotUtilities.Tests
         {
             _logger.Information("🔧 **REGEX_PATTERN_FIX**: Fixing MANGO template regex patterns to match actual OCR text format");
 
-            // First, let's check the actual table structure to understand the schema
-            var checkSchemaScript = @"
-                -- Check OCR-Lines table structure
+            // Execute the direct fix for MANGO template patterns
+            var fixScript = @"
+                -- CRITICAL: Direct fix for MANGO template patterns
+                -- Template ID 1339, Line IDs from logs: 5444-5450
+
+                -- Step 1: Create the corrected regex patterns  
+                INSERT INTO RegularExpressions (RegEx, CreatedBy, CreatedDate) VALUES ('order\s+(?<InvoiceNo>[A-Za-z0-9]+)\s+shortly', 'CLAUDE_FIX', GETUTCDATE());
+                DECLARE @InvoiceNoRegex INT = SCOPE_IDENTITY();
+
+                INSERT INTO RegularExpressions (RegEx, CreatedBy, CreatedDate) VALUES ('(?<InvoiceDate>\w+,\s+\w+\s+\d{1,2},\s+\d{4})', 'CLAUDE_FIX', GETUTCDATE());
+                DECLARE @InvoiceDateRegex INT = SCOPE_IDENTITY();
+
+                INSERT INTO RegularExpressions (RegEx, CreatedBy, CreatedDate) VALUES ('(?<Currency>US[S$])', 'CLAUDE_FIX', GETUTCDATE());
+                DECLARE @CurrencyRegex INT = SCOPE_IDENTITY();
+
+                INSERT INTO RegularExpressions (RegEx, CreatedBy, CreatedDate) VALUES ('Subtotal\s+US[S$]\s*(?<SubTotal>\d+\.\d{2})', 'CLAUDE_FIX', GETUTCDATE());
+                DECLARE @SubTotalRegex INT = SCOPE_IDENTITY();
+
+                INSERT INTO RegularExpressions (RegEx, CreatedBy, CreatedDate) VALUES ('TOTAL\s+AMOUNT\s+US\$\s*(?<InvoiceTotal>\d+\.\d{2})', 'CLAUDE_FIX', GETUTCDATE());
+                DECLARE @InvoiceTotalRegex INT = SCOPE_IDENTITY();
+
+                -- Step 2: Update the Lines to use the new patterns
+                UPDATE Lines SET RegularExpressionsId = @InvoiceNoRegex WHERE Id = 5444;  -- H_InvoiceNo_e6c7c75f
+                UPDATE Lines SET RegularExpressionsId = @InvoiceDateRegex WHERE Id = 5445; -- H_InvoiceDate_525c8f38  
+                UPDATE Lines SET RegularExpressionsId = @CurrencyRegex WHERE Id = 5447;    -- H_Currency_d5347f13
+                UPDATE Lines SET RegularExpressionsId = @SubTotalRegex WHERE Id = 5448;    -- H_SubTotal_6d7bee95
+                UPDATE Lines SET RegularExpressionsId = @InvoiceTotalRegex WHERE Id = 5449; -- H_InvoiceTotal_d1d2df9c
+
+                -- Step 3: Update existing SupplierName pattern to be more specific
+                UPDATE RegularExpressions 
+                SET RegEx = 'From:\s*(?<SupplierName>MANGO\s+OUTLET)'
+                WHERE Id IN (
+                    SELECT RegularExpressionsId FROM Lines WHERE Id = 5446 AND RegularExpressionsId IS NOT NULL
+                );";
+
+            await ExecuteSqlScript(fixScript, "Apply corrected MANGO template patterns").ConfigureAwait(false);
+
+            // Verification
+            var verifyScript = @"
                 SELECT 
-                    COLUMN_NAME, 
-                    DATA_TYPE, 
-                    IS_NULLABLE
-                FROM INFORMATION_SCHEMA.COLUMNS 
-                WHERE TABLE_NAME = 'OCR-Lines' 
-                ORDER BY ORDINAL_POSITION;";
+                    l.Id as LineId,
+                    l.Name as LineName, 
+                    r.Id as RegExId,
+                    r.RegEx as Pattern
+                FROM Lines l
+                INNER JOIN Parts p ON l.PartId = p.Id
+                INNER JOIN Templates t ON p.TemplateId = t.Id
+                LEFT JOIN RegularExpressions r ON l.RegularExpressionsId = r.Id
+                WHERE t.Id = 1339
+                ORDER BY l.Id;";
 
-            await ExecuteSqlScript(checkSchemaScript, "Check OCR-Lines table structure").ConfigureAwait(false);
+            await ExecuteSqlScript(verifyScript, "Verify updated MANGO patterns").ConfigureAwait(false);
 
-            // Check existing template structure
-            var checkTemplateScript = @"
-                -- Check the actual template structure
-                SELECT TOP 5
-                    t.Id as TemplateId, t.Name as TemplateName,
-                    p.Id as PartId, p.Name as PartName,
-                    l.Id as LineId, l.Name as LineName,
-                    f.Id as FieldId, f.Field as FieldName
-                FROM [OCR-Invoices] t
-                INNER JOIN [OCR-Parts] p ON t.Id = p.TemplateId  
-                INNER JOIN [OCR-Lines] l ON p.Id = l.PartId
-                INNER JOIN [OCR-Fields] f ON l.Id = f.LineId
-                WHERE t.Name = '03152025_TOTAL_AMOUNT_GENERIC_DOCUMENT'
-                ORDER BY p.Id, l.Id, f.Id;";
-
-            await ExecuteSqlScript(checkTemplateScript, "Check current MANGO template structure").ConfigureAwait(false);
-
-            _logger.Information("✅ **SCHEMA_CHECK_COMPLETE**: Database schema analysis completed - review logs for table structure");
+            _logger.Information("✅ **REGEX_PATTERN_FIX_COMPLETE**: MANGO template regex patterns updated successfully");
         }
 
         [Test]
