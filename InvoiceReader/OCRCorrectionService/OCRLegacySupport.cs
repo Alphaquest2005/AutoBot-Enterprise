@@ -889,7 +889,7 @@ namespace WaterNut.DataSpace
                 var validatedSpec = templateSpec
                     .ValidateEntityTypeAwareness(null) // No AI recommendations for utility operations
                     .ValidateFieldMappingEnhancement(null)
-                    .ValidateDataTypeRecommendations("Text") // Dynamic sync data operations
+                    .ValidateDataTypeRecommendations(new List<PromptRecommendation>()) // Dynamic sync data operations
                     .ValidatePatternQuality(null)
                     .ValidateTemplateOptimization(null);
 
