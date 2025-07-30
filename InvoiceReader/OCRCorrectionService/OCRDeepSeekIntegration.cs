@@ -771,7 +771,7 @@ namespace WaterNut.DataSpace
                     .ValidateEntityTypeAwareness(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                     .ValidateFieldMappingEnhancement(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                     .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
-                    .ValidatePatternQuality(parsedResponse?.RegexPattern)
+                    .ValidatePatternQuality(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                     .ValidateTemplateOptimization(parsedResponse);
 
                 // Log all validation results
@@ -1082,7 +1082,7 @@ namespace WaterNut.DataSpace
                     .ValidateEntityTypeAwareness(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                     .ValidateFieldMappingEnhancement(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                     .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
-                    .ValidatePatternQuality(parsedResponse?.RegexPattern)
+                    .ValidatePatternQuality(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                     .ValidateTemplateOptimization(parsedResponse);
 
                 // Log all validation results
