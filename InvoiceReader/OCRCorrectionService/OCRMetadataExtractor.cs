@@ -419,7 +419,7 @@ namespace WaterNut.DataSpace
                 var validatedSpec = templateSpec
                     .ValidateEntityTypeAwareness(null) // No AI recommendations for utility operations
                     .ValidateFieldMappingEnhancement(null)
-                    .ValidateDataTypeRecommendations("Pattern") // Format regex pattern operations
+                    .ValidateDataTypeRecommendations(new List<PromptRecommendation>()) // Format regex pattern operations
                     .ValidatePatternQuality(null)
                     .ValidateTemplateOptimization(null);
 
@@ -485,7 +485,7 @@ namespace WaterNut.DataSpace
                 var validatedSpec = templateSpec
                     .ValidateEntityTypeAwareness(null) // No AI recommendations for utility operations
                     .ValidateFieldMappingEnhancement(null)
-                    .ValidateDataTypeRecommendations("Pattern") // Format regex pattern operations
+                    .ValidateDataTypeRecommendations(new List<PromptRecommendation>()) // Format regex pattern operations
                     .ValidatePatternQuality(null)
                     .ValidateTemplateOptimization(null);
 
@@ -519,7 +519,7 @@ namespace WaterNut.DataSpace
                 var validatedSpec = templateSpec
                     .ValidateEntityTypeAwareness(null) // No AI recommendations for utility operations
                     .ValidateFieldMappingEnhancement(null)
-                    .ValidateDataTypeRecommendations("Pattern") // Format regex pattern operations
+                    .ValidateDataTypeRecommendations(new List<PromptRecommendation>()) // Format regex pattern operations
                     .ValidatePatternQuality(null)
                     .ValidateTemplateOptimization(null);
 
