@@ -196,6 +196,11 @@ namespace WaterNut.DataSpace
         public string Message { get; set; }
         public int Count { get; set; }
         public string Evidence { get; set; }
+        
+        // Additional properties used by validation methods
+        public bool IsValid { get; set; }
+        public List<string> Errors { get; set; } = new List<string>();
+        public List<string> Warnings { get; set; } = new List<string>();
 
         public static TemplateValidationResult Success(string criteriaName, string message, int count = 0, string evidence = "")
         {
