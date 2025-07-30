@@ -913,7 +913,7 @@ namespace AutoBotUtilities.Tests
                         
                         if (templatePersistedToDatabase)
                         {
-                            _logger.Information("✅ **STEP_3_PASSED**: MANGO template persisted to database successfully");
+                            _logger.Information("✅ **STEP_3_PASSED**: MANGO template (03152025_TOTAL_AMOUNT_GENERIC_DOCUMENT) persisted to database successfully");
                             _logger.Information("   - **TEMPLATE_ID**: {TemplateId}", persistedTemplate.Id);
                             _logger.Information("   - **TEMPLATE_NAME**: {TemplateName}", persistedTemplate.Name);
                             _logger.Information("   - **PARTS_COUNT**: {PartsCount}", persistedTemplate.Parts?.Count ?? 0);
