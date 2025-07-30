@@ -1445,7 +1445,7 @@ namespace WaterNut.DataSpace
                 var templateSpec18 = TemplateSpecification.CreateForUtilityOperation(documentType, "ValidatePatternInternal", correction, correction);
 
                 // Fluent validation with short-circuiting - stops on first failure
-                var validatedSpec18 = templateSpec
+                var validatedSpec18 = templateSpec18
                     .ValidateEntityTypeAwareness(correction.SuggestedRegex)
                     .ValidateFieldMappingEnhancement(correction.FieldName)
                     .ValidateDataTypeRecommendations(new List<PromptRecommendation>()) // Method designed to validate pattern data types
@@ -1499,7 +1499,7 @@ namespace WaterNut.DataSpace
                 var templateSpec19 = TemplateSpecification.CreateForUtilityOperation(documentType, "ValidatePatternInternal", correction, correction);
 
                 // Fluent validation with short-circuiting - stops on first failure
-                var validatedSpec19 = templateSpec
+                var validatedSpec19 = templateSpec19
                     .ValidateEntityTypeAwareness(null) // No pattern output due to exception
                     .ValidateFieldMappingEnhancement(correction.FieldName)
                     .ValidateDataTypeRecommendations(new List<PromptRecommendation>()) // Method designed to validate pattern data types
@@ -1595,7 +1595,7 @@ namespace WaterNut.DataSpace
                 var templateSpec20 = TemplateSpecification.CreateForUtilityOperation(documentType, "ValidateRegexPattern", correction, false);
 
                 // Fluent validation with short-circuiting - stops on first failure
-                var validatedSpec20 = templateSpec
+                var validatedSpec20 = templateSpec20
                     .ValidateEntityTypeAwareness(null) // No pattern output due to null input
                     .ValidateFieldMappingEnhancement(correction?.FieldName)
                     .ValidateDataTypeRecommendations(new List<PromptRecommendation>()) // Method designed to validate pattern data types
@@ -1642,7 +1642,7 @@ namespace WaterNut.DataSpace
                     var templateSpec21 = TemplateSpecification.CreateForUtilityOperation(documentType, "ValidateRegexPattern", correction, false);
 
                     // Fluent validation with short-circuiting - stops on first failure
-                    var validatedSpec21 = templateSpec
+                    var validatedSpec21 = templateSpec21
                         .ValidateEntityTypeAwareness(regexResponse.RegexPattern) // Pattern exists but no text to test
                         .ValidateFieldMappingEnhancement(correction.FieldName)
                         .ValidateDataTypeRecommendations(new List<PromptRecommendation>()) // Method designed to validate pattern data types
@@ -1676,7 +1676,7 @@ namespace WaterNut.DataSpace
                     var templateSpec22 = TemplateSpecification.CreateForUtilityOperation(documentType, "ValidateRegexPattern", correction, false);
 
                     // Fluent validation with short-circuiting - stops on first failure
-                    var validatedSpec22 = templateSpec
+                    var validatedSpec22 = templateSpec22
                         .ValidateEntityTypeAwareness(regexResponse.RegexPattern) // Pattern exists but failed to match
                         .ValidateFieldMappingEnhancement(correction.FieldName)
                         .ValidateDataTypeRecommendations(new List<PromptRecommendation>()) // Method designed to validate pattern data types
@@ -1713,7 +1713,7 @@ namespace WaterNut.DataSpace
                     var templateSpec23 = TemplateSpecification.CreateForUtilityOperation(documentType, "ValidateRegexPattern", correction, false);
 
                     // Fluent validation with short-circuiting - stops on first failure
-                    var validatedSpec23 = templateSpec
+                    var validatedSpec23 = templateSpec23
                         .ValidateEntityTypeAwareness(regexResponse.RegexPattern) // Pattern exists but missing named group
                         .ValidateFieldMappingEnhancement(correction.FieldName)
                         .ValidateDataTypeRecommendations(new List<PromptRecommendation>()) // Method designed to validate pattern data types
