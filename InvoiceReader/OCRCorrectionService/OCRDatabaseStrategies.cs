@@ -102,7 +102,7 @@ namespace WaterNut.DataSpace
                     var existingRegexValidatedSpec = existingRegexTemplateSpec
                         .ValidateEntityTypeAwareness(null) // No AI recommendations for utility operations
                         .ValidateFieldMappingEnhancement(null)
-                        .ValidateDataTypeRecommendations(new List<PromptRecommendation>()) // Regex entity operations return objects
+                        .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()) // Regex entity operations return objects
                         .ValidatePatternQuality(null)
                         .ValidateTemplateOptimization(null);
 
@@ -144,7 +144,7 @@ namespace WaterNut.DataSpace
                     var localRegexValidatedSpec = localRegexTemplateSpec
                         .ValidateEntityTypeAwareness(null) // No AI recommendations for utility operations
                         .ValidateFieldMappingEnhancement(null)
-                        .ValidateDataTypeRecommendations(new List<PromptRecommendation>()) // Regex entity operations return objects
+                        .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()) // Regex entity operations return objects
                         .ValidatePatternQuality(null)
                         .ValidateTemplateOptimization(null);
 
@@ -201,7 +201,7 @@ namespace WaterNut.DataSpace
                 var newRegexValidatedSpec = newRegexTemplateSpec
                     .ValidateEntityTypeAwareness(null) // No AI recommendations for utility operations
                     .ValidateFieldMappingEnhancement(null)
-                    .ValidateDataTypeRecommendations(new List<PromptRecommendation>()) // Regex entity operations return objects
+                    .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()) // Regex entity operations return objects
                     .ValidatePatternQuality(null)
                     .ValidateTemplateOptimization(null);
 
@@ -362,7 +362,7 @@ namespace WaterNut.DataSpace
                     var saveChangesValidatedSpec = saveChangesTemplateSpec
                         .ValidateEntityTypeAwareness(null) // No AI recommendations for utility operations
                         .ValidateFieldMappingEnhancement(null)
-                        .ValidateDataTypeRecommendations(new List<PromptRecommendation>()) // Database save operations return numeric change counts
+                        .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()) // Database save operations return numeric change counts
                         .ValidatePatternQuality(null)
                         .ValidateTemplateOptimization(null);
 
