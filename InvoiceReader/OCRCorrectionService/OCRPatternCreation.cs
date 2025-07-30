@@ -856,10 +856,10 @@ namespace WaterNut.DataSpace
 
             // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
             string documentType9 = "Invoice"; // Pattern creation is document-type agnostic
-            _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
+            _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType9} - Using DatabaseTemplateHelper document-specific validation rules");
 
             // Create template specification object for document type with dual-layer validation
-            var templateSpec10 = TemplateSpecification.CreateForUtilityOperation(documentType, "CreateNegativeNumberPattern", o, null);
+            var templateSpec10 = TemplateSpecification.CreateForUtilityOperation(documentType9, "CreateNegativeNumberPattern", o, null);
 
             // Fluent validation with short-circuiting - stops on first failure
             var validatedSpec10 = templateSpec10
@@ -966,10 +966,10 @@ namespace WaterNut.DataSpace
 
             // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
             string documentType10 = "Invoice"; // Pattern creation is document-type agnostic
-            _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
+            _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType10} - Using DatabaseTemplateHelper document-specific validation rules");
 
             // Create template specification object for document type with dual-layer validation
-            var templateSpec11 = TemplateSpecification.CreateForUtilityOperation(documentType, "CreateSpecificOCRCharacterConfusionPattern", o, null);
+            var templateSpec11 = TemplateSpecification.CreateForUtilityOperation(documentType10, "CreateSpecificOCRCharacterConfusionPattern", o, null);
 
             // Fluent validation with short-circuiting - stops on first failure
             var validatedSpec11 = templateSpec11
@@ -1069,10 +1069,10 @@ namespace WaterNut.DataSpace
 
                 // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
                 string documentType11 = "Invoice"; // Pattern creation is document-type agnostic
-                _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
+                _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType11} - Using DatabaseTemplateHelper document-specific validation rules");
 
                 // Create template specification object for document type with dual-layer validation
-                var templateSpec12 = TemplateSpecification.CreateForUtilityOperation(documentType, "CreateSpaceManipulationPattern", o, result);
+                var templateSpec12 = TemplateSpecification.CreateForUtilityOperation(documentType11, "CreateSpaceManipulationPattern", o, result);
 
                 // Fluent validation with short-circuiting - stops on first failure
                 var validatedSpec12 = templateSpec12
