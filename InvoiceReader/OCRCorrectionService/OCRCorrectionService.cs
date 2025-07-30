@@ -821,7 +821,7 @@ namespace WaterNut.DataSpace
             var validatedSpec = templateSpec
                 .ValidateEntityTypeAwareness(null) // Template creation doesn't have AI recommendations
                 .ValidateFieldMappingEnhancement(null)
-                .ValidateDataTypeRecommendations(null)
+                .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                 .ValidatePatternQuality(null)
                 .ValidateTemplateOptimization(null);
 
