@@ -130,10 +130,10 @@ namespace AutoBotUtilities.Tests
                 {
                     while (await reader.ReadAsync().ConfigureAwait(false))
                     {
-                        var lineId = reader.GetInt32("LineId");
-                        var lineName = reader.IsDBNull("LineName") ? "NULL" : reader.GetString("LineName");
-                        var regexId = reader.IsDBNull("RegExId") ? "NULL" : reader.GetInt32("RegExId").ToString();
-                        var pattern = reader.IsDBNull("Pattern") ? "NO_REGEX" : reader.GetString("Pattern");
+                        var lineId = reader.GetInt32(0); // LineId column
+                        var lineName = reader.IsDBNull(1) ? "NULL" : reader.GetString(1); // LineName column
+                        var regexId = reader.IsDBNull(2) ? "NULL" : reader.GetInt32(2).ToString(); // RegExId column
+                        var pattern = reader.IsDBNull(3) ? "NO_REGEX" : reader.GetString(3); // Pattern column
 
                         _logger.Information("📋 **LINE_PATTERN**: {LineId} | {LineName} | RegExId={RegexId} | Pattern={Pattern}", 
                             lineId, lineName, regexId, pattern);
