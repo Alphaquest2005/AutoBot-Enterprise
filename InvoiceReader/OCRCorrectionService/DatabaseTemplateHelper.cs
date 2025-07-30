@@ -112,7 +112,7 @@ namespace WaterNut.DataSpace
             {
                 _logger.Information("🔍 **DATABASE_TEMPLATE_LOOKUP**: Retrieving template mapping for FileTypeId={FileTypeId}", fileTypeId);
 
-                using (var context = new CoreEntities.CoreEntitiesContext())
+                using (var context = new CoreEntities.Business.Entities.CoreEntitiesContext())
                 {
                     var query = @"
                         SELECT 
@@ -213,7 +213,7 @@ namespace WaterNut.DataSpace
 
                 var mappings = new List<TemplateMapping>();
 
-                using (var context = new CoreEntities.CoreEntitiesContext())
+                using (var context = new CoreEntities.Business.Entities.CoreEntitiesContext())
                 {
                     var query = @"
                         SELECT 
