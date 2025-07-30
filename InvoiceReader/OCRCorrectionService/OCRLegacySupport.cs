@@ -536,11 +536,11 @@ namespace WaterNut.DataSpace
                         log.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: CorrectInvoices dual-layer template specification compliance analysis");
 
                         // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
-                        string documentType = "Invoice"; // Invoice correction is document-type agnostic
-                        log.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
+                        string documentType3 = "Invoice"; // Invoice correction is document-type agnostic
+                        log.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType3} - Using DatabaseTemplateHelper document-specific validation rules");
 
                         // Create template specification object for document type with dual-layer validation
-                        var templateSpec = TemplateSpecification.CreateForUtilityOperation(documentType, "CorrectInvoices", 
+                        var templateSpec3 = TemplateSpecification.CreateForUtilityOperation(documentType3, "CorrectInvoices", 
                             actualInvoiceData, res);
 
                         // Fluent validation with short-circuiting - stops on first failure
