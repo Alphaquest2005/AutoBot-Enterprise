@@ -363,7 +363,7 @@ namespace WaterNut.DataSpace
                     .ValidateEntityTypeAwareness(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                     .ValidateFieldMappingEnhancement(null) // No specific field mapping for pattern creation
                     .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
-                    .ValidatePatternQuality(result.Item1)
+                    .ValidatePatternQuality(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                     .ValidateTemplateOptimization(result);
 
                 // Log all validation results
@@ -431,7 +431,7 @@ namespace WaterNut.DataSpace
                     .ValidateEntityTypeAwareness(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                     .ValidateFieldMappingEnhancement(null) // No specific field mapping for pattern creation
                     .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
-                    .ValidatePatternQuality(result.Item1)
+                    .ValidatePatternQuality(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                     .ValidateTemplateOptimization(result);
 
                 // Log all validation results
@@ -596,7 +596,7 @@ namespace WaterNut.DataSpace
                     .ValidateEntityTypeAwareness(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                     .ValidateFieldMappingEnhancement(null) // No specific field mapping for pattern creation
                     .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
-                    .ValidatePatternQuality(result.Item1)
+                    .ValidatePatternQuality(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                     .ValidateTemplateOptimization(result);
 
                 // Log all validation results
@@ -747,7 +747,7 @@ namespace WaterNut.DataSpace
                     .ValidateEntityTypeAwareness(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                     .ValidateFieldMappingEnhancement(null) // No specific field mapping for pattern creation
                     .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
-                    .ValidatePatternQuality(result.Item1)
+                    .ValidatePatternQuality(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                     .ValidateTemplateOptimization(result);
 
                 // Log all validation results
@@ -814,7 +814,7 @@ namespace WaterNut.DataSpace
                     .ValidateEntityTypeAwareness(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                     .ValidateFieldMappingEnhancement(null) // No specific field mapping for pattern creation
                     .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()) // Method processes numeric data types
-                    .ValidatePatternQuality(result.Item1)
+                    .ValidatePatternQuality(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                     .ValidateTemplateOptimization(result);
 
                 // Log all validation results
@@ -1079,7 +1079,7 @@ namespace WaterNut.DataSpace
                     .ValidateEntityTypeAwareness(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                     .ValidateFieldMappingEnhancement(null) // No specific field mapping for pattern creation
                     .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()) // Method designed to process text data types
-                    .ValidatePatternQuality(result.Item1)
+                    .ValidatePatternQuality(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                     .ValidateTemplateOptimization(result);
 
                 // Log all validation results
@@ -1449,7 +1449,7 @@ namespace WaterNut.DataSpace
                     .ValidateEntityTypeAwareness(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                     .ValidateFieldMappingEnhancement(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                     .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()) // Method designed to validate pattern data types
-                    .ValidatePatternQuality(correction.SuggestedRegex)
+                    .ValidatePatternQuality(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                     .ValidateTemplateOptimization(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()); // Return validated correction object
 
                 // Log all validation results
@@ -1646,7 +1646,7 @@ namespace WaterNut.DataSpace
                         .ValidateEntityTypeAwareness(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()) // Pattern exists but no text to test
                         .ValidateFieldMappingEnhancement(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                         .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()) // Method designed to validate pattern data types
-                        .ValidatePatternQuality(regexResponse.RegexPattern) // Pattern quality can be assessed
+                        .ValidatePatternQuality(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()) // Pattern quality can be assessed
                         .ValidateTemplateOptimization(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()); // Return false for validation failure
 
                     // Log all validation results
@@ -1680,7 +1680,7 @@ namespace WaterNut.DataSpace
                         .ValidateEntityTypeAwareness(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()) // Pattern exists but failed to match
                         .ValidateFieldMappingEnhancement(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                         .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()) // Method designed to validate pattern data types
-                        .ValidatePatternQuality(regexResponse.RegexPattern) // Pattern quality issue - failed to match
+                        .ValidatePatternQuality(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()) // Pattern quality issue - failed to match
                         .ValidateTemplateOptimization(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()); // Return false for validation failure
 
                     // Log all validation results
@@ -1717,7 +1717,7 @@ namespace WaterNut.DataSpace
                         .ValidateEntityTypeAwareness(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()) // Pattern exists but missing named group
                         .ValidateFieldMappingEnhancement(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                         .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()) // Method designed to validate pattern data types
-                        .ValidatePatternQuality(regexResponse.RegexPattern) // Pattern quality issue - missing required named group
+                        .ValidatePatternQuality(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()) // Pattern quality issue - missing required named group
                         .ValidateTemplateOptimization(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()); // Return false for validation failure
 
                     // Log all validation results
@@ -1760,7 +1760,7 @@ namespace WaterNut.DataSpace
                         .ValidateEntityTypeAwareness(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()) // Pattern successfully extracted value
                         .ValidateFieldMappingEnhancement(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                         .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()) // Method designed to validate pattern data types
-                        .ValidatePatternQuality(regexResponse.RegexPattern) // Pattern quality verified through successful extraction
+                        .ValidatePatternQuality(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()) // Pattern quality verified through successful extraction
                         .ValidateTemplateOptimization(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()); // Return result based on numeric match
 
                     // Log all validation results
@@ -1795,7 +1795,7 @@ namespace WaterNut.DataSpace
                     .ValidateEntityTypeAwareness(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()) // Pattern successfully extracted value
                     .ValidateFieldMappingEnhancement(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                     .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()) // Method designed to validate pattern data types
-                    .ValidatePatternQuality(regexResponse.RegexPattern) // Pattern quality verified through successful extraction
+                    .ValidatePatternQuality(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()) // Pattern quality verified through successful extraction
                     .ValidateTemplateOptimization(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()); // Return result based on string match
 
                 // Log all validation results
@@ -1829,7 +1829,7 @@ namespace WaterNut.DataSpace
                     .ValidateEntityTypeAwareness(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()) // Pattern exists but has syntax error
                     .ValidateFieldMappingEnhancement(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                     .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()) // Method designed to validate pattern data types
-                    .ValidatePatternQuality(regexResponse.RegexPattern) // Pattern quality issue - syntax error
+                    .ValidatePatternQuality(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()) // Pattern quality issue - syntax error
                     .ValidateTemplateOptimization(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()); // Return false for validation failure
 
                 // Log all validation results
