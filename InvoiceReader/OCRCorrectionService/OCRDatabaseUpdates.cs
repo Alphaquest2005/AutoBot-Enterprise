@@ -902,7 +902,7 @@ namespace WaterNut.DataSpace
             var validatedSpec = templateSpec
                 .ValidateEntityTypeAwareness(null) // No AI recommendations for utility operations
                 .ValidateFieldMappingEnhancement(null)
-                .ValidateDataTypeRecommendations("Boolean") // Field support operations return boolean results
+                .ValidateDataTypeRecommendations(new List<PromptRecommendation>()) // Field support operations return boolean results
                 .ValidatePatternQuality(null)
                 .ValidateTemplateOptimization(null);
 
