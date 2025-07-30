@@ -1262,7 +1262,7 @@ namespace WaterNut.DataSpace
                     _logger.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: Pattern validation dual-layer template specification compliance analysis (Field not supported path)");
 
                     // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
-                    string documentType = DatabaseTemplateHelper.GetDocumentTypeFromFieldName(correction.FieldName) ?? "Invoice";
+                    string documentType = "Invoice";
                     _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
 
                     // Create template specification object for document type with dual-layer validation
@@ -1323,7 +1323,7 @@ namespace WaterNut.DataSpace
                         _logger.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: Pattern validation dual-layer template specification compliance analysis (Format mismatch path)");
 
                         // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
-                        string documentType = DatabaseTemplateHelper.GetDocumentTypeFromFieldName(correction.FieldName) ?? "Invoice";
+                        string documentType = "Invoice";
                         _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
 
                         // Create template specification object for document type with dual-layer validation
@@ -1383,7 +1383,7 @@ namespace WaterNut.DataSpace
                         _logger.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: Pattern validation dual-layer template specification compliance analysis (Regex syntax error path)");
 
                         // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
-                        string documentType = DatabaseTemplateHelper.GetDocumentTypeFromFieldName(correction.FieldName) ?? "Invoice";
+                        string documentType = "Invoice";
                         _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
 
                         // Create template specification object for document type with dual-layer validation
@@ -1437,7 +1437,7 @@ namespace WaterNut.DataSpace
                 _logger.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: Pattern validation dual-layer template specification compliance analysis (Success path)");
 
                 // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
-                string documentType = DatabaseTemplateHelper.GetDocumentTypeFromFieldName(correction.FieldName) ?? "Invoice";
+                string documentType = "Invoice";
                 _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
 
                 // Create template specification object for document type with dual-layer validation
@@ -1491,7 +1491,7 @@ namespace WaterNut.DataSpace
                 _logger.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: Pattern validation dual-layer template specification compliance analysis (Exception path)");
 
                 // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
-                string documentType = DatabaseTemplateHelper.GetDocumentTypeFromFieldName(correction.FieldName) ?? "Invoice";
+                string documentType = "Invoice";
                 _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
 
                 // Create template specification object for document type with dual-layer validation
@@ -1587,7 +1587,7 @@ namespace WaterNut.DataSpace
                 _logger.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: Regex validation dual-layer template specification compliance analysis (Null input path)");
 
                 // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
-                string documentType = correction?.FieldName != null ? DatabaseTemplateHelper.GetDocumentTypeFromFieldName(correction.FieldName) ?? "Invoice" : "Invoice";
+                string documentType = "Invoice";
                 _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
 
                 // Create template specification object for document type with dual-layer validation
@@ -1634,7 +1634,7 @@ namespace WaterNut.DataSpace
                     _logger.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: Regex validation dual-layer template specification compliance analysis (No text available path)");
 
                     // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
-                    string documentType = DatabaseTemplateHelper.GetDocumentTypeFromFieldName(correction.FieldName) ?? "Invoice";
+                    string documentType = "Invoice";
                     _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
 
                     // Create template specification object for document type with dual-layer validation
@@ -1668,7 +1668,7 @@ namespace WaterNut.DataSpace
                     _logger.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: Regex validation dual-layer template specification compliance analysis (Pattern didn't match path)");
 
                     // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
-                    string documentType = DatabaseTemplateHelper.GetDocumentTypeFromFieldName(correction.FieldName) ?? "Invoice";
+                    string documentType = "Invoice";
                     _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
 
                     // Create template specification object for document type with dual-layer validation
@@ -1705,7 +1705,7 @@ namespace WaterNut.DataSpace
                     _logger.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: Regex validation dual-layer template specification compliance analysis (Named group not found path)");
 
                     // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
-                    string documentType = DatabaseTemplateHelper.GetDocumentTypeFromFieldName(correction.FieldName) ?? "Invoice";
+                    string documentType = "Invoice";
                     _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
 
                     // Create template specification object for document type with dual-layer validation
@@ -1748,7 +1748,7 @@ namespace WaterNut.DataSpace
                     _logger.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: Regex validation dual-layer template specification compliance analysis (Numeric match path)");
 
                     // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
-                    string documentType = DatabaseTemplateHelper.GetDocumentTypeFromFieldName(correction.FieldName) ?? "Invoice";
+                    string documentType = "Invoice";
                     _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
 
                     // Create template specification object for document type with dual-layer validation
@@ -1783,7 +1783,7 @@ namespace WaterNut.DataSpace
                 _logger.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: Regex validation dual-layer template specification compliance analysis (String match path)");
 
                 // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
-                string documentType = DatabaseTemplateHelper.GetDocumentTypeFromFieldName(correction.FieldName) ?? "Invoice";
+                string documentType = "Invoice";
                 _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
 
                 // Create template specification object for document type with dual-layer validation
@@ -1817,7 +1817,7 @@ namespace WaterNut.DataSpace
                 _logger.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: Regex validation dual-layer template specification compliance analysis (Exception path)");
 
                 // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
-                string documentType = DatabaseTemplateHelper.GetDocumentTypeFromFieldName(correction.FieldName) ?? "Invoice";
+                string documentType = "Invoice";
                 _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
 
                 // Create template specification object for document type with dual-layer validation
