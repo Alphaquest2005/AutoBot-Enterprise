@@ -1036,7 +1036,7 @@ namespace WaterNut.DataSpace
                 // Fluent validation with short-circuiting - stops on first failure
                 var validatedSpec = templateSpec
                     .ValidateEntityTypeAwareness(null) // No AI recommendations for existence validation
-                    .ValidateFieldMappingEnhancement(fieldMapping)
+                    .ValidateFieldMappingEnhancement(null) // No field mapping enhancement for existence validation
                     .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                     .ValidatePatternQuality(null)
                     .ValidateTemplateOptimization(null);
