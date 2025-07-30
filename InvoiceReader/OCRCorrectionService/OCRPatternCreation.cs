@@ -360,7 +360,7 @@ namespace WaterNut.DataSpace
 
                 // Fluent validation with short-circuiting - stops on first failure
                 var validatedSpec3 = templateSpec3
-                    .ValidateEntityTypeAwareness(result.Item1)
+                    .ValidateEntityTypeAwareness(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                     .ValidateFieldMappingEnhancement(null) // No specific field mapping for pattern creation
                     .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                     .ValidatePatternQuality(result.Item1)
@@ -428,7 +428,7 @@ namespace WaterNut.DataSpace
 
                 // Fluent validation with short-circuiting - stops on first failure
                 var validatedSpec4 = templateSpec4
-                    .ValidateEntityTypeAwareness(result.Item1)
+                    .ValidateEntityTypeAwareness(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                     .ValidateFieldMappingEnhancement(null) // No specific field mapping for pattern creation
                     .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                     .ValidatePatternQuality(result.Item1)
@@ -593,7 +593,7 @@ namespace WaterNut.DataSpace
 
                 // Fluent validation with short-circuiting - stops on first failure
                 var validatedSpec6 = templateSpec6
-                    .ValidateEntityTypeAwareness(result.Item1)
+                    .ValidateEntityTypeAwareness(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                     .ValidateFieldMappingEnhancement(null) // No specific field mapping for pattern creation
                     .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                     .ValidatePatternQuality(result.Item1)
@@ -744,7 +744,7 @@ namespace WaterNut.DataSpace
 
                 // Fluent validation with short-circuiting - stops on first failure
                 var validatedSpec8 = templateSpec8
-                    .ValidateEntityTypeAwareness(result.Item1)
+                    .ValidateEntityTypeAwareness(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                     .ValidateFieldMappingEnhancement(null) // No specific field mapping for pattern creation
                     .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                     .ValidatePatternQuality(result.Item1)
@@ -811,7 +811,7 @@ namespace WaterNut.DataSpace
 
                 // Fluent validation with short-circuiting - stops on first failure
                 var validatedSpec9 = templateSpec9
-                    .ValidateEntityTypeAwareness(result.Item1)
+                    .ValidateEntityTypeAwareness(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                     .ValidateFieldMappingEnhancement(null) // No specific field mapping for pattern creation
                     .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()) // Method processes numeric data types
                     .ValidatePatternQuality(result.Item1)
@@ -1076,7 +1076,7 @@ namespace WaterNut.DataSpace
 
                 // Fluent validation with short-circuiting - stops on first failure
                 var validatedSpec12 = templateSpec12
-                    .ValidateEntityTypeAwareness(result.Item1)
+                    .ValidateEntityTypeAwareness(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                     .ValidateFieldMappingEnhancement(null) // No specific field mapping for pattern creation
                     .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()) // Method designed to process text data types
                     .ValidatePatternQuality(result.Item1)
@@ -1446,7 +1446,7 @@ namespace WaterNut.DataSpace
 
                 // Fluent validation with short-circuiting - stops on first failure
                 var validatedSpec18 = templateSpec18
-                    .ValidateEntityTypeAwareness(correction.SuggestedRegex)
+                    .ValidateEntityTypeAwareness(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                     .ValidateFieldMappingEnhancement(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                     .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()) // Method designed to validate pattern data types
                     .ValidatePatternQuality(correction.SuggestedRegex)
@@ -1643,7 +1643,7 @@ namespace WaterNut.DataSpace
 
                     // Fluent validation with short-circuiting - stops on first failure
                     var validatedSpec21 = templateSpec21
-                        .ValidateEntityTypeAwareness(regexResponse.RegexPattern) // Pattern exists but no text to test
+                        .ValidateEntityTypeAwareness(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()) // Pattern exists but no text to test
                         .ValidateFieldMappingEnhancement(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                         .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()) // Method designed to validate pattern data types
                         .ValidatePatternQuality(regexResponse.RegexPattern) // Pattern quality can be assessed
@@ -1677,7 +1677,7 @@ namespace WaterNut.DataSpace
 
                     // Fluent validation with short-circuiting - stops on first failure
                     var validatedSpec22 = templateSpec22
-                        .ValidateEntityTypeAwareness(regexResponse.RegexPattern) // Pattern exists but failed to match
+                        .ValidateEntityTypeAwareness(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()) // Pattern exists but failed to match
                         .ValidateFieldMappingEnhancement(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                         .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()) // Method designed to validate pattern data types
                         .ValidatePatternQuality(regexResponse.RegexPattern) // Pattern quality issue - failed to match
@@ -1714,7 +1714,7 @@ namespace WaterNut.DataSpace
 
                     // Fluent validation with short-circuiting - stops on first failure
                     var validatedSpec23 = templateSpec23
-                        .ValidateEntityTypeAwareness(regexResponse.RegexPattern) // Pattern exists but missing named group
+                        .ValidateEntityTypeAwareness(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()) // Pattern exists but missing named group
                         .ValidateFieldMappingEnhancement(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                         .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()) // Method designed to validate pattern data types
                         .ValidatePatternQuality(regexResponse.RegexPattern) // Pattern quality issue - missing required named group
@@ -1757,7 +1757,7 @@ namespace WaterNut.DataSpace
 
                     // Fluent validation with short-circuiting - stops on first failure
                     var validatedSpec24 = templateSpec24
-                        .ValidateEntityTypeAwareness(regexResponse.RegexPattern) // Pattern successfully extracted value
+                        .ValidateEntityTypeAwareness(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()) // Pattern successfully extracted value
                         .ValidateFieldMappingEnhancement(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                         .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()) // Method designed to validate pattern data types
                         .ValidatePatternQuality(regexResponse.RegexPattern) // Pattern quality verified through successful extraction
@@ -1792,7 +1792,7 @@ namespace WaterNut.DataSpace
 
                 // Fluent validation with short-circuiting - stops on first failure
                 var validatedSpec25 = templateSpec25
-                    .ValidateEntityTypeAwareness(regexResponse.RegexPattern) // Pattern successfully extracted value
+                    .ValidateEntityTypeAwareness(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()) // Pattern successfully extracted value
                     .ValidateFieldMappingEnhancement(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                     .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()) // Method designed to validate pattern data types
                     .ValidatePatternQuality(regexResponse.RegexPattern) // Pattern quality verified through successful extraction
@@ -1826,7 +1826,7 @@ namespace WaterNut.DataSpace
 
                 // Fluent validation with short-circuiting - stops on first failure
                 var validatedSpec26 = templateSpec26
-                    .ValidateEntityTypeAwareness(regexResponse.RegexPattern) // Pattern exists but has syntax error
+                    .ValidateEntityTypeAwareness(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()) // Pattern exists but has syntax error
                     .ValidateFieldMappingEnhancement(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>())
                     .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()) // Method designed to validate pattern data types
                     .ValidatePatternQuality(regexResponse.RegexPattern) // Pattern quality issue - syntax error
