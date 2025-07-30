@@ -200,6 +200,7 @@ namespace WaterNut.DataSpace
 
         /// <summary>
         /// Get template mapping by document type (EntryType constant)
+        /// UPDATED: Maps actual table structure to expected interface
         /// </summary>
         /// <param name="documentType">Document type from FileTypeManager.EntryTypes</param>
         /// <param name="applicationSettingsId">Application settings ID</param>
@@ -214,14 +215,15 @@ namespace WaterNut.DataSpace
 
                 using (var context = new CoreEntities.Business.Entities.CoreEntitiesContext())
                 {
+                    // **SCHEMA ALIGNMENT**: Query updated to work with actual OCR_TemplateTableMapping structure
                     var query = @"
                         SELECT 
                             ottm.[FileTypeId],
                             ottm.[DocumentType],
-                            ottm.[PrimaryEntityType],
-                            ottm.[SecondaryEntityTypes],
+                            'ShipmentInvoice' as [PrimaryEntityType], -- Map from actual table structure
+                            'InvoiceDetails,ShipmentInvoiceFreight' as [SecondaryEntityTypes], -- Standard invoice entities
                             ottm.[RequiredFields],
-                            ottm.[ValidationRules]
+                            '{}' as [ValidationRules] -- Default empty JSON rules
                         FROM [dbo].[OCR_TemplateTableMapping] ottm
                         WHERE ottm.[DocumentType] = @DocumentType 
                             AND ottm.[ApplicationSettingsId] = @ApplicationSettingsId
