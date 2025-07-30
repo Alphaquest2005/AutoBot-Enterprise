@@ -149,7 +149,7 @@ namespace WaterNut.DataSpace
                                 // Parse secondary entity types
                                 var secondaryTypes = reader.IsDBNull(reader.GetOrdinal("SecondaryEntityTypes")) 
                                     ? string.Empty 
-                                    : reader.GetString("SecondaryEntityTypes");
+                                    : reader.GetString(reader.GetOrdinal("SecondaryEntityTypes"));
                                 if (!string.IsNullOrEmpty(secondaryTypes))
                                 {
                                     mapping.SecondaryEntityTypes = secondaryTypes.Split(',').Select(s => s.Trim()).ToList();
@@ -251,7 +251,7 @@ namespace WaterNut.DataSpace
                                 // Parse secondary entity types
                                 var secondaryTypes = reader.IsDBNull(reader.GetOrdinal("SecondaryEntityTypes")) 
                                     ? string.Empty 
-                                    : reader.GetString("SecondaryEntityTypes");
+                                    : reader.GetString(reader.GetOrdinal("SecondaryEntityTypes"));
                                 if (!string.IsNullOrEmpty(secondaryTypes))
                                 {
                                     mapping.SecondaryEntityTypes = secondaryTypes.Split(',').Select(s => s.Trim()).ToList();
