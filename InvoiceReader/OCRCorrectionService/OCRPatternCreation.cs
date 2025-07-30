@@ -1801,7 +1801,7 @@ namespace WaterNut.DataSpace
                 validatedSpec25.LogValidationResults(_logger);
 
                 // Extract overall success from validated specification
-                bool templateSpecificationSuccess26 = validatedSpec.IsValid;
+                bool templateSpecificationSuccess26 = validatedSpec25.IsValid;
 
                 _logger.Error("🏆 **FINAL_METHOD_SUCCESS_WITH_TEMPLATE_SPEC**: {Status} - ValidateRegexPattern string match path {Result}", 
                     stringMatch ? "✅ PASS" : "❌ FAIL", 
