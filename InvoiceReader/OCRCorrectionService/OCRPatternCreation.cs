@@ -972,7 +972,7 @@ namespace WaterNut.DataSpace
             var templateSpec11 = TemplateSpecification.CreateForUtilityOperation(documentType, "CreateSpecificOCRCharacterConfusionPattern", o, null);
 
             // Fluent validation with short-circuiting - stops on first failure
-            var validatedSpec11 = templateSpec
+            var validatedSpec11 = templateSpec11
                 .ValidateEntityTypeAwareness(null) // No pattern output due to placeholder implementation
                 .ValidateFieldMappingEnhancement(null) // No field mapping for pattern creation
                 .ValidateDataTypeRecommendations(new List<PromptRecommendation>()) // Method designed to process text/character data types
@@ -1075,7 +1075,7 @@ namespace WaterNut.DataSpace
                 var templateSpec12 = TemplateSpecification.CreateForUtilityOperation(documentType, "CreateSpaceManipulationPattern", o, result);
 
                 // Fluent validation with short-circuiting - stops on first failure
-                var validatedSpec12 = templateSpec
+                var validatedSpec12 = templateSpec12
                     .ValidateEntityTypeAwareness(result.Item1)
                     .ValidateFieldMappingEnhancement(null) // No specific field mapping for pattern creation
                     .ValidateDataTypeRecommendations(new List<PromptRecommendation>()) // Method designed to process text data types
@@ -1121,7 +1121,7 @@ namespace WaterNut.DataSpace
             var templateSpec13 = TemplateSpecification.CreateForUtilityOperation(documentType, "CreateSpaceManipulationPattern", o, null);
 
             // Fluent validation with short-circuiting - stops on first failure
-            var validatedSpec13 = templateSpec
+            var validatedSpec13 = templateSpec13
                 .ValidateEntityTypeAwareness(null) // No pattern output due to no pattern applicable
                 .ValidateFieldMappingEnhancement(null) // No field mapping for pattern creation
                 .ValidateDataTypeRecommendations(new List<PromptRecommendation>()) // Method designed to process text data types
@@ -1212,7 +1212,7 @@ namespace WaterNut.DataSpace
                 var templateSpec14 = TemplateSpecification.CreateForUtilityOperation(documentType, "ValidatePatternInternal", null, null);
 
                 // Fluent validation with short-circuiting - stops on first failure
-                var validatedSpec14 = templateSpec
+                var validatedSpec14 = templateSpec14
                     .ValidateEntityTypeAwareness(null) // No pattern output due to null correction
                     .ValidateFieldMappingEnhancement(null) // No field mapping for validation
                     .ValidateDataTypeRecommendations(new List<PromptRecommendation>()) // Method designed to validate pattern data types
@@ -1270,7 +1270,7 @@ namespace WaterNut.DataSpace
                     var templateSpec15 = TemplateSpecification.CreateForUtilityOperation(documentType, "ValidatePatternInternal", correction, correction);
 
                     // Fluent validation with short-circuiting - stops on first failure
-                    var validatedSpec15 = templateSpec
+                    var validatedSpec15 = templateSpec15
                         .ValidateEntityTypeAwareness(null) // No pattern output due to field not supported
                         .ValidateFieldMappingEnhancement(correction.FieldName)
                         .ValidateDataTypeRecommendations(new List<PromptRecommendation>()) // Method designed to validate pattern data types
@@ -1331,7 +1331,7 @@ namespace WaterNut.DataSpace
                         var templateSpec16 = TemplateSpecification.CreateForUtilityOperation(documentType, "ValidatePatternInternal", correction, correction);
 
                         // Fluent validation with short-circuiting - stops on first failure
-                        var validatedSpec16 = templateSpec
+                        var validatedSpec16 = templateSpec16
                             .ValidateEntityTypeAwareness(null) // No pattern output due to format mismatch
                             .ValidateFieldMappingEnhancement(correction.FieldName)
                             .ValidateDataTypeRecommendations(new List<PromptRecommendation>()) // Method designed to validate pattern data types
@@ -1391,7 +1391,7 @@ namespace WaterNut.DataSpace
                         var templateSpec17 = TemplateSpecification.CreateForUtilityOperation(documentType, "ValidatePatternInternal", correction, correction);
 
                         // Fluent validation with short-circuiting - stops on first failure
-                        var validatedSpec17 = templateSpec
+                        var validatedSpec17 = templateSpec17
                             .ValidateEntityTypeAwareness(null) // No pattern output due to regex syntax error
                             .ValidateFieldMappingEnhancement(correction.FieldName)
                             .ValidateDataTypeRecommendations(new List<PromptRecommendation>()) // Method designed to validate pattern data types
