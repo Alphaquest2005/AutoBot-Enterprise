@@ -1339,10 +1339,10 @@ namespace WaterNut.DataSpace
                             .ValidateTemplateOptimization(correction); // Return correction object with failure status
 
                         // Log all validation results
-                        validatedSpec17.LogValidationResults(_logger);
+                        validatedSpec16.LogValidationResults(_logger);
 
                         // Extract overall success from validated specification
-                        bool templateSpecificationSuccess17 = validatedSpec17.IsValid;
+                        bool templateSpecificationSuccess17 = validatedSpec16.IsValid;
 
                         _logger.Error("🏆 **FINAL_METHOD_SUCCESS_WITH_TEMPLATE_SPEC**: ✅ PASS - ValidatePatternInternal format mismatch path handled appropriately");
                         
@@ -1399,10 +1399,10 @@ namespace WaterNut.DataSpace
                             .ValidateTemplateOptimization(correction); // Return correction object with failure status
 
                         // Log all validation results
-                        validatedSpec18.LogValidationResults(_logger);
+                        validatedSpec17.LogValidationResults(_logger);
 
                         // Extract overall success from validated specification
-                        bool templateSpecificationSuccess18 = validatedSpec18.IsValid;
+                        bool templateSpecificationSuccess18 = validatedSpec17.IsValid;
 
                         _logger.Error("🏆 **FINAL_METHOD_SUCCESS_WITH_TEMPLATE_SPEC**: ✅ PASS - ValidatePatternInternal regex syntax error path handled appropriately");
                         
@@ -1453,10 +1453,10 @@ namespace WaterNut.DataSpace
                     .ValidateTemplateOptimization(correction); // Return validated correction object
 
                 // Log all validation results
-                validatedSpec19.LogValidationResults(_logger);
+                validatedSpec18.LogValidationResults(_logger);
 
                 // Extract overall success from validated specification
-                bool templateSpecificationSuccess19 = validatedSpec19.IsValid;
+                bool templateSpecificationSuccess19 = validatedSpec18.IsValid;
 
                 // Update overall success to include template specification validation
                 overallSuccess = overallSuccess && templateSpecificationSuccess19;
@@ -1507,10 +1507,10 @@ namespace WaterNut.DataSpace
                     .ValidateTemplateOptimization(correction); // Return correction object with failure status
 
                 // Log all validation results
-                validatedSpec20.LogValidationResults(_logger);
+                validatedSpec19.LogValidationResults(_logger);
 
                 // Extract overall success from validated specification
-                bool templateSpecificationSuccess20 = validatedSpec20.IsValid;
+                bool templateSpecificationSuccess20 = validatedSpec19.IsValid;
 
                 _logger.Error("🏆 **FINAL_METHOD_SUCCESS_WITH_TEMPLATE_SPEC**: ❌ FAIL - ValidatePatternInternal exception path with template specification validation failed");
                 
@@ -1603,10 +1603,10 @@ namespace WaterNut.DataSpace
                     .ValidateTemplateOptimization(false); // Return false for validation failure
 
                 // Log all validation results
-                validatedSpec21.LogValidationResults(_logger);
+                validatedSpec20.LogValidationResults(_logger);
 
                 // Extract overall success from validated specification
-                bool templateSpecificationSuccess21 = validatedSpec21.IsValid;
+                bool templateSpecificationSuccess21 = validatedSpec20.IsValid;
 
                 _logger.Error("🏆 **FINAL_METHOD_SUCCESS_WITH_TEMPLATE_SPEC**: ✅ PASS - ValidateRegexPattern null input path handled appropriately");
                 
