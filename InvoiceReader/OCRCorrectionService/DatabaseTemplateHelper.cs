@@ -142,7 +142,7 @@ namespace WaterNut.DataSpace
                                 var mapping = new TemplateMapping
                                 {
                                     FileTypeId = reader.GetInt32(reader.GetOrdinal("FileTypeId")),
-                                    DocumentType = reader.GetString("DocumentType"),
+                                    DocumentType = reader.GetString(reader.GetOrdinal("DocumentType")),
                                     PrimaryEntityType = reader.GetString("PrimaryEntityType")
                                 };
 
@@ -244,7 +244,7 @@ namespace WaterNut.DataSpace
                                 var mapping = new TemplateMapping
                                 {
                                     FileTypeId = reader.GetInt32(reader.GetOrdinal("FileTypeId")),
-                                    DocumentType = reader.GetString("DocumentType"),
+                                    DocumentType = reader.GetString(reader.GetOrdinal("DocumentType")),
                                     PrimaryEntityType = reader.GetString("PrimaryEntityType")
                                 };
 
