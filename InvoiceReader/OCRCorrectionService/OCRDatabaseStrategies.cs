@@ -362,7 +362,7 @@ namespace WaterNut.DataSpace
                     var validatedSpec = templateSpec
                         .ValidateEntityTypeAwareness(null) // No AI recommendations for utility operations
                         .ValidateFieldMappingEnhancement(null)
-                        .ValidateDataTypeRecommendations("Numeric") // Database save operations return numeric change counts
+                        .ValidateDataTypeRecommendations(new List<PromptRecommendation>()) // Database save operations return numeric change counts
                         .ValidatePatternQuality(null)
                         .ValidateTemplateOptimization(null);
 
