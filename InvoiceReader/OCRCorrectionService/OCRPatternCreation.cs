@@ -361,7 +361,7 @@ namespace WaterNut.DataSpace
                 var validatedSpec = templateSpec
                     .ValidateEntityTypeAwareness(result.Item1)
                     .ValidateFieldMappingEnhancement(null) // No specific field mapping for pattern creation
-                    .ValidateDataTypeRecommendations("Decimal")
+                    .ValidateDataTypeRecommendations(new List<PromptRecommendation>())
                     .ValidatePatternQuality(result.Item1)
                     .ValidateTemplateOptimization(result);
 
@@ -429,7 +429,7 @@ namespace WaterNut.DataSpace
                 var validatedSpec = templateSpec
                     .ValidateEntityTypeAwareness(result.Item1)
                     .ValidateFieldMappingEnhancement(null) // No specific field mapping for pattern creation
-                    .ValidateDataTypeRecommendations("Decimal")
+                    .ValidateDataTypeRecommendations(new List<PromptRecommendation>())
                     .ValidatePatternQuality(result.Item1)
                     .ValidateTemplateOptimization(result);
 
@@ -594,7 +594,7 @@ namespace WaterNut.DataSpace
                 var validatedSpec = templateSpec
                     .ValidateEntityTypeAwareness(result.Item1)
                     .ValidateFieldMappingEnhancement(null) // No specific field mapping for pattern creation
-                    .ValidateDataTypeRecommendations("Currency")
+                    .ValidateDataTypeRecommendations(new List<PromptRecommendation>())
                     .ValidatePatternQuality(result.Item1)
                     .ValidateTemplateOptimization(result);
 
@@ -745,7 +745,7 @@ namespace WaterNut.DataSpace
                 var validatedSpec = templateSpec
                     .ValidateEntityTypeAwareness(result.Item1)
                     .ValidateFieldMappingEnhancement(null) // No specific field mapping for pattern creation
-                    .ValidateDataTypeRecommendations("Numeric")
+                    .ValidateDataTypeRecommendations(new List<PromptRecommendation>())
                     .ValidatePatternQuality(result.Item1)
                     .ValidateTemplateOptimization(result);
 
@@ -812,7 +812,7 @@ namespace WaterNut.DataSpace
                 var validatedSpec = templateSpec
                     .ValidateEntityTypeAwareness(result.Item1)
                     .ValidateFieldMappingEnhancement(null) // No specific field mapping for pattern creation
-                    .ValidateDataTypeRecommendations("Numeric") // Method processes numeric data types
+                    .ValidateDataTypeRecommendations(new List<PromptRecommendation>()) // Method processes numeric data types
                     .ValidatePatternQuality(result.Item1)
                     .ValidateTemplateOptimization(result);
 
@@ -1077,7 +1077,7 @@ namespace WaterNut.DataSpace
                 var validatedSpec = templateSpec
                     .ValidateEntityTypeAwareness(result.Item1)
                     .ValidateFieldMappingEnhancement(null) // No specific field mapping for pattern creation
-                    .ValidateDataTypeRecommendations("Text") // Method designed to process text data types
+                    .ValidateDataTypeRecommendations(new List<PromptRecommendation>()) // Method designed to process text data types
                     .ValidatePatternQuality(result.Item1)
                     .ValidateTemplateOptimization(result);
 
@@ -1214,7 +1214,7 @@ namespace WaterNut.DataSpace
                 var validatedSpec = templateSpec
                     .ValidateEntityTypeAwareness(null) // No pattern output due to null correction
                     .ValidateFieldMappingEnhancement(null) // No field mapping for validation
-                    .ValidateDataTypeRecommendations("Pattern") // Method designed to validate pattern data types
+                    .ValidateDataTypeRecommendations(new List<PromptRecommendation>()) // Method designed to validate pattern data types
                     .ValidatePatternQuality(null) // No pattern due to null correction
                     .ValidateTemplateOptimization(null); // No optimization due to null correction
 
@@ -1272,7 +1272,7 @@ namespace WaterNut.DataSpace
                     var validatedSpec = templateSpec
                         .ValidateEntityTypeAwareness(null) // No pattern output due to field not supported
                         .ValidateFieldMappingEnhancement(correction.FieldName)
-                        .ValidateDataTypeRecommendations("Pattern") // Method designed to validate pattern data types
+                        .ValidateDataTypeRecommendations(new List<PromptRecommendation>()) // Method designed to validate pattern data types
                         .ValidatePatternQuality(null) // No pattern due to field not supported
                         .ValidateTemplateOptimization(correction); // Return correction object with failure status
 
@@ -1333,7 +1333,7 @@ namespace WaterNut.DataSpace
                         var validatedSpec = templateSpec
                             .ValidateEntityTypeAwareness(null) // No pattern output due to format mismatch
                             .ValidateFieldMappingEnhancement(correction.FieldName)
-                            .ValidateDataTypeRecommendations("Pattern") // Method designed to validate pattern data types
+                            .ValidateDataTypeRecommendations(new List<PromptRecommendation>()) // Method designed to validate pattern data types
                             .ValidatePatternQuality(null) // No pattern due to format mismatch
                             .ValidateTemplateOptimization(correction); // Return correction object with failure status
 
@@ -1393,7 +1393,7 @@ namespace WaterNut.DataSpace
                         var validatedSpec = templateSpec
                             .ValidateEntityTypeAwareness(null) // No pattern output due to regex syntax error
                             .ValidateFieldMappingEnhancement(correction.FieldName)
-                            .ValidateDataTypeRecommendations("Pattern") // Method designed to validate pattern data types
+                            .ValidateDataTypeRecommendations(new List<PromptRecommendation>()) // Method designed to validate pattern data types
                             .ValidatePatternQuality(null) // No valid pattern due to regex syntax error
                             .ValidateTemplateOptimization(correction); // Return correction object with failure status
 
@@ -1447,7 +1447,7 @@ namespace WaterNut.DataSpace
                 var validatedSpec = templateSpec
                     .ValidateEntityTypeAwareness(correction.SuggestedRegex)
                     .ValidateFieldMappingEnhancement(correction.FieldName)
-                    .ValidateDataTypeRecommendations("Pattern") // Method designed to validate pattern data types
+                    .ValidateDataTypeRecommendations(new List<PromptRecommendation>()) // Method designed to validate pattern data types
                     .ValidatePatternQuality(correction.SuggestedRegex)
                     .ValidateTemplateOptimization(correction); // Return validated correction object
 
@@ -1501,7 +1501,7 @@ namespace WaterNut.DataSpace
                 var validatedSpec = templateSpec
                     .ValidateEntityTypeAwareness(null) // No pattern output due to exception
                     .ValidateFieldMappingEnhancement(correction.FieldName)
-                    .ValidateDataTypeRecommendations("Pattern") // Method designed to validate pattern data types
+                    .ValidateDataTypeRecommendations(new List<PromptRecommendation>()) // Method designed to validate pattern data types
                     .ValidatePatternQuality(null) // No pattern due to exception
                     .ValidateTemplateOptimization(correction); // Return correction object with failure status
 
@@ -1597,7 +1597,7 @@ namespace WaterNut.DataSpace
                 var validatedSpec = templateSpec
                     .ValidateEntityTypeAwareness(null) // No pattern output due to null input
                     .ValidateFieldMappingEnhancement(correction?.FieldName)
-                    .ValidateDataTypeRecommendations("Pattern") // Method designed to validate pattern data types
+                    .ValidateDataTypeRecommendations(new List<PromptRecommendation>()) // Method designed to validate pattern data types
                     .ValidatePatternQuality(null) // No pattern due to null input
                     .ValidateTemplateOptimization(false); // Return false for validation failure
 
@@ -1644,7 +1644,7 @@ namespace WaterNut.DataSpace
                     var validatedSpec = templateSpec
                         .ValidateEntityTypeAwareness(regexResponse.RegexPattern) // Pattern exists but no text to test
                         .ValidateFieldMappingEnhancement(correction.FieldName)
-                        .ValidateDataTypeRecommendations("Pattern") // Method designed to validate pattern data types
+                        .ValidateDataTypeRecommendations(new List<PromptRecommendation>()) // Method designed to validate pattern data types
                         .ValidatePatternQuality(regexResponse.RegexPattern) // Pattern quality can be assessed
                         .ValidateTemplateOptimization(false); // Return false for validation failure
 
@@ -1678,7 +1678,7 @@ namespace WaterNut.DataSpace
                     var validatedSpec = templateSpec
                         .ValidateEntityTypeAwareness(regexResponse.RegexPattern) // Pattern exists but failed to match
                         .ValidateFieldMappingEnhancement(correction.FieldName)
-                        .ValidateDataTypeRecommendations("Pattern") // Method designed to validate pattern data types
+                        .ValidateDataTypeRecommendations(new List<PromptRecommendation>()) // Method designed to validate pattern data types
                         .ValidatePatternQuality(regexResponse.RegexPattern) // Pattern quality issue - failed to match
                         .ValidateTemplateOptimization(false); // Return false for validation failure
 
@@ -1715,7 +1715,7 @@ namespace WaterNut.DataSpace
                     var validatedSpec = templateSpec
                         .ValidateEntityTypeAwareness(regexResponse.RegexPattern) // Pattern exists but missing named group
                         .ValidateFieldMappingEnhancement(correction.FieldName)
-                        .ValidateDataTypeRecommendations("Pattern") // Method designed to validate pattern data types
+                        .ValidateDataTypeRecommendations(new List<PromptRecommendation>()) // Method designed to validate pattern data types
                         .ValidatePatternQuality(regexResponse.RegexPattern) // Pattern quality issue - missing required named group
                         .ValidateTemplateOptimization(false); // Return false for validation failure
 
@@ -1758,7 +1758,7 @@ namespace WaterNut.DataSpace
                     var validatedSpec = templateSpec
                         .ValidateEntityTypeAwareness(regexResponse.RegexPattern) // Pattern successfully extracted value
                         .ValidateFieldMappingEnhancement(correction.FieldName)
-                        .ValidateDataTypeRecommendations("Pattern") // Method designed to validate pattern data types
+                        .ValidateDataTypeRecommendations(new List<PromptRecommendation>()) // Method designed to validate pattern data types
                         .ValidatePatternQuality(regexResponse.RegexPattern) // Pattern quality verified through successful extraction
                         .ValidateTemplateOptimization(isMatch); // Return result based on numeric match
 
@@ -1793,7 +1793,7 @@ namespace WaterNut.DataSpace
                 var validatedSpec = templateSpec
                     .ValidateEntityTypeAwareness(regexResponse.RegexPattern) // Pattern successfully extracted value
                     .ValidateFieldMappingEnhancement(correction.FieldName)
-                    .ValidateDataTypeRecommendations("Pattern") // Method designed to validate pattern data types
+                    .ValidateDataTypeRecommendations(new List<PromptRecommendation>()) // Method designed to validate pattern data types
                     .ValidatePatternQuality(regexResponse.RegexPattern) // Pattern quality verified through successful extraction
                     .ValidateTemplateOptimization(stringMatch); // Return result based on string match
 
@@ -1827,7 +1827,7 @@ namespace WaterNut.DataSpace
                 var validatedSpec = templateSpec
                     .ValidateEntityTypeAwareness(regexResponse.RegexPattern) // Pattern exists but has syntax error
                     .ValidateFieldMappingEnhancement(correction.FieldName)
-                    .ValidateDataTypeRecommendations("Pattern") // Method designed to validate pattern data types
+                    .ValidateDataTypeRecommendations(new List<PromptRecommendation>()) // Method designed to validate pattern data types
                     .ValidatePatternQuality(regexResponse.RegexPattern) // Pattern quality issue - syntax error
                     .ValidateTemplateOptimization(false); // Return false for validation failure
 
