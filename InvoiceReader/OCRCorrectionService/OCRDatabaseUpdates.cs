@@ -170,15 +170,15 @@ namespace WaterNut.DataSpace
                 _logger.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: UpdateRegexPatternsAsync dual-layer template specification compliance analysis");
 
                 // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
-                string documentType = "Invoice"; // Database update orchestrator is document-type agnostic
-                _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
+                string documentTypeUpdate = "Invoice"; // Database update orchestrator is document-type agnostic
+                _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentTypeUpdate} - Using DatabaseTemplateHelper document-specific validation rules");
 
                 // Create template specification object for document type with dual-layer validation
-                var templateSpec = TemplateSpecification.CreateForUtilityOperation(documentType, "UpdateRegexPatternsAsync", 
+                var templateSpecUpdate = TemplateSpecification.CreateForUtilityOperation(documentTypeUpdate, "UpdateRegexPatternsAsync", 
                     regexUpdateRequests, null);
 
                 // Fluent validation with short-circuiting - stops on first failure
-                var validatedSpec = templateSpec
+                var validatedSpecUpdate = templateSpecUpdate
                     .ValidateEntityTypeAwareness(null) // No AI recommendations for utility operations
                     .ValidateFieldMappingEnhancement(null)
                     .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()) // Database orchestrator operations process object collections
@@ -186,10 +186,10 @@ namespace WaterNut.DataSpace
                     .ValidateTemplateOptimization(null);
 
                 // Log all validation results
-                validatedSpec.LogValidationResults(_logger);
+                validatedSpecUpdate.LogValidationResults(_logger);
 
                 // Extract overall success from validated specification
-                bool templateSpecificationSuccess = validatedSpec.IsValid;
+                bool templateSpecificationSuccessUpdate = validatedSpecUpdate.IsValid;
                 
                 return;
             }
@@ -826,15 +826,15 @@ namespace WaterNut.DataSpace
                 _logger.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: IsFieldSupported dual-layer template specification compliance analysis");
 
                 // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
-                string documentType = "Invoice"; // Field support checking is document-type agnostic
-                _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
+                string documentTypeFieldSupport = "Invoice"; // Field support checking is document-type agnostic
+                _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentTypeFieldSupport} - Using DatabaseTemplateHelper document-specific validation rules");
 
                 // Create template specification object for document type with dual-layer validation
-                var templateSpec = TemplateSpecification.CreateForUtilityOperation(documentType, "IsFieldSupported", 
+                var templateSpecFieldSupportCheck = TemplateSpecification.CreateForUtilityOperation(documentTypeFieldSupport, "IsFieldSupported", 
                     rawFieldName, false);
 
                 // Fluent validation with short-circuiting - stops on first failure
-                var validatedSpec = templateSpec
+                var validatedSpecFieldSupportCheck = templateSpecFieldSupportCheck
                     .ValidateEntityTypeAwareness(null) // No AI recommendations for utility operations
                     .ValidateFieldMappingEnhancement(null)
                     .ValidateDataTypeRecommendations(new List<WaterNut.DataSpace.AITemplateService.PromptRecommendation>()) // Field support operations return boolean results
@@ -842,10 +842,10 @@ namespace WaterNut.DataSpace
                     .ValidateTemplateOptimization(null);
 
                 // Log all validation results
-                validatedSpec.LogValidationResults(_logger);
+                validatedSpecFieldSupportCheck.LogValidationResults(_logger);
 
                 // Extract overall success from validated specification
-                bool templateSpecificationSuccess = validatedSpec.IsValid;
+                bool templateSpecificationSuccessFieldSupportCheck = validatedSpecFieldSupportCheck.IsValid;
                 
                 return false;
             }
