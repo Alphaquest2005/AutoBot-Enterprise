@@ -803,7 +803,7 @@ namespace WaterNut.DataSpace
 
                 // Create template specification object for document type with dual-layer validation
                 var templateSpec = TemplateSpecification.CreateForFieldMapping(documentType, "GetFieldsByRegexNamedGroupsAsync", 
-                    regexPattern, fieldsFromDb);
+                    regexPatternText, fieldsFromDb);
 
                 // Fluent validation with short-circuiting - stops on first failure
                 var validatedSpec = templateSpec
