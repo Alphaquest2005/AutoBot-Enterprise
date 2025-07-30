@@ -922,7 +922,7 @@ namespace AutoBotUtilities.Tests
                         }
                         else
                         {
-                            _logger.Error("❌ **STEP_3_FAILED**: No MANGO template found in OCR database after {TestStartTime}", testStartTime);
+                            _logger.Error("❌ **STEP_3_FAILED**: No MANGO template (03152025_TOTAL_AMOUNT_GENERIC_DOCUMENT) found in OCR database after {TestStartTime}", testStartTime);
                             _logger.Error("   - **DIAGNOSIS**: Template created in memory but failed to persist to database");
                             _logger.Error("   - **LIKELY_CAUSES**: Database transaction failure, validation constraints, SaveChangesAsync failure");
                         }
