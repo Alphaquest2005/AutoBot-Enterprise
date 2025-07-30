@@ -1247,7 +1247,7 @@ namespace WaterNut.DataSpace
             var validatedSpec = templateSpec
                 .ValidateEntityTypeAwareness(null) // No AI recommendations for utility operations
                 .ValidateFieldMappingEnhancement(null)
-                .ValidateDataTypeRecommendations("Text") // Regex extraction operations return text results
+                .ValidateDataTypeRecommendations(new List<PromptRecommendation>()) // Regex extraction operations return text results
                 .ValidatePatternQuality(null)
                 .ValidateTemplateOptimization(null);
 
