@@ -573,10 +573,10 @@ namespace WaterNut.DataSpace
                     .ValidateTemplateOptimization(null);
 
                 // Log all validation results
-                validatedSpec.LogValidationResults(_logger);
+                validatedSpecGemini.LogValidationResults(_logger);
 
                 // Extract overall success from validated specification
-                bool templateSpecificationSuccess = validatedSpec.IsValid;
+                bool templateSpecificationGeminiSuccess = validatedSpecGemini.IsValid;
                 
                 throw new InvalidOperationException("Gemini API returned empty content");
             }
