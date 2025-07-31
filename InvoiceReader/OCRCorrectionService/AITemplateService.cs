@@ -2276,29 +2276,32 @@ If you find no new omissions or corrections, return an empty errors array with d
 
         /// <summary>
         /// Gets expected EntityTypes for document type based on Template_Specifications.md
+        /// Uses FileTypeManager.EntryTypes enum as single source of truth
         /// </summary>
         private static List<string> GetExpectedEntityTypesForDocument(string documentType)
         {
-            return documentType.ToLower() switch
+            // Normalize document type using EntryTypes enum
+            var normalizedType = FileTypeManager.EntryTypes.GetEntryType(documentType);
+            
+            return normalizedType switch
             {
                 // Invoice Documents - Template_Specifications.md Section: Invoice Processing Entities
-                "invoice" => new List<string> { "Invoice", "InvoiceDetails", "EntryData", "EntryDataDetails" },
-                "shipmentinvoice" => new List<string> { "Invoice", "InvoiceDetails", "EntryData", "EntryDataDetails" },
+                FileTypeManager.EntryTypes.ShipmentInvoice => new List<string> { "Invoice", "ShipmentInvoiceDetails", "EntryData", "EntryDataDetails" },
                 
                 // Shipping Documents - Template_Specifications.md Section: Shipping & Logistics Entities  
-                "shipmentbl" => new List<string> { "ShipmentBL", "ShipmentBLDetails" },
-                "freight" => new List<string> { "ShipmentFreight", "ShipmentFreightDetails" },
-                "manifest" => new List<string> { "ShipmentManifest", "ShipmentBL" },
-                "rider" => new List<string> { "ShipmentRider", "ShipmentRiderDetails" },
+                FileTypeManager.EntryTypes.BL => new List<string> { "ShipmentBL", "ShipmentBLDetails" },
+                FileTypeManager.EntryTypes.Freight => new List<string> { "ShipmentFreight", "ShipmentFreightDetails" },
+                FileTypeManager.EntryTypes.Manifest => new List<string> { "ShipmentManifest", "ShipmentBL" },
+                FileTypeManager.EntryTypes.Rider => new List<string> { "ShipmentRider", "ShipmentRiderDetails" },
                 
                 // Purchase Orders
-                "purchaseorder" => new List<string> { "PurchaseOrders", "PurchaseOrderDetails", "EntryData", "EntryDataDetails" },
+                FileTypeManager.EntryTypes.Po => new List<string> { "PurchaseOrders", "PurchaseOrderDetails", "EntryData", "EntryDataDetails" },
                 
                 // Supporting Documents - Template_Specifications.md Section: Supporting Entities
-                "customsdeclaration" => new List<string> { "SimplifiedDeclaration", "ExtraInfo", "Suppliers" },
+                FileTypeManager.EntryTypes.SimplifiedDeclaration => new List<string> { "SimplifiedDeclaration", "ExtraInfo", "Suppliers" },
                 
-                // Default to Invoice entities for unknown types
-                _ => new List<string> { "Invoice", "InvoiceDetails" }
+                // Default to Invoice entities for unknown types - use ShipmentInvoiceDetails
+                _ => new List<string> { "Invoice", "ShipmentInvoiceDetails" }
             };
         }
 
