@@ -847,8 +847,28 @@ namespace WaterNut.DataSpace
                 .ValidatePatternQuality(null)
                 .ValidateTemplateOptimization(null);
 
-            // Log all validation results
+            // Log all validation results and check for termination signal
             validatedSpec.LogValidationResults(_logger);
+            
+            // **GRACEFUL TERMINATION CHECK** - Stop processing if validation failed
+            if (validatedSpec.ValidationFailed)
+            {
+                _logger.Error("🛑 **PRODUCTION_PIPELINE_TERMINATED**: Template specification validation failed - terminating template creation");
+                _logger.Error("   - **TERMINATION_REASON**: {FailureReason}", validatedSpec.FailureReason);
+                _logger.Error("   - **TEMPLATE_COUNT_AT_TERMINATION**: {TemplateCount} templates created before termination", createdTemplates.Count);
+                _logger.Error("   - **DATA_INTEGRITY_ACTION**: Returning empty template list to prevent invalid data propagation");
+                _logger.Error("   - **PIPELINE_STATUS**: TERMINATED - Template creation aborted due to validation failure");
+                
+                // **COMPREHENSIVE TERMINATION SUMMARY**
+                _logger.Error("🎯 **TERMINATION_SUMMARY**: Template creation terminated due to specification validation failure");
+                _logger.Error("   - **INPUT_PDF_LENGTH**: {PdfLength} characters processed before termination", pdfText.Length);
+                _logger.Error("   - **TEMPLATES_DISCARDED**: {TemplateCount} templates discarded due to validation failure", createdTemplates.Count);
+                _logger.Error("   - **TERMINATION_SUCCESS**: ✅ GRACEFUL - Production pipeline terminated without exceptions");
+                _logger.Error("   - **DATA_PROTECTION**: ✅ SUCCESSFUL - Invalid template data prevented from propagating");
+                
+                // **RETURN EMPTY TEMPLATE LIST TO SIGNAL FAILURE TO CALLER**
+                return new List<Template>();
+            }
 
             // Extract overall success from validated specification
             bool templateSpecificationSuccess = validatedSpec.IsValid;
