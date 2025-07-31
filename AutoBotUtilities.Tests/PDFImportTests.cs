@@ -114,9 +114,51 @@ namespace AutoBotUtilities.Tests
         /// 🎯 PHASE 3: RESTORE TEST-CONTROLLED ARCHIVING SYSTEM
         /// Moves completed log files to Archive/ folder for permanent preservation
         /// </summary>
+        private static void MoveLogToArchive()
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(_currentLogFilePath) || !File.Exists(_currentLogFilePath))
+                {
+                    _logger?.Warning("🔍 ARCHIVING_SKIP: No log file to archive or file doesn't exist: {LogFilePath}", _currentLogFilePath);
+                    return;
+                }
 
-                // Define your custom System.Text.Json options
-                var systemTextJsonOptions = new JsonSerializerOptions
+                // Create Archive directory
+                var archiveDir = Path.Combine(
+                    Path.GetDirectoryName(_currentLogFilePath), 
+                    "Archive");
+                Directory.CreateDirectory(archiveDir);
+
+                // Move log file to archive with same filename
+                var archiveFilePath = Path.Combine(archiveDir, Path.GetFileName(_currentLogFilePath));
+                
+                // Handle potential filename conflicts by adding timestamp suffix
+                if (File.Exists(archiveFilePath))
+                {
+                    var nameWithoutExt = Path.GetFileNameWithoutExtension(archiveFilePath);
+                    var extension = Path.GetExtension(archiveFilePath);
+                    archiveFilePath = Path.Combine(archiveDir, $"{nameWithoutExt}_Collision{DateTime.Now:HHmmss}{extension}");
+                }
+
+                File.Move(_currentLogFilePath, archiveFilePath);
+                Console.WriteLine($"✅ LOG_ARCHIVED: {Path.GetFileName(_currentLogFilePath)} → Archive/{Path.GetFileName(archiveFilePath)}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ ARCHIVING_ERROR: Failed to archive log file: {ex.Message}");
+                _logger?.Error(ex, "❌ Failed to archive log file: {LogFilePath}", _currentLogFilePath);
+            }
+        }
+
+        // Initialize LogFilterState for tests
+        static PDFImportTests()
+        {
+            // Set up basic logging filter state
+            LogFilterState.TargetSourceContextForDetails = null;
+            LogFilterState.TargetMethodNameForDetails = null;
+            LogFilterState.DetailTargetMinimumLevel = LogEventLevel.Fatal;
+            LogFilterState.EnabledCategoryLevels[LogCategory.Undefined] = LogEventLevel.Debug
                 {
                     DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault, // Key for omitting defaults
                     ReferenceHandler = ReferenceHandler.IgnoreCycles,
