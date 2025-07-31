@@ -93,11 +93,21 @@ namespace WaterNut.DataSpace
             }
             catch (Exception ex)
             {
-                // **LOG_THE_WHO**: Exception handling with comprehensive error analysis
-                _logger.Error(ex, "🚨 **DEEPSEEK_PROCESSING_EXCEPTION**: Unhandled exception during DeepSeek response processing");
-                _logger.Error("   - **EXCEPTION_TYPE**: {ExceptionType}", ex.GetType().FullName);
-                _logger.Error("   - **EXCEPTION_MESSAGE**: {ExceptionMessage}", ex.Message);
-                _logger.Error("   - **PROCESSING_PHASE**: Exception occurred during JSON parsing or correction extraction");
+                // **LOG_THE_WHO**: Comprehensive exception logging with full context for LLM debugging
+                var exceptionContext = LLMExceptionLogger.CreateExceptionContext(
+                    operation: "DeepSeek response processing and correction extraction",
+                    input: $"Response length: {aiResponse?.Length ?? 0} characters",
+                    expectedOutcome: "Parsed corrections list extracted from DeepSeek JSON response",
+                    actualOutcome: "Exception occurred during JSON parsing or correction extraction"
+                );
+
+                LLMExceptionLogger.LogComprehensiveException(
+                    _logger, 
+                    ex, 
+                    "DeepSeek response processing failed during JSON parsing or correction extraction", 
+                    exceptionContext
+                );
+
                 _logger.Error("   - **ERROR_IMPACT**: No corrections extracted due to processing failure");
                 _logger.Error("   - **FALLBACK_STRATEGY**: Returning empty corrections list for graceful degradation");
                 _logger.Error("   - **TROUBLESHOOTING**: Check DeepSeek response format and parsing logic");
