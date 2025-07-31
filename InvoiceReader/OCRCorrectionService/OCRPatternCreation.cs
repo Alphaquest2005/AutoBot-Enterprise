@@ -1626,7 +1626,11 @@ namespace WaterNut.DataSpace
                 var regex = new Regex(regexResponse.RegexPattern, RegexOptions.IgnoreCase | (regexResponse.IsMultiline ? RegexOptions.Multiline : RegexOptions.None));
                 _logger.Debug("    - ✅ **SYNTAX_CHECK_PASS**: Regex compiled successfully.");
 
-                string textToTest = !string.IsNullOrEmpty(regexResponse.TestMatch) ? regexResponse.TestMatch : correction.LineText;
+                // **🚨 CRITICAL FIX**: Use full context for validation instead of individual line fragments
+                // DeepSeek patterns are designed for the full OCR context they received, not line fragments
+                string textToTest = !string.IsNullOrEmpty(regexResponse.TestMatch) ? regexResponse.TestMatch : 
+                                   (!string.IsNullOrEmpty(correction.WindowText) && correction.WindowText.Length > 50) ? correction.WindowText : 
+                                   correction.LineText;
                 if (string.IsNullOrEmpty(textToTest))
                 {
                     _logger.Debug("    - ❌ **VALIDATION_FAIL**: No text available (neither TestMatch nor LineText) to test the regex against.");
