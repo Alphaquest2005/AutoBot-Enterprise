@@ -187,7 +187,14 @@ namespace WaterNut.DataSpace
             // **SHORTCIRCUIT FAILURE MECHANISM** - Throw CriticalValidationException on first failure
             if (!overallSuccess)
             {
+                // **DEBUG SHORTCIRCUIT MECHANISM** - Log details about why exception might not be throwing
+                logger.Error("🔍 **SHORTCIRCUIT_DEBUG**: overallSuccess={OverallSuccess}, ValidationResults.Count={Count}", 
+                    overallSuccess, ValidationResults.Count);
+                    
                 var firstFailure = ValidationResults.FirstOrDefault(r => !r.IsSuccess);
+                logger.Error("🔍 **SHORTCIRCUIT_DEBUG**: firstFailure is {FirstFailureStatus}", 
+                    firstFailure == null ? "NULL" : $"NOT NULL ({firstFailure.CriteriaName})");
+                
                 if (firstFailure != null)
                 {
                     var evidence = $"Template specification validation failed: {firstFailure.CriteriaName} - {firstFailure.Message}";
@@ -197,8 +204,22 @@ namespace WaterNut.DataSpace
                     LLMExceptionLogger.LogCriticalValidationException(logger, 
                         new CriticalValidationException("TEMPLATE_SPECIFICATION_VALIDATION", evidence, DocumentType, "LogValidationResults"));
                     
+                    // **CRITICAL**: Log the actual throw for debugging
+                    logger.Error("🚨 **ABOUT_TO_THROW_EXCEPTION**: CriticalValidationException about to be thrown NOW");
+                    
                     // Throw to stop pipeline immediately
                     throw new CriticalValidationException("TEMPLATE_SPECIFICATION_VALIDATION", evidence, DocumentType, "LogValidationResults");
+                }
+                else
+                {
+                    logger.Error("🚨 **SHORTCIRCUIT_BUG**: overallSuccess=false but firstFailure=null - ValidationResults may be empty or all marked as Success");
+                    
+                    // Log all ValidationResults to debug why firstFailure is null
+                    foreach (var result in ValidationResults)
+                    {
+                        logger.Error("🔍 **VALIDATION_RESULT_DEBUG**: {CriteriaName} - IsSuccess={IsSuccess} - {Message}", 
+                            result.CriteriaName, result.IsSuccess, result.Message);
+                    }
                 }
             }
         }
