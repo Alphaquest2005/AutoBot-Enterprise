@@ -293,7 +293,20 @@ namespace WaterNut.DataSpace
                 }
                 catch (Exception ex)
                 {
-                    _logger.Warning(ex, "Failed to extract named groups from regex pattern: {Pattern}", regexPattern);
+                    // **LOG_THE_WHO**: Comprehensive exception logging with full context for LLM debugging
+                    var exceptionContext = LLMExceptionLogger.CreateExceptionContext(
+                        operation: "Named group extraction from regex pattern",
+                        input: $"RegexPattern: {regexPattern}",
+                        expectedOutcome: "List of named capture groups from regex pattern",
+                        actualOutcome: "Exception during regex pattern analysis"
+                    );
+
+                    LLMExceptionLogger.LogComprehensiveException(
+                        _logger, 
+                        ex, 
+                        "Regex pattern analysis failed during named group extraction", 
+                        exceptionContext
+                    );
                 }
 
                 return namedGroups;
@@ -393,15 +406,20 @@ namespace WaterNut.DataSpace
                 }
                 catch (Exception ex)
                 {
-                    // **v4.1 GENERAL EXCEPTION LOGGING**: LLM diagnostic evidence for unexpected database errors
-                    _logger.Error(ex, "🚨 **DB_SAVE_UNHANDLED_EXCEPTION_EVIDENCE**: Database save operation failed due to unexpected error");
-                    _logger.Error("📋 **AVAILABLE_LOG_DATA**: Unhandled exception context - OperationName={OperationName}, ExceptionType={ExceptionType}", 
-                        operationName, ex.GetType().Name);
-                    _logger.Error("🔍 **PATTERN_ANALYSIS**: Unexpected exception pattern requiring comprehensive error state analysis");
-                    _logger.Error("❓ **EVIDENCE_GAPS**: Exception details - {ExceptionMessage}", ex.Message);
-                    _logger.Error("💡 **LOG_BASED_HYPOTHESIS**: Unexpected exceptions indicate infrastructure failures or configuration issues");
-                    _logger.Error("📊 **LOGGING_ENHANCEMENTS**: Enhanced exception tracking with type-specific diagnostic preservation");
-                    _logger.Error("🎯 **ENHANCED_CAPTURE_POINTS**: Exception types, error messages, stack traces, operation context");
+                    // **LOG_THE_WHO**: Comprehensive exception logging with full context for LLM debugging
+                    var exceptionContext = LLMExceptionLogger.CreateExceptionContext(
+                        operation: $"Database save operation: {operationName}",
+                        input: $"Operation: {operationName}, Context available: {context != null}",
+                        expectedOutcome: "Successful database save with proper change tracking",
+                        actualOutcome: "Unexpected database exception - may indicate infrastructure or configuration issues"
+                    );
+
+                    LLMExceptionLogger.LogComprehensiveException(
+                        _logger, 
+                        ex, 
+                        $"CRITICAL: Database save operation failed unexpectedly - {operationName}", 
+                        exceptionContext
+                    );
                     _logger.Error("📚 **FIX_RATIONALE**: Exception preservation enables infrastructure debugging and error pattern analysis");
                     _logger.Error("🔍 **FIX_VALIDATION**: Exception documented with comprehensive diagnostic context for troubleshooting");
                     throw;
