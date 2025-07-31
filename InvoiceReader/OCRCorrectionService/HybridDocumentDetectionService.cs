@@ -168,8 +168,21 @@ namespace WaterNut.DataSpace
         /// </summary>
         public async Task<HybridDetectionResult> DetectDocumentTypesAsync(string text, string documentPath = null)
         {
-            _logger.Information("🎯 **HYBRID_DETECTION_START**: Database-first with AI fallback and learning");
-            _logger.Information("   - **INPUT**: {Length} chars, Path: {Path}", text?.Length ?? 0, documentPath ?? "Unknown");
+            // 🧠 **ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v4.2**: Comprehensive detection method logging
+            
+            _logger.Error("🎯 **HYBRID_DETECTION_START**: Starting comprehensive hybrid document detection with ultradiagnostic logging");
+            _logger.Error("   - **INPUT_TEXT_LENGTH**: {Length} chars", text?.Length ?? 0);
+            _logger.Error("   - **DOCUMENT_PATH**: {Path}", documentPath ?? "Unknown");
+            _logger.Error("   - **TEXT_PREVIEW**: {Preview}", text?.Substring(0, Math.Min(200, text?.Length ?? 0)) ?? "NULL");
+            
+            // **COMPONENT AVAILABILITY CHECK**
+            _logger.Error("🔧 **COMPONENT_AVAILABILITY_ANALYSIS**: Checking hybrid system component status");
+            _logger.Error("   - **DATABASE_ENGINE**: {Status}", _databaseEngine != null ? "AVAILABLE" : "MISSING");
+            _logger.Error("   - **AI_ENGINE**: {Status}", _aiEngine != null ? "AVAILABLE" : "MISSING");
+            _logger.Error("   - **LEARNING_SYSTEM**: {Status}", _learningSystem != null ? "AVAILABLE" : "MISSING");
+            _logger.Error("   - **COMPLETENESS_VALIDATOR**: {Status}", _completenessValidator != null ? "AVAILABLE" : "MISSING");
+            _logger.Error("   - **SEPARATION_INTELLIGENCE**: {Status}", _separationIntelligence != null ? "AVAILABLE" : "MISSING");
+            _logger.Error("   - **FILETYPE_ENGINE**: {Status}", _fileTypeEngine != null ? "AVAILABLE" : "MISSING");
             
             var result = new HybridDetectionResult
             {
@@ -177,12 +190,39 @@ namespace WaterNut.DataSpace
                 OriginalLength = text?.Length ?? 0,
                 DocumentPath = documentPath
             };
+            
+            _logger.Error("✅ **HYBRID_RESULT_INITIALIZED**: HybridDetectionResult object created with input data");
 
             try
             {
-                // **PHASE 1: DATABASE-FIRST DETECTION** (Fast path for known document types)
-                _logger.Information("🗄️ **PHASE_1_DATABASE_DETECTION**: Checking OCR_TemplateTableMapping Keywords");
-                var databaseResults = await _databaseEngine.DetectKnownDocumentTypesAsync(text);
+                _logger.Error("🗄️ **PHASE_1_START**: Database-first detection phase beginning");
+                
+                if (_databaseEngine == null)
+                {
+                    _logger.Error("❌ **DATABASE_ENGINE_UNAVAILABLE**: Cannot perform database detection - component missing");
+                    _logger.Error("🔄 **PHASE_1_SKIP**: Skipping database detection due to missing component");
+                }
+                else
+                {
+                    _logger.Error("🔍 **DATABASE_DETECTION_ATTEMPT**: Calling DatabaseDocumentDetectionEngine.DetectKnownDocumentTypesAsync");
+                    _logger.Error("   - **METHOD_SIGNATURE**: DetectKnownDocumentTypesAsync(string text)");
+                    _logger.Error("   - **TEXT_LENGTH_PARAMETER**: {Length} characters", text?.Length ?? 0);
+                    
+                    try 
+                    {
+                        var databaseResults = await _databaseEngine.DetectKnownDocumentTypesAsync(text);
+                        _logger.Error("✅ **DATABASE_DETECTION_SUCCESS**: DetectKnownDocumentTypesAsync returned successfully");
+                        _logger.Error("   - **RESULT_COUNT**: {Count} documents detected", databaseResults?.Count() ?? 0);
+                    }
+                    catch (Exception dbEx)
+                    {
+                        _logger.Error(dbEx, "❌ **DATABASE_DETECTION_EXCEPTION**: Exception in DetectKnownDocumentTypesAsync");
+                        _logger.Error("   - **EXCEPTION_TYPE**: {Type}", dbEx.GetType().Name);
+                        _logger.Error("   - **EXCEPTION_MESSAGE**: {Message}", dbEx.Message);
+                        _logger.Error("🔄 **DATABASE_FALLBACK**: Using empty database results due to exception");
+                        var databaseResults = new List<DetectedDocument>(); // Empty fallback
+                    }
+                }
                 
                 result.DatabaseDetections = databaseResults;
                 result.DatabaseDetectionCount = databaseResults.Count();
