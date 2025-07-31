@@ -63,42 +63,50 @@ namespace WaterNut.DataSpace
         }
 
         /// <summary>
-        /// Loads configuration from appsettings.json FallbackConfiguration section
-        /// Returns null if section doesn't exist or has invalid format
+        /// Loads configuration from Config/fallback-config.json file
+        /// Returns null if file doesn't exist or has invalid format
         /// </summary>
         private static FallbackConfiguration LoadFromAppSettings()
         {
             try
             {
-                // Try to get the FallbackConfiguration section from appsettings.json
-                var fallbackConfigJson = System.Configuration.ConfigurationManager.AppSettings["FallbackConfiguration"];
+                // Follow AITemplateService pattern: read from Config directory
+                var configPath = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "Config", "fallback-config.json");
                 
-                if (string.IsNullOrEmpty(fallbackConfigJson))
+                if (!File.Exists(configPath))
                 {
-                    _logger.Debug("📋 **FALLBACK_CONFIG_MISSING**: No FallbackConfiguration section found in appsettings.json");
+                    _logger.Debug("📋 **FALLBACK_CONFIG_MISSING**: No fallback-config.json found at {ConfigPath}", configPath);
                     return null;
                 }
 
-                // Parse JSON configuration
+                // Read and parse JSON configuration file
+                var fallbackConfigJson = File.ReadAllText(configPath);
+                
+                if (string.IsNullOrEmpty(fallbackConfigJson))
+                {
+                    _logger.Warning("⚠️ **FALLBACK_CONFIG_EMPTY**: fallback-config.json file is empty");
+                    return null;
+                }
+
                 var configuration = JsonConvert.DeserializeObject<FallbackConfiguration>(fallbackConfigJson);
                 
                 if (configuration == null)
                 {
-                    _logger.Warning("⚠️ **FALLBACK_CONFIG_PARSE_FAILED**: Failed to parse FallbackConfiguration JSON");
+                    _logger.Warning("⚠️ **FALLBACK_CONFIG_PARSE_FAILED**: Failed to parse FallbackConfiguration JSON from {ConfigPath}", configPath);
                     return null;
                 }
 
-                _logger.Debug("🔍 **FALLBACK_CONFIG_PARSED**: Successfully parsed FallbackConfiguration from JSON");
+                _logger.Debug("🔍 **FALLBACK_CONFIG_PARSED**: Successfully parsed FallbackConfiguration from {ConfigPath}", configPath);
                 return configuration;
             }
             catch (JsonException jsonEx)
             {
-                _logger.Error(jsonEx, "🚨 **FALLBACK_CONFIG_JSON_ERROR**: Invalid JSON format in FallbackConfiguration");
+                _logger.Error(jsonEx, "🚨 **FALLBACK_CONFIG_JSON_ERROR**: Invalid JSON format in fallback-config.json");
                 return null;
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, "🚨 **FALLBACK_CONFIG_LOAD_ERROR**: Unexpected error loading FallbackConfiguration");
+                _logger.Error(ex, "🚨 **FALLBACK_CONFIG_LOAD_ERROR**: Unexpected error loading fallback-config.json");
                 return null;
             }
         }
