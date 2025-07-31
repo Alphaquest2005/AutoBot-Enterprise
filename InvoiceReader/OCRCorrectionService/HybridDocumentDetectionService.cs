@@ -197,10 +197,14 @@ namespace WaterNut.DataSpace
             {
                 _logger.Error("🗄️ **PHASE_1_START**: Database-first detection phase beginning");
                 
+                // **INITIALIZE DATABASE RESULTS**: Ensure variable is always available
+                var databaseResults = new List<DetectedDocument>();
+                
                 if (_databaseEngine == null)
                 {
                     _logger.Error("❌ **DATABASE_ENGINE_UNAVAILABLE**: Cannot perform database detection - component missing");
                     _logger.Error("🔄 **PHASE_1_SKIP**: Skipping database detection due to missing component");
+                    // databaseResults remains empty list
                 }
                 else
                 {
@@ -210,9 +214,16 @@ namespace WaterNut.DataSpace
                     
                     try 
                     {
-                        var databaseResults = await _databaseEngine.DetectKnownDocumentTypesAsync(text);
+                        databaseResults = (await _databaseEngine.DetectKnownDocumentTypesAsync(text))?.ToList() ?? new List<DetectedDocument>();
                         _logger.Error("✅ **DATABASE_DETECTION_SUCCESS**: DetectKnownDocumentTypesAsync returned successfully");
-                        _logger.Error("   - **RESULT_COUNT**: {Count} documents detected", databaseResults?.Count() ?? 0);
+                        _logger.Error("   - **RESULT_COUNT**: {Count} documents detected", databaseResults.Count);
+                        
+                        // **LOG DETECTED DOCUMENTS**
+                        foreach (var doc in databaseResults)
+                        {
+                            _logger.Error("📄 **DATABASE_DETECTED_DOCUMENT**: Type='{Type}', Confidence={Confidence:F2}, Method='{Method}'", 
+                                doc.DocumentType, doc.Confidence, doc.DetectionMethod);
+                        }
                     }
                     catch (Exception dbEx)
                     {
@@ -220,12 +231,15 @@ namespace WaterNut.DataSpace
                         _logger.Error("   - **EXCEPTION_TYPE**: {Type}", dbEx.GetType().Name);
                         _logger.Error("   - **EXCEPTION_MESSAGE**: {Message}", dbEx.Message);
                         _logger.Error("🔄 **DATABASE_FALLBACK**: Using empty database results due to exception");
-                        var databaseResults = new List<DetectedDocument>(); // Empty fallback
+                        databaseResults = new List<DetectedDocument>(); // Empty fallback
                     }
                 }
                 
+                _logger.Error("📊 **PHASE_1_COMPLETE**: Database detection phase complete");
+                _logger.Error("   - **DATABASE_RESULTS**: {Count} documents detected", databaseResults.Count);
+                
                 result.DatabaseDetections = databaseResults;
-                result.DatabaseDetectionCount = databaseResults.Count();
+                result.DatabaseDetectionCount = databaseResults.Count;
                 
                 if (databaseResults.Any(d => d.Confidence >= 0.8))
                 {
