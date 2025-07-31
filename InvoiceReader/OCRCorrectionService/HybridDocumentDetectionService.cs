@@ -376,9 +376,6 @@ namespace WaterNut.DataSpace
                 _logger.Error("📊 **PHASE_3_COMPLETE**: Completeness validation phase complete");
                 _logger.Error("   - **FINAL_COVERAGE**: {Coverage:F2}%", result.CompletenessPercentage);
                 
-                result.CompletenessPercentage = completenessResult.CoveragePercentage;
-                result.MissingTextLength = completenessResult.MissingTextLength;
-                
                 // **AI TRIGGER DECISION**: Determine if AI detection is needed based on completeness OR filename patterns
                 var needsAIForCompleteness = completenessResult.CoveragePercentage < 100.0;
                 var needsAIForFilename = fileTypeValidation.ShouldTriggerAI;
