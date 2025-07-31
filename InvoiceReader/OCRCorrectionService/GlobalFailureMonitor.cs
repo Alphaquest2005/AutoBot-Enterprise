@@ -135,6 +135,28 @@ namespace WaterNut.DataSpace
         }
 
         /// <summary>
+        /// Gets the last N messages from a list (compatible with .NET Framework 4.8)
+        /// </summary>
+        /// <param name="messages">List of messages</param>
+        /// <param name="count">Number of messages to return</param>
+        /// <returns>Array of last N messages</returns>
+        private static string[] GetLastNMessages(List<string> messages, int count)
+        {
+            if (messages == null || messages.Count == 0)
+                return new string[0];
+                
+            var startIndex = Math.Max(0, messages.Count - count);
+            var result = new string[Math.Min(count, messages.Count)];
+            
+            for (int i = 0; i < result.Length; i++)
+            {
+                result[i] = messages[startIndex + i];
+            }
+            
+            return result;
+        }
+
+        /// <summary>
         /// Clears the log history buffer
         /// </summary>
         public static void ClearLogHistory()
