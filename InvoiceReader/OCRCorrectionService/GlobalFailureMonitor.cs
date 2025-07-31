@@ -107,7 +107,7 @@ namespace WaterNut.DataSpace
             var fullEvidence = $"Detected critical failure in {methodContext}: {evidence}";
             
             logger.Error("🚨 **CRITICAL_VALIDATION_FAILURE**: {Layer} - {Evidence} - **ABORTING_PIPELINE**", layer, fullEvidence);
-            logger.Error("📋 **FAILURE_CONTEXT**: Recent log history: {@RecentLogs}", _recentLogMessages.TakeLast(10).ToArray());
+            logger.Error("📋 **FAILURE_CONTEXT**: Recent log history: {@RecentLogs}", GetLastNMessages(_recentLogMessages, 10));
             
             // Create comprehensive exception
             var criticalException = new CriticalValidationException(layer, fullEvidence, "Unknown", methodContext);
