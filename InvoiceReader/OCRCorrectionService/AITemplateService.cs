@@ -2319,30 +2319,56 @@ If you find no new omissions or corrections, return an empty errors array with d
         /// </summary>
         private static bool ValidateStandardFieldMappings(List<string> fields, string documentType)
         {
+            // **🔍 DETAILED FIELD VALIDATION LOGGING** - For debugging pipeline conformance issues
+            Log.Error("🔍 **FIELD_VALIDATION_DEBUG_START**: ValidateStandardFieldMappings called");
+            Log.Error("   - **DOCUMENT_TYPE**: {DocumentType}", documentType);
+            Log.Error("   - **INPUT_FIELDS_COUNT**: {FieldCount}", fields?.Count ?? 0);
+            Log.Error("   - **INPUT_FIELDS**: [{Fields}]", string.Join(", ", fields ?? new List<string>()));
+            
             // Get core essential fields (minimum required)
             var coreRequiredFields = GetCoreRequiredFieldsForDocument(documentType);
+            Log.Error("   - **CORE_REQUIRED_FIELDS**: [{CoreFields}]", string.Join(", ", coreRequiredFields));
             
             // Check if core required fields are present
+            var missingCoreFields = new List<string>();
             foreach (var requiredField in coreRequiredFields)
             {
                 if (!fields.Any(f => f.Equals(requiredField, StringComparison.OrdinalIgnoreCase)))
                 {
-                    return false; // Missing core required field
+                    missingCoreFields.Add(requiredField);
                 }
+            }
+            
+            if (missingCoreFields.Any())
+            {
+                Log.Error("❌ **CORE_FIELD_VALIDATION_FAILED**: Missing core required fields: [{MissingFields}]", string.Join(", ", missingCoreFields));
+                Log.Error("🔍 **FIELD_VALIDATION_DEBUG_END**: FAILED - Missing core fields");
+                return false; // Missing core required field
             }
             
             // Get all accepted fields (includes optional fields)
             var acceptedFields = GetRequiredFieldsForDocument(documentType);
+            Log.Error("   - **ACCEPTED_FIELDS**: [{AcceptedFields}]", string.Join(", ", acceptedFields));
             
             // Validate that all present fields are accepted ShipmentInvoice properties
+            var invalidFields = new List<string>();
             foreach (var field in fields)
             {
                 if (!acceptedFields.Any(accepted => accepted.Equals(field, StringComparison.OrdinalIgnoreCase)))
                 {
-                    return false; // Field not recognized as valid ShipmentInvoice property
+                    invalidFields.Add(field);
                 }
             }
             
+            if (invalidFields.Any())
+            {
+                Log.Error("❌ **FIELD_RECOGNITION_FAILED**: Invalid/unrecognized fields: [{InvalidFields}]", string.Join(", ", invalidFields));
+                Log.Error("🔍 **FIELD_VALIDATION_DEBUG_END**: FAILED - Invalid fields");
+                return false; // Field not recognized as valid ShipmentInvoice property
+            }
+            
+            Log.Error("✅ **FIELD_VALIDATION_SUCCESS**: All fields validated successfully");
+            Log.Error("🔍 **FIELD_VALIDATION_DEBUG_END**: PASSED");
             return true;
         }
 
