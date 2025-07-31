@@ -1573,7 +1573,7 @@ namespace WaterNut.DataSpace
                 {
                     Id = fieldIndex, // Temporary ID
                     LineId = lineId,
-                    Key = $"{fieldName}_{Guid.NewGuid().ToString("N")[..8]}", // Unique key
+                    Key = $"{fieldName}_{Guid.NewGuid().ToString("N").Substring(0, 8)}", // Unique key
                     Field = fieldName,
                     EntityType = entityType
                 };
