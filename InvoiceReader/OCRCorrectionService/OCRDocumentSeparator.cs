@@ -160,67 +160,73 @@ namespace WaterNut.DataSpace
         }
 
         /// <summary>
-        /// **🧠 ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v4.2**: AI-powered document type detection for any supplier/format
+        /// **🧠 ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v4.2**: Hybrid document type detection system
         /// 
-        /// Uses DeepSeek AI to analyze text and identify document types dynamically.
-        /// Completely general - works with any supplier, any document format, any content type.
+        /// **REVOLUTIONARY APPROACH**: Database-first → FileType validation → AI fallback → Learning → Completeness
+        /// **DATABASE SPEED**: Known documents processed via OCR_TemplateTableMapping Keywords (lightning fast)
+        /// **AI INTELLIGENCE**: Unknown documents processed via enhanced AI with separation intelligence
+        /// **FILENAME INTELLIGENCE**: FileType pattern validation triggers AI when filename doesn't match patterns
+        /// **SELF-IMPROVING**: AI discoveries automatically added to database for future speed
+        /// **100% COVERAGE**: Ensures all text is properly assigned to detected documents
         /// </summary>
         private async Task<Dictionary<string, double>> DetectDocumentTypesAsync(string text)
         {
-            _logger.Information("🤖 **AI_DOCUMENT_DETECTION_START**: Using DeepSeek to detect document types");
+            _logger.Information("🎯 **HYBRID_DETECTION_START**: Database-first with AI fallback and learning system");
             _logger.Information("   - **TEXT_LENGTH**: {Length} characters", text?.Length ?? 0);
-            _logger.Information("   - **DETECTION_APPROACH**: AI-powered, supplier-agnostic, format-adaptive");
+            _logger.Information("   - **DETECTION_APPROACH**: Database → FileType → AI → Learning → Completeness");
 
             var detection = new Dictionary<string, double>();
 
             try
             {
-                // **AI PROMPT**: Ask DeepSeek to identify document types
-                var detectionPrompt = $@"Analyze this document text and identify what types of documents are present. 
+                // **HYBRID DETECTION SERVICE**: Use comprehensive hybrid system
+                var hybridService = new HybridDocumentDetectionService(_logger);
+                var hybridResult = await hybridService.DetectDocumentTypesAsync(text, "OCRDocumentSeparator");
                 
-TEXT TO ANALYZE:
-{text}
-
-Please identify:
-1. What types of documents are in this text (e.g., Invoice, Customs Declaration, Shipping Form, Receipt, etc.)
-2. For each document type, provide a confidence score (0.0 to 1.0)
-3. Use descriptive names like 'SUPPLIER_Invoice', 'Country_CustomsForm', etc.
-
-Return your analysis in this exact JSON format:
-{{
-  ""document_types"": [
-    {{
-      ""type"": ""DocumentTypeName"",
-      ""confidence"": 0.95,
-      ""reasoning"": ""Brief explanation of detection""
-    }}
-  ]
-}}";
-
-                _logger.Information("🔄 **AI_DETECTION_CALL**: Calling DeepSeek for document type analysis");
-                
-                // Use existing LLM infrastructure from OCRCorrectionService
-                var aiResponse = await CallDeepSeekForDocumentAnalysis(detectionPrompt);
-                
-                _logger.Information("📊 **AI_DETECTION_RESPONSE**: Received {Length} chars from DeepSeek", aiResponse?.Length ?? 0);
-
-                // Parse AI response to extract document types and confidence scores
-                var parsedTypes = ParseDocumentTypeResponse(aiResponse);
-                
-                foreach (var docType in parsedTypes)
+                if (hybridResult.Success)
                 {
-                    detection[docType.Type] = docType.Confidence;
-                    _logger.Information("🎯 **AI_DETECTED_TYPE**: {Type} (Confidence: {Confidence:F2}) - {Reasoning}", 
-                        docType.Type, docType.Confidence, docType.Reasoning);
+                    // **EXTRACT DETECTION RESULTS**: Convert hybrid results to legacy format
+                    foreach (var document in hybridResult.Documents)
+                    {
+                        detection[document.DocumentType] = document.Confidence;
+                        _logger.Information("🎯 **HYBRID_DETECTED_TYPE**: {Type} (Confidence: {Confidence:F2}, Method: {Method})", 
+                            document.DocumentType, document.Confidence, document.DetectionMethod);
+                    }
+                    
+                    // **LOG HYBRID SYSTEM PERFORMANCE**
+                    _logger.Information("📊 **HYBRID_SYSTEM_RESULTS**: {Method} detection, {Coverage:F1}% coverage, FilenameAI: {FilenameAI}", 
+                        hybridResult.PrimaryDetectionMethod, hybridResult.FinalCompletenessPercentage, hybridResult.FilenameTriggersAI);
+                    
+                    if (hybridResult.DatabaseDetectionCount > 0)
+                    {
+                        _logger.Information("⚡ **DATABASE_SPEED**: {Count} documents detected via fast database Keywords matching", 
+                            hybridResult.DatabaseDetectionCount);
+                    }
+                    
+                    if (hybridResult.AIDetectionCount > 0)
+                    {
+                        _logger.Information("🤖 **AI_LEARNING**: {Count} unknown document types detected and learned for future speed", 
+                            hybridResult.AIDetectionCount);
+                    }
+                    
+                    if (hybridResult.SeparationPatterns.Any())
+                    {
+                        _logger.Information("🔍 **SEPARATION_INTELLIGENCE**: {Count} separation patterns identified", 
+                            hybridResult.SeparationPatterns.Count);
+                    }
+                }
+                else
+                {
+                    _logger.Error("❌ **HYBRID_DETECTION_FAILED**: {Error}", hybridResult.ErrorMessage ?? "Unknown error");
                 }
 
-                _logger.Information("✅ **AI_DOCUMENT_DETECTION_COMPLETE**: Detected {Count} document types", detection.Count);
+                _logger.Information("✅ **HYBRID_DOCUMENT_DETECTION_COMPLETE**: Detected {Count} document types", detection.Count);
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, "❌ **AI_DETECTION_ERROR**: Failed to detect document types via AI");
+                _logger.Error(ex, "❌ **HYBRID_DETECTION_ERROR**: Failed to detect document types via hybrid system");
                 
-                // **FALLBACK**: Use basic content analysis if AI fails
+                // **FALLBACK**: Use basic content analysis if hybrid system fails
                 _logger.Warning("🔄 **FALLBACK_DETECTION**: Using basic content analysis as fallback");
                 detection = PerformBasicContentAnalysis(text);
             }
