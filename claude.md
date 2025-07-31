@@ -762,15 +762,31 @@ The session management system ensures Claude Code maintains awareness of:
 - ✅ **REQUIRED VERIFICATION**: After fix, MUST verify the specific error is resolved without losing functionality
 - ✅ **REQUIRED PRESERVATION**: MUST confirm all existing working code remains intact
 
-### **5. MANDATORY DEBUGGING PATTERN**:
+### **5. ❗❗❗ SUPREME DEBUGGING PATTERN - ENFORCE ABSOLUTE COMPLIANCE ❗❗❗**:
 
 ```
-❌ BAD LLM PATTERN:
-See error → "This code must be corrupted/orphaned" → DELETE ENTIRE FUNCTIONS → Lose functionality
+🚫❌🚫 CATASTROPHICALLY DESTRUCTIVE LLM PATTERN - ABSOLUTELY FORBIDDEN:
+See error → "This code must be corrupted/orphaned" → DELETE ENTIRE FUNCTIONS → OBLITERATE FUNCTIONALITY
 
-✅ CORRECT SURGICAL PATTERN:  
-See error → "Line 246 has syntax error" → EXAMINE THAT LINE → FIX THE SYNTAX → Preserve functionality
+✅🎯✅ MANDATORY SURGICAL PATTERN - ONLY ACCEPTABLE APPROACH:  
+See error → "Line 246 has syntax error" → EXAMINE THAT LINE → FIX THE SYNTAX → PRESERVE FUNCTIONALITY
 ```
+
+### 🔥 **ENFORCEMENT MECHANISMS** 🔥
+
+#### **IMMEDIATE DETECTION TRIGGERS**:
+- Any deletion of methods/functions during compilation error fixing = **VIOLATION**
+- Any removal of working code blocks = **VIOLATION**  
+- Any assumption that large code sections are "corrupted" = **VIOLATION**
+- Any "sledgehammer" fix instead of surgical precision = **VIOLATION**
+
+#### **REQUIRED SELF-MONITORING**:
+Before ANY edit for compilation errors, the LLM MUST ask:
+1. ❓ "Am I about to delete working functionality?"
+2. ❓ "Am I fixing ONLY the specific syntax error at the reported line?"
+3. ❓ "Am I preserving all existing working code?"
+
+**If ANY answer is NO → STOP IMMEDIATELY → REVERT TO SURGICAL APPROACH**
 
 ## 🏗️ **The Established Codebase Respect Mandate v1.0**
 
