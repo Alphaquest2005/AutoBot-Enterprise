@@ -183,6 +183,24 @@ namespace WaterNut.DataSpace
             var overallSuccess = IsValid;
             logger.Error(overallSuccess ? "🏆 **TEMPLATE_SPECIFICATION_SUCCESS**: ✅ PASS" : "🏆 **TEMPLATE_SPECIFICATION_SUCCESS**: ❌ FAIL" + 
                 " - Template specification validation " + (overallSuccess ? "completed successfully" : "failed validation criteria"));
+            
+            // **SHORTCIRCUIT FAILURE MECHANISM** - Throw CriticalValidationException on first failure
+            if (!overallSuccess)
+            {
+                var firstFailure = ValidationResults.FirstOrDefault(r => !r.IsSuccess);
+                if (firstFailure != null)
+                {
+                    var evidence = $"Template specification validation failed: {firstFailure.CriteriaName} - {firstFailure.Message}";
+                    logger.Error("🚨 **CRITICAL_VALIDATION_FAILURE**: TEMPLATE_SPECIFICATION_VALIDATION - {Evidence} - **ABORTING_PIPELINE**", evidence);
+                    
+                    // Log comprehensive exception context for LLM debugging
+                    LLMExceptionLogger.LogCriticalValidationException(logger, 
+                        new CriticalValidationException("TEMPLATE_SPECIFICATION_VALIDATION", evidence, DocumentType, "LogValidationResults"));
+                    
+                    // Throw to stop pipeline immediately
+                    throw new CriticalValidationException("TEMPLATE_SPECIFICATION_VALIDATION", evidence, DocumentType, "LogValidationResults");
+                }
+            }
         }
     }
 
