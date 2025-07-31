@@ -1637,7 +1637,7 @@ namespace WaterNut.DataSpace
                                    (!string.IsNullOrEmpty(correction.WindowText) && correction.WindowText.Length > 50) ? "correction.WindowText (enhanced)" :
                                    "correction.LineText (fallback)";
                 _logger.Debug("    - 🔍 **VALIDATION_TEXT_SOURCE**: Using {TextSource} for pattern validation", textSource);
-                _logger.Debug("    - 📝 **VALIDATION_TEXT_CONTENT**: Testing against: '{TextContent}'", textToTest?.Substring(0, Math.Min(200, textToTest.Length ?? 0)));
+                _logger.Debug("    - 📝 **VALIDATION_TEXT_CONTENT**: Testing against: '{TextContent}'", textToTest?.Substring(0, Math.Min(200, textToTest?.Length ?? 0)));
                 if (string.IsNullOrEmpty(textToTest))
                 {
                     _logger.Debug("    - ❌ **VALIDATION_FAIL**: No text available (neither TestMatch nor LineText) to test the regex against.");
