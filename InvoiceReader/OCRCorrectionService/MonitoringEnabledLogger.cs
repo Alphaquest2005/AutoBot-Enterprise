@@ -7,8 +7,9 @@ namespace WaterNut.DataSpace
     /// <summary>
     /// Wrapper around ILogger that automatically monitors all log messages for critical failure patterns
     /// This provides seamless integration with existing code while adding automatic shortcircuit functionality
+    /// Note: This is a simplified wrapper that implements the most commonly used logging methods
     /// </summary>
-    public class MonitoringEnabledLogger : ILogger
+    public class MonitoringEnabledLogger
     {
         private readonly ILogger _innerLogger;
         private readonly bool _enableMonitoring;
