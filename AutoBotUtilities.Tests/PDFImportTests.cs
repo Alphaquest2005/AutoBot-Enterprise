@@ -66,11 +66,56 @@ namespace AutoBotUtilities.Tests
                     ReferenceHandler = ReferenceHandler.IgnoreCycles,
                 };
 
-                // 🚀 SOPHISTICATED LOGGING CONFIGURATION - Per-Run Files with Complete History
+                // 🎯 INITIALIZE STRATEGIC LENS SYSTEM
+                LogFilterState.EnabledCategoryLevels[LogCategory.Undefined] = LogEventLevel.Debug;
+                LogFilterState.TargetSourceContextForDetails = null; // Will be set dynamically during tests
+                LogFilterState.TargetMethodNameForDetails = null;
+                LogFilterState.DetailTargetMinimumLevel = LogEventLevel.Verbose;
+
+                // 🚀 SOPHISTICATED LOGGING CONFIGURATION - Per-Run Files with Strategic Lens
                 Log.Logger = new LoggerConfiguration()
                     .MinimumLevel.Verbose() // Capture everything for historical analysis
+                    .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
+                    .MinimumLevel.Override("System", LogEventLevel.Warning)
                     .Enrich.FromLogContext()
+                    .Enrich.WithMachineName()
+                    .Enrich.WithThreadId()
                     .Enrich.WithProperty("RunId", _currentRunId) // Tag all logs with RunID
+                    // 🎯 STRATEGIC LENS FILTER - Core sophisticated functionality
+                    .Filter.ByIncludingOnly(evt =>
+                    {
+                        // Extract log properties for filtering
+                        bool hasCategory = evt.Properties.TryGetValue("LogCategory", out var categoryValue);
+                        LogCategory category = hasCategory && categoryValue is ScalarValue svCat && svCat.Value is LogCategory lc ? lc : LogCategory.Undefined;
+                        
+                        bool hasSourceContext = evt.Properties.TryGetValue("SourceContext", out var sourceContextValue);
+                        string sourceContext = hasSourceContext && sourceContextValue is ScalarValue svSrc ? svSrc.Value?.ToString() : null;
+                        
+                        bool hasMemberName = evt.Properties.TryGetValue("MemberName", out var memberNameValue);
+                        string memberName = hasMemberName && memberNameValue is ScalarValue svMem ? svMem.Value?.ToString() : null;
+
+                        // 🔍 STRATEGIC LENS: Check if we're targeting a specific source context for details
+                        if (!string.IsNullOrEmpty(LogFilterState.TargetSourceContextForDetails) &&
+                            sourceContext != null &&
+                            sourceContext.StartsWith(LogFilterState.TargetSourceContextForDetails))
+                        {
+                            // If targeting a specific method, check method name too
+                            if (string.IsNullOrEmpty(LogFilterState.TargetMethodNameForDetails) ||
+                                (memberName != null && memberName.Equals(LogFilterState.TargetMethodNameForDetails, StringComparison.OrdinalIgnoreCase)))
+                            {
+                                return evt.Level >= LogFilterState.DetailTargetMinimumLevel;
+                            }
+                        }
+
+                        // 📊 CATEGORY-BASED FILTERING: Apply category-specific minimum levels
+                        if (LogFilterState.EnabledCategoryLevels.TryGetValue(category, out var minLevelForCategory))
+                        {
+                            return evt.Level >= minLevelForCategory;
+                        }
+
+                        // Default fallback
+                        return evt.Level >= LogEventLevel.Information;
+                    })
                     .Destructure.ByTransformingWhere<object>(
                         type => type.IsClass &&
                                 type != typeof(string) &&
@@ -151,52 +196,48 @@ namespace AutoBotUtilities.Tests
             }
         }
 
-        // Initialize LogFilterState for tests
-        static PDFImportTests()
+        /// <summary>
+        /// 🎯 STRATEGIC LENS CONTROL - Focus logging on specific contexts for surgical debugging
+        /// </summary>
+        private static void FocusLoggingLens(string targetSourceContext, LogEventLevel detailLevel = LogEventLevel.Verbose, string targetMethod = null)
         {
-            // Set up basic logging filter state
-            LogFilterState.TargetSourceContextForDetails = null;
-            LogFilterState.TargetMethodNameForDetails = null;
-            LogFilterState.DetailTargetMinimumLevel = LogEventLevel.Fatal;
-            LogFilterState.EnabledCategoryLevels[LogCategory.Undefined] = LogEventLevel.Debug;
+            LogFilterState.TargetSourceContextForDetails = targetSourceContext;
+            LogFilterState.TargetMethodNameForDetails = targetMethod;
+            LogFilterState.DetailTargetMinimumLevel = detailLevel;
+            _logger?.Information("🔍 LENS_FOCUSED: Target={TargetContext}, Method={TargetMethod}, Level={DetailLevel}",
+                targetSourceContext, targetMethod ?? "All", detailLevel);
         }
-                            {
-                                return evt.Level >= LogFilterState.DetailTargetMinimumLevel;
-                            }
-                        }
-                        if (LogFilterState.EnabledCategoryLevels.TryGetValue(category, out var minLevelForCategory))
-                        {
-                            return evt.Level >= minLevelForCategory;
-                        }
-                        return evt.Level >= LogEventLevel.Verbose;
-                    })
-                    // Use custom destructuring policy to respect JsonSerializerOptions for omitting nulls/defaults
-                    .Destructure.With(new CustomSystemTextJsonDestructuringPolicy(systemTextJsonOptions))
 
-                    .WriteTo.Console(restrictedToMinimumLevel: LogEventLevel.Verbose)
-                    .WriteTo.File(
-                        logFilePath,
-                        restrictedToMinimumLevel: LogEventLevel.Verbose,
-                        rollingInterval: RollingInterval.Day,
-                        retainedFileCountLimit: 3,
-                        outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] [{SourceContext}] {Message:lj}{NewLine}{Exception}")
-                    .CreateLogger();
+        /// <summary>
+        /// 🎯 LENS CONTEXTS - Predefined contexts for PDF/OCR pipeline
+        /// </summary>
+        private static class LoggingContexts
+        {
+            public const string OCRCorrection = "WaterNut.DataSpace.OCRCorrectionService";
+            public const string PDFImporter = "WaterNut.DataSpace.PDFShipmentInvoiceImporter";
+            public const string LlmApi = "WaterNut.Business.Services.Utils.LlmApi";
+            public const string PDFUtils = "AutoBot.PDFUtils";
+            public const string InvoiceReader = "InvoiceReader";
+        }
 
-                _logger = Log.ForContext<PDFImportTests>();
-                _logger.Information("Serilog configured with JSON destructuring policy.");
-                _logger.Debug("DSTJ_POLICY_OPTS_DBG: This Debug message from FixtureSetup should appear.");
-
+        [OneTimeTearDown]
+        public void FixtureTearDown()
+        {
+            try
+            {
+                _logger?.Information("🏁 TEST_FIXTURE_TEARDOWN: Completing PDFImportTests and archiving logs");
+                
+                // Close and flush the logger
+                Log.CloseAndFlush();
+                
+                // Move log to archive for permanent preservation
+                MoveLogToArchive();
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"ERROR configuring Serilog programmatically: {ex}");
-                Log.Logger = new LoggerConfiguration().MinimumLevel.Warning().WriteTo.Console().CreateLogger();
-                _logger = Log.ForContext<PDFImportTests>();
-                _logger.Error(ex, "Error configuring Serilog programmatically.");
+                Console.WriteLine($"❌ ERROR in FixtureTearDown: {ex.Message}");
             }
-
-            _logger.Information("--------------------------------------------------");
-            _logger.Information("Starting PDFImportTests Test Fixture");
+        }
             _logger.Information("--------------------------------------------------");
         }
 
