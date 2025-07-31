@@ -2395,7 +2395,15 @@ If you find no new omissions or corrections, return an empty errors array with d
         {
             return documentType.ToLower() switch
             {
-                "invoice" or "shipmentinvoice" => new List<string> { "InvoiceNo", "InvoiceTotal", "SupplierCode" },
+                "invoice" or "shipmentinvoice" => new List<string> { 
+                    // Core required fields
+                    "InvoiceNo", "InvoiceTotal", 
+                    // Accept BOTH SupplierCode AND SupplierName (pipeline reality)
+                    "SupplierCode", "SupplierName",
+                    // Common ShipmentInvoice properties that DeepSeek creates
+                    "InvoiceDate", "SubTotal", "Currency", 
+                    "TotalInternalFreight", "TotalOtherCost", "TotalInsurance", "TotalDeduction"
+                },
                 "shipmentbl" => new List<string> { "BLNumber", "WeightKG" },
                 "purchaseorder" => new List<string> { "PONumber", "LineNumber", "Quantity" },
                 _ => new List<string> { "InvoiceNo", "InvoiceTotal" }
