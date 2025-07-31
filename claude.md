@@ -521,18 +521,44 @@ sqlcmd -Q "SELECT Success FROM OCRCorrectionLearning WHERE CreatedDate >= '2025-
 
 ---
 
-## 🎯 CRITICAL TEST REFERENCE {#critical-test-reference}
+## 🎯 CRITICAL TEST REFERENCE: OCR Service Integration with Production Pipeline {#critical-test-reference}
 
-### **MANGO Import Test** (Template Creation from Unknown Supplier)
+### **🚨 FUNDAMENTAL MANDATE: OCR Service Must Be 100% Compliant with Existing Production Pipeline**
+
+**CRITICAL UNDERSTANDING**:
+- ✅ **Production Codebase**: This is a FUNCTIONAL, WORKING production system
+- ✅ **OCR Service Role**: Latest addition to existing pipeline - must integrate seamlessly  
+- ✅ **Directory Restrictions**: Production pipeline code CANNOT be modified (hook-enforced)
+- ✅ **OCR Service Mandate**: Must produce data structures exactly as existing pipeline expects
+
+### **MANGO Import Test** (OCR Service Integration Validation)
 ```bash
 "/mnt/c/Program Files/Microsoft Visual Studio/2022/Enterprise/Common7/IDE/CommonExtensions/Microsoft/TestWindow/vstest.console.exe" "./AutoBotUtilities.Tests/bin/x64/Debug/net48/AutoBotUtilities.Tests.dll" /TestCaseFilter:"FullyQualifiedName=AutoBotUtilities.Tests.PDFImportTests.CanImportMango03152025TotalAmount_AfterLearning" "/Logger:console;verbosity=detailed"
 ```
 
 **Test Name**: `CanImportMango03152025TotalAmount_AfterLearning()`  
-**Purpose**: Tests OCR template creation for unknown suppliers using MANGO invoice data  
+**Purpose**: **COMPREHENSIVE OCR SERVICE INTEGRATION TEST**
+1. **Template Creation**: OCR service creates new template for unknown supplier (MANGO)
+2. **Database Persistence**: Template properly saved to production database  
+3. **Data Structure Compliance**: OCR service output compatible with existing HandleImportSuccessStateStep
+4. **Invoice Creation**: Existing pipeline successfully creates ShipmentInvoice from OCR data
+5. **End-to-End Validation**: Complete workflow from OCR correction → Template → Invoice
+
 **Location**: `/mnt/c/Insight Software/AutoBot-Enterprise/AutoBotUtilities.Tests/PDFImportTests.cs`  
 **Test Data**: `03152025_TOTAL AMOUNT.txt` and related MANGO files  
-**Current Issue**: OCR service CreateInvoiceTemplateAsync returns NULL, preventing template creation
+
+### **🚨 CURRENT ISSUE ANALYSIS**:
+**Root Cause**: OCR service produces empty data structure incompatible with existing pipeline
+```
+❌ OCR Output: { "$values": [{ "$values": [] }] }  // Empty - pipeline expects populated dictionaries
+✅ Expected: List<IDictionary<string, object>> with invoice data for HandleImportSuccessStateStep
+```
+
+**Integration Points to Validate**:
+1. **DeepSeek Response Processing** → Valid JSON parsed correctly ✅  
+2. **Data Structure Conversion** → Compatible with existing CsvLines format ❌
+3. **Template Database Persistence** → Template saved with correct structure ❌
+4. **Invoice Pipeline Integration** → HandleImportSuccessStateStep processes data ❌
 
 ## 🚨 LATEST: Sophisticated Logging System Completely Restored - FULL OPERATIONAL STATUS (July 31, 2025)
 
