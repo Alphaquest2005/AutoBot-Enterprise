@@ -7,6 +7,7 @@ using NUnit.Framework;
 using Serilog; // Added for logging
 using Serilog.Events; // Added for LogEventLevel
 using Serilog.Sinks.NUnit; // Required for .WriteTo.NUnit()
+using Serilog.Events; // For ScalarValue
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
