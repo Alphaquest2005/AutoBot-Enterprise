@@ -140,7 +140,7 @@ namespace WaterNut.DataSpace
             _logger.Error("   - **SEPARATION_INTELLIGENCE**: {Status}", _separationIntelligence != null ? "AVAILABLE" : "FAILED");
             _logger.Error("   - **FILETYPE_ENGINE**: {Status}", _fileTypeEngine != null ? "AVAILABLE" : "FAILED");
             
-            var availableComponents = new[] { _databaseEngine, _aiEngine, _learningSystem, _completenessValidator, _separationIntelligence, _fileTypeEngine }
+            var availableComponents = new object[] { _databaseEngine, _aiEngine, _learningSystem, _completenessValidator, _separationIntelligence, _fileTypeEngine }
                 .Count(c => c != null);
             
             _logger.Error("🏗️ **HYBRID_INITIALIZATION_COMPLETE**: {Available}/{Total} components available", availableComponents, 6);
