@@ -230,10 +230,14 @@ namespace WaterNut.DataSpace
             }
             catch (Exception ex)
             {
+                _logger.Error("🚨 **EXCEPTION_CAUGHT_IN_DETECT_DOCUMENT_TYPES**: Exception occurred during hybrid detection");
+                _logger.Error("   - **EXCEPTION_TYPE**: {Type}", ex.GetType().Name);
+                _logger.Error("   - **EXCEPTION_MESSAGE**: {Message}", ex.Message);
+                _logger.Error("   - **STACK_TRACE**: {StackTrace}", ex.StackTrace);
                 _logger.Error(ex, "❌ **HYBRID_DETECTION_ERROR**: Failed to detect document types via hybrid system");
                 
                 // **FALLBACK**: Use basic content analysis if hybrid system fails
-                _logger.Warning("🔄 **FALLBACK_DETECTION**: Using basic content analysis as fallback");
+                _logger.Error("🔄 **FALLBACK_DETECTION**: Using basic content analysis as fallback");
                 detection = PerformBasicContentAnalysis(text);
             }
 
