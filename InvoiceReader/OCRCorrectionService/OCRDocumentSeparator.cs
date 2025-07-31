@@ -59,7 +59,9 @@ namespace WaterNut.DataSpace
             }
 
             // **DETECTION PHASE**: Identify document types present using AI
+            _logger.Error("🎯 **ABOUT_TO_CALL_DETECT_DOCUMENT_TYPES**: Calling DetectDocumentTypesAsync with {Length} chars", fullText.Length);
             var detectionResult = await DetectDocumentTypesAsync(fullText);
+            _logger.Error("🎯 **DETECT_DOCUMENT_TYPES_RETURNED**: Method returned {Count} document types", detectionResult.Count);
             _logger.Information("🎯 **DETECTION_RESULTS**: Found {DocumentTypeCount} document types - {Types}", 
                 detectionResult.Count, string.Join(", ", detectionResult.Keys));
 
