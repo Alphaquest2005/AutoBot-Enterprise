@@ -308,7 +308,18 @@ namespace WaterNut.DataSpace
                     _logger.Error("   - **POSSIBLE_CAUSES**: Invalid response format, excessive markdown wrapping, or content corruption");
                     _logger.Error("   - **PROCESSING_IMPACT**: Cannot proceed to JSON parsing without cleaned content");
                     _logger.Error("   - **TEMPLATE_CREATION_IMPACT**: Template/correction creation must fail due to cleaning failure");
-                    return null;
+                    
+                    // **FALLBACK_CONFIGURATION_CONTROL**: Apply fallback policy based on configuration
+                    if (!_fallbackConfig.EnableLogicFallbacks)
+                    {
+                        _logger.Error("🚨 **FALLBACK_DISABLED_TERMINATION**: Logic fallbacks disabled - failing immediately on JSON cleaning failure");
+                        throw new InvalidOperationException("JSON cleaning failed in ParseDeepSeekResponse. Logic fallbacks are disabled - cannot return null.");
+                    }
+                    else
+                    {
+                        _logger.Error("   - **FALLBACK_BEHAVIOR**: Returning null (legacy fallback enabled)");
+                        return null;
+                    }
                 }
                 
                 _logger.Information("✅ **STEP_2_CLEANING_SUCCESS**: JSON cleaning completed successfully");
