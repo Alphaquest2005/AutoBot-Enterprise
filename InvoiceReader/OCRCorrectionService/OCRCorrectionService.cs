@@ -65,6 +65,10 @@ namespace WaterNut.DataSpace
             _logger.Information("   - **EXPECTED_BEHAVIOR**: Initialize LLM client, strategy factory, AI template service with graceful fallback handling");
             _logger.Information("   - **BUSINESS_RULE_RATIONALE**: OCR correction requires LLM intelligence for error detection and pattern learning");
             
+            // **LOG_THE_FALLBACK_CONFIG**: Critical for LLM understanding of system behavior
+            _logger.Information("⚙️ **FALLBACK_CONFIG_LOADED**: EnableLogicFallbacks={EnableLogicFallbacks}, EnableGeminiFallback={EnableGeminiFallback}, EnableTemplateFallback={EnableTemplateFallback}, EnableDocumentTypeAssumption={EnableDocumentTypeAssumption}",
+                _fallbackConfig.EnableLogicFallbacks, _fallbackConfig.EnableGeminiFallback, _fallbackConfig.EnableTemplateFallback, _fallbackConfig.EnableDocumentTypeAssumption);
+            
             // **LOG_THE_HOW**: Internal state, method flow, decision points, data transformations
             _logger.Information("🔄 **COMPONENT_INIT_SEQUENCE**: Initializing core service components in dependency order");
             _logger.Information("   - **STEP_1**: Creating OCRLlmClient for DeepSeek/Gemini API integration");
