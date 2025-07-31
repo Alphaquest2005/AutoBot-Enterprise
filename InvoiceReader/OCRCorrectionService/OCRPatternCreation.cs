@@ -1632,12 +1632,23 @@ namespace WaterNut.DataSpace
                                    (!string.IsNullOrEmpty(correction.WindowText) && correction.WindowText.Length > 50) ? correction.WindowText : 
                                    correction.LineText;
                 
+                // **🔍 COMPREHENSIVE TEXT SOURCE ANALYSIS**: Show ALL three text sources for comparison
+                _logger.Error("🔍 **TEXT_SOURCE_COMPARISON_START**: Analyzing all available text sources for validation");
+                _logger.Error("   - 📝 **TEST_MATCH_CONTENT**: '{TestMatch}'", 
+                    string.IsNullOrEmpty(regexResponse.TestMatch) ? "NULL/EMPTY" : regexResponse.TestMatch.Substring(0, Math.Min(300, regexResponse.TestMatch.Length)));
+                _logger.Error("   - 🪟 **WINDOW_TEXT_CONTENT**: '{WindowText}' (Length: {WindowTextLength})", 
+                    string.IsNullOrEmpty(correction.WindowText) ? "NULL/EMPTY" : correction.WindowText.Substring(0, Math.Min(300, correction.WindowText.Length)),
+                    correction.WindowText?.Length ?? 0);
+                _logger.Error("   - 📄 **LINE_TEXT_CONTENT**: '{LineText}'", 
+                    string.IsNullOrEmpty(correction.LineText) ? "NULL/EMPTY" : correction.LineText.Substring(0, Math.Min(300, correction.LineText.Length)));
+                
                 // **🔍 VALIDATION FIX LOGGING**: Log what text source is being used for validation
                 string textSource = !string.IsNullOrEmpty(regexResponse.TestMatch) ? "regexResponse.TestMatch" :
                                    (!string.IsNullOrEmpty(correction.WindowText) && correction.WindowText.Length > 50) ? "correction.WindowText (enhanced)" :
                                    "correction.LineText (fallback)";
-                _logger.Debug("    - 🔍 **VALIDATION_TEXT_SOURCE**: Using {TextSource} for pattern validation", textSource);
-                _logger.Debug("    - 📝 **VALIDATION_TEXT_CONTENT**: Testing against: '{TextContent}'", textToTest?.Substring(0, Math.Min(200, textToTest?.Length ?? 0)));
+                _logger.Error("   - 🎯 **SELECTED_TEXT_SOURCE**: Using {TextSource} for pattern validation", textSource);
+                _logger.Error("   - 📋 **SELECTED_TEXT_CONTENT**: Testing against: '{TextContent}'", textToTest?.Substring(0, Math.Min(300, textToTest?.Length ?? 0)));
+                _logger.Error("🔍 **TEXT_SOURCE_COMPARISON_END**");
                 if (string.IsNullOrEmpty(textToTest))
                 {
                     _logger.Debug("    - ❌ **VALIDATION_FAIL**: No text available (neither TestMatch nor LineText) to test the regex against.");
