@@ -877,7 +877,7 @@ namespace WaterNut.DataSpace
             _logger.Error($"🔄 **DOCUMENT_TYPE_NORMALIZED**: '{documentType}' → '{normalizedDocumentType}' for validation compatibility");
 
             // Create template specification object for document type with dual-layer validation
-            var templateSpec = TemplateSpecification.CreateForTemplateCreation(documentType, createdTemplates, pdfText);
+            var templateSpec = TemplateSpecification.CreateForTemplateCreation(normalizedDocumentType, createdTemplates, pdfText);
 
             // Fluent validation with short-circuiting - stops on first failure
             var validatedSpec = templateSpec
