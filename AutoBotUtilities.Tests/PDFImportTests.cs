@@ -45,6 +45,8 @@ namespace AutoBotUtilities.Tests
             // 🎯 RESTORED SOPHISTICATED LOGGING SYSTEM - Individual Run Tracking + Archiving
             try
             {
+                // 🧹 FIRST: Archive any existing log files to ensure only current log remains in main directory
+                ArchiveExistingLogsBeforeSetup();
                 // Generate unique RunID (5-digit number + 8-digit date)
                 var now = DateTime.Now;
                 var random = new Random();
@@ -161,8 +163,60 @@ namespace AutoBotUtilities.Tests
         }
 
         /// <summary>
-        /// 🎯 PHASE 3: RESTORE TEST-CONTROLLED ARCHIVING SYSTEM
-        /// Moves completed log files to Archive/ folder for permanent preservation
+        /// 🧹 PRE-TEST ARCHIVING: Archive existing log files before starting new test run
+        /// Ensures main Logs/ directory contains only the current active log file for easy LLM identification
+        /// </summary>
+        private static void ArchiveExistingLogsBeforeSetup()
+        {
+            try
+            {
+                var logsDir = Path.Combine(TestContext.CurrentContext.TestDirectory, "Logs");
+                if (!Directory.Exists(logsDir))
+                {
+                    Console.WriteLine("📁 LOGS_DIR_MISSING: No logs directory exists yet - will be created during setup");
+                    return;
+                }
+
+                var existingLogFiles = Directory.GetFiles(logsDir, "*.log");
+                if (existingLogFiles.Length == 0)
+                {
+                    Console.WriteLine("✨ CLEAN_LOGS_DIR: No existing log files to archive - starting with clean directory");
+                    return;
+                }
+
+                // Create Archive directory
+                var archiveDir = Path.Combine(logsDir, "Archive");
+                Directory.CreateDirectory(archiveDir);
+
+                foreach (var existingLogFile in existingLogFiles)
+                {
+                    var fileName = Path.GetFileName(existingLogFile);
+                    var archiveFilePath = Path.Combine(archiveDir, fileName);
+                    
+                    // Handle potential filename conflicts by adding timestamp suffix
+                    if (File.Exists(archiveFilePath))
+                    {
+                        var nameWithoutExt = Path.GetFileNameWithoutExtension(archiveFilePath);
+                        var extension = Path.GetExtension(archiveFilePath);
+                        archiveFilePath = Path.Combine(archiveDir, $"{nameWithoutExt}_Collision{DateTime.Now:HHmmss}{extension}");
+                    }
+
+                    File.Move(existingLogFile, archiveFilePath);
+                    Console.WriteLine($"🗂️ LOG_ARCHIVED_PRETEST: {fileName} → Archive/{Path.GetFileName(archiveFilePath)}");
+                }
+
+                Console.WriteLine($"✅ PRE_TEST_ARCHIVING_COMPLETE: Archived {existingLogFiles.Length} existing log files - main directory ready for current log");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ PRE_TEST_ARCHIVING_ERROR: Failed to archive existing logs: {ex.Message}");
+                // Don't throw - test should continue even if archiving fails
+            }
+        }
+
+        /// <summary>
+        /// 🎯 LEGACY METHOD: Moves completed log files to Archive/ folder
+        /// NOTE: This is now used only for pre-test archiving, not post-test archiving
         /// </summary>
         private static void MoveLogToArchive()
         {
@@ -230,13 +284,14 @@ namespace AutoBotUtilities.Tests
         {
             try
             {
-                _logger?.Information("🏁 TEST_FIXTURE_TEARDOWN: Completing PDFImportTests and archiving logs");
+                _logger?.Information("🏁 TEST_FIXTURE_TEARDOWN: Completing PDFImportTests - leaving current log file for LLM analysis");
+                _logger?.Information("📝 CURRENT_LOG_LOCATION: {LogFile} - this file remains in main Logs/ directory for easy LLM access", _currentLogFilePath);
                 
-                // Close and flush the logger
+                // Close and flush the logger but LEAVE the log file in place for analysis
                 Log.CloseAndFlush();
                 
-                // Move log to archive for permanent preservation
-                MoveLogToArchive();
+                Console.WriteLine($"📄 CURRENT_LOG_PRESERVED: {Path.GetFileName(_currentLogFilePath)} remains in Logs/ directory for analysis");
+                Console.WriteLine($"🔄 ARCHIVING_STRATEGY: This log will be archived when the next test run begins");
             }
             catch (Exception ex)
             {
