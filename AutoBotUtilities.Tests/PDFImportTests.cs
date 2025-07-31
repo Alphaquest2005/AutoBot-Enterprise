@@ -103,11 +103,12 @@ namespace AutoBotUtilities.Tests
             catch (Exception ex)
             {
                 Console.WriteLine($"❌ ERROR configuring sophisticated logging: {ex}");
-                // Basic fallback
-        //        Log.Logger = new LoggerConfiguration().WriteTo.Console().CreateLogger();
-        //        _logger = Log.ForContext<PDFImportTests>();
-        //        _logger.Error(ex, "Error in simplified Serilog config.");
-        //    }
+                // Basic fallback for logging failure
+                Log.Logger = new LoggerConfiguration().WriteTo.Console().CreateLogger();
+                _logger = Log.ForContext<PDFImportTests>();
+                _logger.Error(ex, "❌ Error in sophisticated logging config - using fallback");
+            }
+        }
         //}
 
         [OneTimeSetUp]
