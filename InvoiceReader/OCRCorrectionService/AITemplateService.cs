@@ -2402,7 +2402,24 @@ If you find no new omissions or corrections, return an empty errors array with d
         }
 
         /// <summary>
-        /// Gets required fields per Template_Specifications.md "Standard Required Fields by EntityType"
+        /// Gets core essential fields (minimum required) - pipeline conformance
+        /// </summary>
+        private static List<string> GetCoreRequiredFieldsForDocument(string documentType)
+        {
+            return documentType.ToLower() switch
+            {
+                "invoice" or "shipmentinvoice" => new List<string> { 
+                    "InvoiceNo", "InvoiceTotal"
+                    // Note: Either SupplierCode OR SupplierName is acceptable (not both required)
+                },
+                "shipmentbl" => new List<string> { "BLNumber", "WeightKG" },
+                "purchaseorder" => new List<string> { "PONumber", "LineNumber", "Quantity" },
+                _ => new List<string> { "InvoiceNo", "InvoiceTotal" }
+            };
+        }
+
+        /// <summary>
+        /// Gets all accepted fields (required + optional) per Template_Specifications.md "Standard Required Fields by EntityType"
         /// </summary>
         private static List<string> GetRequiredFieldsForDocument(string documentType)
         {
