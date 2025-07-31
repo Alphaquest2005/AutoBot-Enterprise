@@ -35,69 +35,75 @@ namespace AutoBotUtilities.Tests
     {
         // Define logger instance for the test class
         private static Serilog.ILogger _logger; // Use fully qualified name
+        private static string _currentLogFilePath; // Track current log file for archiving
+        private static string _currentRunId; // Track current run ID
 
-        //[OneTimeSetUp]
-        //public void FixtureSetup()
-        //{
-        //    // Configure Serilog directly in code
-        //    try
-        //    {
-        //        string logFilePath = Path.Combine(
-        //            TestContext.CurrentContext.TestDirectory,
-        //            "Logs",
-        //            $"AutoBotTests-{DateTime.Now:yyyyMMdd}.log");
-        //        Directory.CreateDirectory(Path.GetDirectoryName(logFilePath));
+        [OneTimeSetUp]
+        public void FixtureSetup()
+        {
+            // 🎯 RESTORED SOPHISTICATED LOGGING SYSTEM - Individual Run Tracking + Archiving
+            try
+            {
+                // Generate unique RunID (5-digit number + 8-digit date)
+                var now = DateTime.Now;
+                var random = new Random();
+                var runNumber = random.Next(10000, 99999); // 5-digit random number
+                _currentRunId = $"{runNumber}{now:yyyyMMdd}";
+                
+                // Create sophisticated log file name: AutoBotTests-YYYYMMDD-HHMMSS-mmm-RunXXXXXYYYYMMDD.log
+                var logFileName = $"AutoBotTests-{now:yyyyMMdd-HHmmss-fff}-Run{_currentRunId}.log";
+                
+                _currentLogFilePath = Path.Combine(
+                    TestContext.CurrentContext.TestDirectory,
+                    "Logs",
+                    logFileName);
+                    
+                Directory.CreateDirectory(Path.GetDirectoryName(_currentLogFilePath));
 
-        //        var systemTextJsonOptions = new JsonSerializerOptions
-        //        {
-        //            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault,
-        //            ReferenceHandler = ReferenceHandler.IgnoreCycles,
-        //        };
+                var systemTextJsonOptions = new JsonSerializerOptions
+                {
+                    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault,
+                    ReferenceHandler = ReferenceHandler.IgnoreCycles,
+                };
 
-        //        // RADICALLY SIMPLIFIED CONFIGURATION FOR DIAGNOSIS:
-        //        Log.Logger = new LoggerConfiguration()
-        //            .MinimumLevel.Verbose() // Allow all levels
-        //            .Enrich.FromLogContext() // Keep this for SourceContext
-        //            .Destructure.ByTransformingWhere<object>(
-        //                type => type.IsClass &&
-        //                        type != typeof(string) &&
-        //                        !typeof(IEnumerable).IsAssignableFrom(type),
-        //                obj =>
-        //                {
-        //                    try
-        //                    {
-        //                        TestContext.Progress.WriteLine($"SIMPLIFIED_TRANSFORM: Processing object of type: {obj.GetType().FullName}");
-        //                        TestContext.Progress.WriteLine($"SIMPLIFIED_TRANSFORM: Using JsonSerializerOptions.DefaultIgnoreCondition = {systemTextJsonOptions.DefaultIgnoreCondition}");
-        //                        var jsonString = System.Text.Json.JsonSerializer.Serialize(obj, systemTextJsonOptions);
-        //                        TestContext.Progress.WriteLine($"SIMPLIFIED_TRANSFORM: Serialized {obj.GetType().FullName} to JSON: {jsonString}");
-        //                        var dictionary = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, object>>(jsonString, systemTextJsonOptions);
-        //                        // No empty collection removal for this test to keep it simple
-        //                        return dictionary;
-        //                    }
-        //                    catch (Exception ex)
-        //                    {
-        //                        TestContext.Progress.WriteLine($"SIMPLIFIED_TRANSFORM: Error for {obj.GetType().FullName}: {ex}");
-        //                        return new Dictionary<string, object> { { "ErrorInTransform", ex.Message } };
-        //                    }
-        //                }
-        //            )
-        //            .WriteTo.Console(restrictedToMinimumLevel: LogEventLevel.Verbose) // Ensure console sees everything
-        //            .WriteTo.File(
-        //                logFilePath,
-        //                restrictedToMinimumLevel: LogEventLevel.Verbose, // Ensure file sees everything
-        //                rollingInterval: RollingInterval.Day,
-        //                outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] [{SourceContext}] {Message:lj}{NewLine}{Exception}")
-        //            .CreateLogger();
+                // 🚀 SOPHISTICATED LOGGING CONFIGURATION - Per-Run Files with Complete History
+                Log.Logger = new LoggerConfiguration()
+                    .MinimumLevel.Verbose() // Capture everything for historical analysis
+                    .Enrich.FromLogContext()
+                    .Enrich.WithProperty("RunId", _currentRunId) // Tag all logs with RunID
+                    .Destructure.ByTransformingWhere<object>(
+                        type => type.IsClass &&
+                                type != typeof(string) &&
+                                !typeof(IEnumerable).IsAssignableFrom(type),
+                        obj =>
+                        {
+                            try
+                            {
+                                var jsonString = System.Text.Json.JsonSerializer.Serialize(obj, systemTextJsonOptions);
+                                var dictionary = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, object>>(jsonString, systemTextJsonOptions);
+                                return dictionary;
+                            }
+                            catch (Exception ex)
+                            {
+                                return new Dictionary<string, object> { { "SerializationError", ex.Message } };
+                            }
+                        }
+                    )
+                    .WriteTo.Console(restrictedToMinimumLevel: LogEventLevel.Information) // Console only shows important stuff
+                    .WriteTo.File(
+                        _currentLogFilePath,
+                        restrictedToMinimumLevel: LogEventLevel.Verbose, // File captures EVERYTHING
+                        outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] [{SourceContext}] [RunId:{RunId}] {Message:lj}{NewLine}{Exception}")
+                    .CreateLogger();
 
-        //        _logger = Log.ForContext<PDFImportTests>();
-        //        _logger.Information("Serilog configured with SIMPLIFIED setup for tests.");
-        //        _logger.Debug("SIMPLIFIED_SETUP: This is a debug message. Should appear.");
-        //        _logger.Verbose("SIMPLIFIED_SETUP: This is a verbose message. Should appear.");
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Console.WriteLine($"ERROR configuring Serilog (simplified): {ex}");
-        //        // Basic fallback
+                _logger = Log.ForContext<PDFImportTests>();
+                _logger.Information("🎯 SOPHISTICATED LOGGING RESTORED - RunId: {RunId}, LogFile: {LogFile}", _currentRunId, logFileName);
+                _logger.Information("📋 TEST_FIXTURE_SETUP: Starting PDFImportTests with individual run tracking and archiving");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ ERROR configuring sophisticated logging: {ex}");
+                // Basic fallback
         //        Log.Logger = new LoggerConfiguration().WriteTo.Console().CreateLogger();
         //        _logger = Log.ForContext<PDFImportTests>();
         //        _logger.Error(ex, "Error in simplified Serilog config.");
