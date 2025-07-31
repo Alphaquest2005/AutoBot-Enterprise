@@ -109,20 +109,11 @@ namespace AutoBotUtilities.Tests
                 _logger.Error(ex, "❌ Error in sophisticated logging config - using fallback");
             }
         }
-        {
-            // LogFilterState initialization (as before)
-            LogFilterState.TargetSourceContextForDetails = null;
-            LogFilterState.TargetMethodNameForDetails = null;
-            LogFilterState.DetailTargetMinimumLevel = LogEventLevel.Fatal;
-            LogFilterState.EnabledCategoryLevels[LogCategory.Undefined] = LogEventLevel.Debug;
 
-            try
-            {
-                string logFilePath = Path.Combine(
-                    TestContext.CurrentContext.TestDirectory,
-                    "Logs",
-                    $"AutoBotTests-{DateTime.Now:yyyyMMdd}.log");
-                Directory.CreateDirectory(Path.GetDirectoryName(logFilePath));
+        /// <summary>
+        /// 🎯 PHASE 3: RESTORE TEST-CONTROLLED ARCHIVING SYSTEM
+        /// Moves completed log files to Archive/ folder for permanent preservation
+        /// </summary>
 
                 // Define your custom System.Text.Json options
                 var systemTextJsonOptions = new JsonSerializerOptions
