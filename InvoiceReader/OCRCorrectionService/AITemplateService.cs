@@ -1741,12 +1741,38 @@ Return your suggestions as JSON in this exact format:
             }
             catch (HttpRequestException ex)
             {
-                _logger.Error(ex, "❌ **HTTP_REQUEST_FAILED**: {Provider} API call failed", provider);
+                // **LOG_THE_WHO**: Comprehensive exception logging with full context for LLM debugging
+                var exceptionContext = LLMExceptionLogger.CreateExceptionContext(
+                    operation: $"HTTP API call to {provider}",
+                    input: $"Provider: {provider}, Prompt length: {prompt?.Length ?? 0} characters",
+                    expectedOutcome: "Successful HTTP response from AI provider",
+                    actualOutcome: "HTTP request failed with network/connectivity error"
+                );
+
+                LLMExceptionLogger.LogComprehensiveException(
+                    _logger, 
+                    ex, 
+                    $"HTTP request failed for {provider} API call", 
+                    exceptionContext
+                );
                 throw;
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, "❌ **API_CALL_EXCEPTION**: Unexpected error calling {Provider}", provider);
+                // **LOG_THE_WHO**: Comprehensive exception logging with full context for LLM debugging
+                var exceptionContext = LLMExceptionLogger.CreateExceptionContext(
+                    operation: $"API call to {provider}",
+                    input: $"Provider: {provider}, Prompt length: {prompt?.Length ?? 0} characters",
+                    expectedOutcome: "Successful API response with valid JSON",
+                    actualOutcome: "Unexpected exception during API processing"
+                );
+
+                LLMExceptionLogger.LogComprehensiveException(
+                    _logger, 
+                    ex, 
+                    $"Unexpected error during {provider} API call", 
+                    exceptionContext
+                );
                 throw;
             }
         }
@@ -2762,8 +2788,23 @@ If you find no new omissions or corrections, return an empty errors array with d
                 // and the spec contains reasonable field names
                 return fieldDataTypes.Count > 0 && spec.RequiredFields != null && spec.RequiredFields.Count > 0;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                // **LOG_THE_WHO**: Comprehensive exception logging with full context for LLM debugging
+                var exceptionContext = LLMExceptionLogger.CreateExceptionContext(
+                    operation: "Data type compliance validation",
+                    input: $"DocumentType: {documentType}, RequiredFields: {spec?.RequiredFields?.Count ?? 0} fields",
+                    expectedOutcome: "Boolean validation result indicating data type compliance",
+                    actualOutcome: "Exception occurred during data type validation"
+                );
+
+                LLMExceptionLogger.LogComprehensiveException(
+                    Log.ForContext(typeof(AITemplateService)), 
+                    ex, 
+                    "Data type compliance validation failed - this may be the root cause of 8-layer validation failure", 
+                    exceptionContext
+                );
+                
                 return false; // Validation failed due to error
             }
         }
