@@ -52,10 +52,11 @@ namespace WaterNut.DataSpace
 
         #region Constructor
 
-        public OCRCorrectionService(ILogger logger)
+        public OCRCorrectionService(ILogger logger, FallbackConfiguration fallbackConfig = null)
         {
             // 🧠 **ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v5**: Complete constructor initialization narrative
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _fallbackConfig = fallbackConfig ?? FallbackConfigurationLoader.LoadConfiguration();
             
             // **LOG_THE_WHAT**: Configuration state, input data, design specifications, expected behavior
             _logger.Information("🏗️ **CONSTRUCTOR_INIT_START**: OCRCorrectionService constructor beginning with dependency injection and component initialization");
