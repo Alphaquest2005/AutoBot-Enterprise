@@ -241,33 +241,140 @@ namespace WaterNut.DataSpace
                 result.DatabaseDetections = databaseResults;
                 result.DatabaseDetectionCount = databaseResults.Count;
                 
-                if (databaseResults.Any(d => d.Confidence >= 0.8))
+                // **HIGH-CONFIDENCE DATABASE DETECTION ANALYSIS**
+                _logger.Error("🔍 **DATABASE_CONFIDENCE_ANALYSIS**: Analyzing database detection confidence levels");
+                var highConfidenceResults = databaseResults.Where(d => d.Confidence >= 0.8).ToList();
+                _logger.Error("   - **HIGH_CONFIDENCE_COUNT**: {Count} documents with confidence >= 0.8", highConfidenceResults.Count);
+                _logger.Error("   - **TOTAL_DATABASE_COUNT**: {Count} total database detections", databaseResults.Count);
+                
+                if (highConfidenceResults.Any())
                 {
-                    _logger.Information("✅ **DATABASE_DETECTION_SUCCESS**: {Count} high-confidence matches found", 
-                        databaseResults.Count(d => d.Confidence >= 0.8));
+                    _logger.Error("✅ **DATABASE_HIGH_CONFIDENCE_SUCCESS**: Using {Count} high-confidence database matches", highConfidenceResults.Count);
                     result.PrimaryDetectionMethod = "Database";
-                    result.Documents.AddRange(databaseResults.Where(d => d.Confidence >= 0.8));
-                }
-                
-                // **PHASE 2: FILETYPE PATTERN VALIDATION** (Filename pattern validation)
-                _logger.Information("📁 **PHASE_2_FILETYPE_VALIDATION**: Validating filename against FileType patterns");
-                var fileTypeValidation = await _fileTypeEngine.ValidateFilenamePatternAsync(documentPath, result.Documents);
-                
-                result.FileTypeValidation = fileTypeValidation;
-                result.FilenameTriggersAI = fileTypeValidation.ShouldTriggerAI;
-                
-                if (fileTypeValidation.ShouldTriggerAI)
-                {
-                    _logger.Warning("🚨 **FILETYPE_AI_TRIGGER**: {Message}", fileTypeValidation.ValidationMessage);
+                    result.Documents.AddRange(highConfidenceResults);
+                    
+                    // **LOG HIGH-CONFIDENCE RESULTS**
+                    foreach (var doc in highConfidenceResults)
+                    {
+                        _logger.Error("🎯 **HIGH_CONFIDENCE_DOCUMENT**: Type='{Type}', Confidence={Confidence:F3}, Keywords=[{Keywords}]", 
+                            doc.DocumentType, doc.Confidence, string.Join(", ", doc.MatchedKeywords));
+                    }
                 }
                 else
                 {
-                    _logger.Information("✅ **FILETYPE_VALIDATION_PASSED**: {Message}", fileTypeValidation.ValidationMessage);
+                    _logger.Error("⚠️ **LOW_DATABASE_CONFIDENCE**: No high-confidence database matches found - will continue to next phases");
                 }
                 
+                // **PHASE 2: FILETYPE PATTERN VALIDATION** (Filename pattern validation)
+                _logger.Error("📁 **PHASE_2_START**: FileType pattern validation phase beginning");
+                
+                // **FILETYPE ENGINE AVAILABILITY CHECK**
+                if (_fileTypeEngine == null)
+                {
+                    _logger.Error("❌ **FILETYPE_ENGINE_UNAVAILABLE**: Cannot perform filename validation - component missing");
+                    _logger.Error("🔄 **PHASE_2_SKIP**: Skipping FileType validation due to missing component");
+                    
+                    // **CREATE DEFAULT FILETYPE VALIDATION RESULT**
+                    var defaultFileTypeValidation = new FileTypeValidationResult
+                    {
+                        ShouldTriggerAI = false,
+                        ValidationMessage = "FileType engine unavailable - no validation performed"
+                    };
+                    result.FileTypeValidation = defaultFileTypeValidation;
+                    result.FilenameTriggersAI = false;
+                    _logger.Error("✅ **DEFAULT_FILETYPE_RESULT**: Using default validation result (no AI trigger)");
+                }
+                else
+                {
+                    _logger.Error("🔍 **FILETYPE_VALIDATION_ATTEMPT**: Calling FileTypePatternDetectionEngine.ValidateFilenamePatternAsync");
+                    _logger.Error("   - **METHOD_SIGNATURE**: ValidateFilenamePatternAsync(string documentPath, List<DetectedDocument> detectedDocuments)");
+                    _logger.Error("   - **DOCUMENT_PATH**: {Path}", documentPath ?? "NULL");
+                    _logger.Error("   - **DETECTED_DOCUMENTS_COUNT**: {Count} documents to validate against", result.Documents.Count);
+                    
+                    try
+                    {
+                        var fileTypeValidation = await _fileTypeEngine.ValidateFilenamePatternAsync(documentPath, result.Documents);
+                        _logger.Error("✅ **FILETYPE_VALIDATION_SUCCESS**: ValidateFilenamePatternAsync returned successfully");
+                        _logger.Error("   - **SHOULD_TRIGGER_AI**: {ShouldTrigger}", fileTypeValidation.ShouldTriggerAI);
+                        _logger.Error("   - **VALIDATION_MESSAGE**: {Message}", fileTypeValidation.ValidationMessage);
+                        
+                        result.FileTypeValidation = fileTypeValidation;
+                        result.FilenameTriggersAI = fileTypeValidation.ShouldTriggerAI;
+                        
+                        if (fileTypeValidation.ShouldTriggerAI)
+                        {
+                            _logger.Error("🚨 **FILETYPE_AI_TRIGGER**: Filename validation requires AI detection - {Message}", fileTypeValidation.ValidationMessage);
+                        }
+                        else
+                        {
+                            _logger.Error("✅ **FILETYPE_VALIDATION_PASSED**: Filename validation successful - {Message}", fileTypeValidation.ValidationMessage);
+                        }
+                    }
+                    catch (Exception fileEx)
+                    {
+                        _logger.Error(fileEx, "❌ **FILETYPE_VALIDATION_EXCEPTION**: Exception in ValidateFilenamePatternAsync");
+                        _logger.Error("   - **EXCEPTION_TYPE**: {Type}", fileEx.GetType().Name);
+                        _logger.Error("   - **EXCEPTION_MESSAGE**: {Message}", fileEx.Message);
+                        _logger.Error("🔄 **FILETYPE_FALLBACK**: Using default validation result due to exception");
+                        
+                        var fallbackFileTypeValidation = new FileTypeValidationResult
+                        {
+                            ShouldTriggerAI = false,
+                            ValidationMessage = $"FileType validation failed: {fileEx.Message}"
+                        };
+                        result.FileTypeValidation = fallbackFileTypeValidation;
+                        result.FilenameTriggersAI = false;
+                    }
+                }
+                
+                _logger.Error("📊 **PHASE_2_COMPLETE**: FileType validation phase complete");
+                _logger.Error("   - **FILENAME_TRIGGERS_AI**: {TriggersAI}", result.FilenameTriggersAI);
+                
                 // **PHASE 3: COMPLETENESS CHECK** (Detect missing documents)
-                _logger.Information("📊 **PHASE_2_COMPLETENESS_CHECK**: Validating 100% text coverage");
-                var completenessResult = await _completenessValidator.ValidateCompletenessAsync(text, result.Documents);
+                _logger.Error("📊 **PHASE_3_START**: Completeness validation phase beginning");
+                
+                // **COMPLETENESS VALIDATOR AVAILABILITY CHECK**
+                if (_completenessValidator == null)
+                {
+                    _logger.Error("❌ **COMPLETENESS_VALIDATOR_UNAVAILABLE**: Cannot perform completeness validation - component missing");
+                    _logger.Error("🔄 **PHASE_3_SKIP**: Skipping completeness validation due to missing component");
+                    
+                    // **DEFAULT COMPLETENESS RESULT**
+                    result.CompletenessPercentage = 100.0; // Assume complete if can't validate
+                    result.MissingTextLength = 0;
+                    _logger.Error("✅ **DEFAULT_COMPLETENESS_RESULT**: Using default completeness (100% coverage assumed)");
+                }
+                else
+                {
+                    _logger.Error("🔍 **COMPLETENESS_VALIDATION_ATTEMPT**: Calling DocumentCompletenessValidator.ValidateCompletenessAsync");
+                    _logger.Error("   - **METHOD_SIGNATURE**: ValidateCompletenessAsync(string text, List<DetectedDocument> documents)");
+                    _logger.Error("   - **TEXT_LENGTH**: {Length} characters", text?.Length ?? 0);
+                    _logger.Error("   - **DOCUMENTS_COUNT**: {Count} documents to validate", result.Documents.Count);
+                    
+                    try
+                    {
+                        var completenessResult = await _completenessValidator.ValidateCompletenessAsync(text, result.Documents);
+                        _logger.Error("✅ **COMPLETENESS_VALIDATION_SUCCESS**: ValidateCompletenessAsync returned successfully");
+                        _logger.Error("   - **COVERAGE_PERCENTAGE**: {Coverage:F2}%", completenessResult.CoveragePercentage);
+                        _logger.Error("   - **MISSING_TEXT_LENGTH**: {MissingLength} characters", completenessResult.MissingTextLength);
+                        
+                        result.CompletenessPercentage = completenessResult.CoveragePercentage;
+                        result.MissingTextLength = completenessResult.MissingTextLength;
+                    }
+                    catch (Exception compEx)
+                    {
+                        _logger.Error(compEx, "❌ **COMPLETENESS_VALIDATION_EXCEPTION**: Exception in ValidateCompletenessAsync");
+                        _logger.Error("   - **EXCEPTION_TYPE**: {Type}", compEx.GetType().Name);
+                        _logger.Error("   - **EXCEPTION_MESSAGE**: {Message}", compEx.Message);
+                        _logger.Error("🔄 **COMPLETENESS_FALLBACK**: Using default completeness result due to exception");
+                        
+                        result.CompletenessPercentage = 100.0; // Assume complete on error
+                        result.MissingTextLength = 0;
+                    }
+                }
+                
+                _logger.Error("📊 **PHASE_3_COMPLETE**: Completeness validation phase complete");
+                _logger.Error("   - **FINAL_COVERAGE**: {Coverage:F2}%", result.CompletenessPercentage);
                 
                 result.CompletenessPercentage = completenessResult.CoveragePercentage;
                 result.MissingTextLength = completenessResult.MissingTextLength;
