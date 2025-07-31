@@ -3093,8 +3093,9 @@ If you find no new omissions or corrections, return an empty errors array with d
         private static bool ValidateFieldNamingConvention(string fieldName, string documentType)
         {
             // Validate field follows Template_Specifications.md naming conventions
-            var validPrefixes = GetValidFieldPrefixesForDocument(documentType);
-            return validPrefixes.Any(prefix => fieldName.StartsWith(prefix, StringComparison.OrdinalIgnoreCase));
+            // Use the same field validation logic as field mapping validation
+            var validFields = GetRequiredFieldsForDocument(documentType);
+            return validFields.Contains(fieldName, StringComparer.OrdinalIgnoreCase);
         }
 
         private static List<string> GetValidFieldPrefixesForDocument(string documentType)
