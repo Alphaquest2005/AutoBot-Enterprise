@@ -453,47 +453,133 @@ namespace WaterNut.DataSpace
                             result.AIDetections = new List<DetectedDocument>();
                             result.AIDetectionCount = 0;
                         }
-                    }
                     
-                    result.AIDetections = aiResults;
-                    result.AIDetectionCount = aiResults.Count();
-                    
-                    if (result.Documents.Count == 0)
+                    _logger.Error("📊 **PHASE_4_COMPLETE**: AI fallback detection phase complete");
+                    _logger.Error("   - **AI_DETECTION_COUNT**: {Count} unknown documents detected", result.AIDetectionCount);
+                }
+                else
+                {
+                    _logger.Error("✅ **NO_AI_NEEDED**: Completeness and filename validation passed - skipping AI detection");
+                    result.AIDetections = new List<DetectedDocument>();
+                    result.AIDetectionCount = 0;
+                }
+                
+                // **PHASE 5: LEARNING SYSTEM** (Improve database for future speed)
+                _logger.Error("🧠 **PHASE_5_START**: Learning system phase beginning");
+                
+                if (_learningSystem == null)
+                {
+                    _logger.Error("❌ **LEARNING_SYSTEM_UNAVAILABLE**: Cannot perform learning - component missing");
+                    _logger.Error("🔄 **PHASE_5_SKIP**: Skipping learning due to missing component");
+                }
+                else if (result.AIDetections.Any())
+                {
+                    _logger.Error("🔍 **LEARNING_ATTEMPT**: Calling DocumentLearningSystem.LearnFromAIDetectionsAsync");
+                    try
                     {
-                        result.PrimaryDetectionMethod = "AI";
+                        await _learningSystem.LearnFromAIDetectionsAsync(result.AIDetections, text);
+                        _logger.Error("✅ **LEARNING_SUCCESS**: AI discoveries added to database for future speed");
                     }
-                    else
+                    catch (Exception learnEx)
                     {
-                        result.PrimaryDetectionMethod = "Hybrid";
+                        _logger.Error(learnEx, "❌ **LEARNING_EXCEPTION**: Exception in LearnFromAIDetectionsAsync");
                     }
-                    
-                    result.Documents.AddRange(aiResults);
-                    
-                    // **PHASE 5: LEARNING SYSTEM** (Improve database for future speed)
-                    _logger.Information("🧠 **PHASE_5_LEARNING**: Adding AI discoveries to database and FileType patterns");
-                    await _learningSystem.LearnFromAIDetectionsAsync(aiResults, text);
                     
                     // **FILENAME PATTERN LEARNING**: Learn filename patterns from successful AI detections
-                    if (needsAIForFilename && aiResults.Any())
+                    if (needsAIForFilename && result.AIDetections.Any())
                     {
-                        await LearnFilenamePatterns(documentPath, aiResults);
+                        _logger.Error("📁 **FILENAME_LEARNING_ATTEMPT**: Learning filename patterns from AI detections");
+                        try
+                        {
+                            await LearnFilenamePatterns(documentPath, result.AIDetections);
+                            _logger.Error("✅ **FILENAME_LEARNING_SUCCESS**: Filename patterns learned");
+                        }
+                        catch (Exception fileLearnEx)
+                        {
+                            _logger.Error(fileLearnEx, "❌ **FILENAME_LEARNING_EXCEPTION**: Exception in filename learning");
+                        }
+                    }
+                }
+                else
+                {
+                    _logger.Error("ℹ️ **NO_LEARNING_NEEDED**: No AI detections to learn from");
+                }
+                
+                _logger.Error("📊 **PHASE_5_COMPLETE**: Learning system phase complete");
+                
+                // **PHASE 6: SEPARATION INTELLIGENCE** (Enhance text separation capabilities)
+                _logger.Error("🔍 **PHASE_6_START**: Separation intelligence phase beginning");
+                
+                if (_separationIntelligence == null)
+                {
+                    _logger.Error("❌ **SEPARATION_INTELLIGENCE_UNAVAILABLE**: Cannot perform separation analysis - component missing");
+                    _logger.Error("🔄 **PHASE_6_SKIP**: Skipping separation intelligence due to missing component");
+                    
+                    result.SeparationPatterns = new List<SeparationPattern>();
+                    result.DocumentBoundaries = new List<DocumentBoundary>();
+                    result.RegexSeparators = new List<string>();
+                }
+                else
+                {
+                    _logger.Error("🔍 **SEPARATION_ANALYSIS_ATTEMPT**: Calling TextSeparationIntelligence.AnalyzeSeparationPatternsAsync");
+                    try
+                    {
+                        var separationResult = await _separationIntelligence.AnalyzeSeparationPatternsAsync(text, result.Documents);
+                        _logger.Error("✅ **SEPARATION_ANALYSIS_SUCCESS**: Document boundaries and patterns analyzed");
+                        _logger.Error("   - **PATTERNS_COUNT**: {Count} separation patterns", separationResult.Patterns.Count);
+                        _logger.Error("   - **BOUNDARIES_COUNT**: {Count} document boundaries", separationResult.Boundaries.Count);
+                        _logger.Error("   - **REGEX_SEPARATORS_COUNT**: {Count} regex separators", separationResult.RegexSeparators.Count);
+                        
+                        result.SeparationPatterns = separationResult.Patterns;
+                        result.DocumentBoundaries = separationResult.Boundaries;
+                        result.RegexSeparators = separationResult.RegexSeparators;
+                    }
+                    catch (Exception sepEx)
+                    {
+                        _logger.Error(sepEx, "❌ **SEPARATION_ANALYSIS_EXCEPTION**: Exception in AnalyzeSeparationPatternsAsync");
+                        result.SeparationPatterns = new List<SeparationPattern>();
+                        result.DocumentBoundaries = new List<DocumentBoundary>();
+                        result.RegexSeparators = new List<string>();
                     }
                 }
                 
-                // **PHASE 6: SEPARATION INTELLIGENCE** (Enhance text separation capabilities)
-                _logger.Information("🔍 **PHASE_6_SEPARATION_INTELLIGENCE**: Analyzing document boundaries and patterns");
-                var separationResult = await _separationIntelligence.AnalyzeSeparationPatternsAsync(text, result.Documents);
-                
-                result.SeparationPatterns = separationResult.Patterns;
-                result.DocumentBoundaries = separationResult.Boundaries;
-                result.RegexSeparators = separationResult.RegexSeparators;
+                _logger.Error("📊 **PHASE_6_COMPLETE**: Separation intelligence phase complete");
                 
                 // **PHASE 7: FINAL COMPLETENESS VALIDATION**
-                var finalCompleteness = await _completenessValidator.ValidateCompletenessAsync(text, result.Documents);
-                result.FinalCompletenessPercentage = finalCompleteness.CoveragePercentage;
+                _logger.Error("✅ **PHASE_7_START**: Final completeness validation phase beginning");
                 
-                _logger.Information("🎯 **HYBRID_DETECTION_COMPLETE**: {Method} detection, {Count} documents, {Coverage:F1}% coverage", 
-                    result.PrimaryDetectionMethod, result.Documents.Count, result.FinalCompletenessPercentage);
+                if (_completenessValidator == null)
+                {
+                    _logger.Error("❌ **FINAL_COMPLETENESS_UNAVAILABLE**: Cannot perform final validation - component missing");
+                    result.FinalCompletenessPercentage = result.CompletenessPercentage; // Use initial completeness
+                }
+                else
+                {
+                    _logger.Error("🔍 **FINAL_COMPLETENESS_ATTEMPT**: Calling DocumentCompletenessValidator.ValidateCompletenessAsync for final validation");
+                    try
+                    {
+                        var finalCompleteness = await _completenessValidator.ValidateCompletenessAsync(text, result.Documents);
+                        result.FinalCompletenessPercentage = finalCompleteness.CoveragePercentage;
+                        _logger.Error("✅ **FINAL_COMPLETENESS_SUCCESS**: Final completeness validation complete - {Coverage:F2}%", result.FinalCompletenessPercentage);
+                    }
+                    catch (Exception finalEx)
+                    {
+                        _logger.Error(finalEx, "❌ **FINAL_COMPLETENESS_EXCEPTION**: Exception in final completeness validation");
+                        result.FinalCompletenessPercentage = result.CompletenessPercentage; // Use initial completeness
+                    }
+                }
+                
+                _logger.Error("📊 **PHASE_7_COMPLETE**: Final completeness validation phase complete");
+                _logger.Error("   - **FINAL_COVERAGE**: {Coverage:F2}%", result.FinalCompletenessPercentage);
+                
+                // **HYBRID DETECTION COMPLETE**
+                _logger.Error("🎯 **HYBRID_DETECTION_COMPLETE**: All phases complete - summarizing results");
+                _logger.Error("   - **PRIMARY_METHOD**: {Method}", result.PrimaryDetectionMethod ?? "None");
+                _logger.Error("   - **TOTAL_DOCUMENTS**: {Count} documents detected", result.Documents.Count);
+                _logger.Error("   - **DATABASE_DOCUMENTS**: {Count} from database", result.DatabaseDetectionCount);
+                _logger.Error("   - **AI_DOCUMENTS**: {Count} from AI", result.AIDetectionCount);
+                _logger.Error("   - **FINAL_COVERAGE**: {Coverage:F1}%", result.FinalCompletenessPercentage);
+                _logger.Error("   - **FILENAME_TRIGGERED_AI**: {Triggered}", result.FilenameTriggersAI);
                 
                 result.Success = true;
             }
