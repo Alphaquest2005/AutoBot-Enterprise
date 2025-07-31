@@ -2449,9 +2449,24 @@ If you find no new omissions or corrections, return an empty errors array with d
             {
                 "invoice" or "shipmentinvoice" => new Dictionary<string, List<string>>
                 {
-                    { "InvoiceNo", new List<string> { "Invoice", "EntryData" } },
-                    { "InvoiceDate", new List<string> { "Invoice", "EntryData" } },
-                    { "InvoiceTotal", new List<string> { "Invoice", "EntryData" } },
+                    // Core ShipmentInvoice fields
+                    { "InvoiceNo", new List<string> { "ShipmentInvoice", "Invoice", "EntryData" } },
+                    { "InvoiceDate", new List<string> { "ShipmentInvoice", "Invoice", "EntryData" } },
+                    { "InvoiceTotal", new List<string> { "ShipmentInvoice", "Invoice", "EntryData" } },
+                    { "SubTotal", new List<string> { "ShipmentInvoice", "Invoice", "EntryData" } },
+                    { "Currency", new List<string> { "ShipmentInvoice", "Invoice", "EntryData" } },
+                    
+                    // Supplier fields - BOTH accepted (pipeline reality)
+                    { "SupplierCode", new List<string> { "ShipmentInvoice", "Invoice", "EntryData" } },
+                    { "SupplierName", new List<string> { "ShipmentInvoice", "Invoice", "EntryData" } },
+                    
+                    // Financial breakdown fields
+                    { "TotalInternalFreight", new List<string> { "ShipmentInvoice", "Invoice", "EntryData" } },
+                    { "TotalOtherCost", new List<string> { "ShipmentInvoice", "Invoice", "EntryData" } },
+                    { "TotalInsurance", new List<string> { "ShipmentInvoice", "Invoice", "EntryData" } },
+                    { "TotalDeduction", new List<string> { "ShipmentInvoice", "Invoice", "EntryData" } },
+                    
+                    // Detail fields
                     { "ItemNumber", new List<string> { "InvoiceDetails", "EntryDataDetails" } },
                     { "ItemDescription", new List<string> { "InvoiceDetails", "EntryDataDetails" } },
                     { "Quantity", new List<string> { "InvoiceDetails", "EntryDataDetails" } },
