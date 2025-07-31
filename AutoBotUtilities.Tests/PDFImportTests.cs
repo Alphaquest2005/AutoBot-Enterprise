@@ -158,39 +158,8 @@ namespace AutoBotUtilities.Tests
             LogFilterState.TargetSourceContextForDetails = null;
             LogFilterState.TargetMethodNameForDetails = null;
             LogFilterState.DetailTargetMinimumLevel = LogEventLevel.Fatal;
-            LogFilterState.EnabledCategoryLevels[LogCategory.Undefined] = LogEventLevel.Debug
-                {
-                    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault, // Key for omitting defaults
-                    ReferenceHandler = ReferenceHandler.IgnoreCycles,
-                    // WriteIndented = true, // Optional for prettier intermediate JSON if you were debugging the policy itself
-                };
-
-                Log.Logger = new LoggerConfiguration()
-                    .MinimumLevel.Verbose()
-                    .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
-                    .MinimumLevel.Override("System", LogEventLevel.Warning)
-                    .Enrich.FromLogContext()
-                    .Enrich.WithMachineName()
-                    .Enrich.WithThreadId()
-                    .Filter.ByIncludingOnly(evt => // Your existing filter logic
-                    {
-                        // ... (filter logic as before) ...
-                        bool hasCategory = evt.Properties.TryGetValue("LogCategory", out var categoryValue);
-                        LogCategory category = hasCategory && categoryValue is ScalarValue svCat && svCat.Value is LogCategory lc ? lc : LogCategory.Undefined;
-                        bool hasSourceContext = evt.Properties.TryGetValue("SourceContext", out var sourceContextValue);
-                        string sourceContext = hasSourceContext && sourceContextValue is ScalarValue svSrc ? svSrc.Value?.ToString() : null;
-                        bool hasMemberName = evt.Properties.TryGetValue("MemberName", out var memberNameValue);
-                        string memberName = hasMemberName && memberNameValue is ScalarValue svMem ? svMem.Value?.ToString() : null;
-
-                        // TestContext.Progress.WriteLine(
-                        //    $"FILTER_DIAG: Level={evt.Level}, SrcCtx='{sourceContext}', Cat='{category}', Member='{memberName}' | TargetSrcCtx='{LogFilterState.TargetSourceContextForDetails}', TargetMethod='{LogFilterState.TargetMethodNameForDetails}', TargetLevel='{LogFilterState.DetailTargetMinimumLevel}' || EnabledLevelForCatUndef={(LogFilterState.EnabledCategoryLevels.TryGetValue(LogCategory.Undefined, out var l) ? l.ToString() : "NotSet")}");
-
-                        if (!string.IsNullOrEmpty(LogFilterState.TargetSourceContextForDetails) &&
-                            sourceContext != null &&
-                            sourceContext.StartsWith(LogFilterState.TargetSourceContextForDetails))
-                        {
-                            if (string.IsNullOrEmpty(LogFilterState.TargetMethodNameForDetails) ||
-                                (memberName != null && memberName.Equals(LogFilterState.TargetMethodNameForDetails, StringComparison.OrdinalIgnoreCase)))
+            LogFilterState.EnabledCategoryLevels[LogCategory.Undefined] = LogEventLevel.Debug;
+        }
                             {
                                 return evt.Level >= LogFilterState.DetailTargetMinimumLevel;
                             }
