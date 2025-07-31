@@ -2319,14 +2319,27 @@ If you find no new omissions or corrections, return an empty errors array with d
         /// </summary>
         private static bool ValidateStandardFieldMappings(List<string> fields, string documentType)
         {
-            var requiredFields = GetRequiredFieldsForDocument(documentType);
+            // Get core essential fields (minimum required)
+            var coreRequiredFields = GetCoreRequiredFieldsForDocument(documentType);
             
-            // Check if critical required fields are present
-            foreach (var requiredField in requiredFields)
+            // Check if core required fields are present
+            foreach (var requiredField in coreRequiredFields)
             {
                 if (!fields.Any(f => f.Equals(requiredField, StringComparison.OrdinalIgnoreCase)))
                 {
-                    return false; // Missing required field
+                    return false; // Missing core required field
+                }
+            }
+            
+            // Get all accepted fields (includes optional fields)
+            var acceptedFields = GetRequiredFieldsForDocument(documentType);
+            
+            // Validate that all present fields are accepted ShipmentInvoice properties
+            foreach (var field in fields)
+            {
+                if (!acceptedFields.Any(accepted => accepted.Equals(field, StringComparison.OrdinalIgnoreCase)))
+                {
+                    return false; // Field not recognized as valid ShipmentInvoice property
                 }
             }
             
