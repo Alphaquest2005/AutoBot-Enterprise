@@ -2458,7 +2458,10 @@ If you find no new omissions or corrections, return an empty errors array with d
                     "SupplierCode", "SupplierName",
                     // Common ShipmentInvoice properties that DeepSeek creates
                     "InvoiceDate", "SubTotal", "Currency", 
-                    "TotalInternalFreight", "TotalOtherCost", "TotalInsurance", "TotalDeduction"
+                    "TotalInternalFreight", "TotalOtherCost", "TotalInsurance", "TotalDeduction",
+                    // InvoiceDetails (line item) fields that DeepSeek creates
+                    "ItemDescription", "Quantity", "Cost", "TotalCost", "LineNumber", "ItemNumber", 
+                    "Units", "Discount", "TariffCode", "Category", "SalesFactor"
                 },
                 "shipmentbl" => new List<string> { "BLNumber", "WeightKG" },
                 "purchaseorder" => new List<string> { "PONumber", "LineNumber", "Quantity" },
