@@ -243,18 +243,6 @@ namespace AutoBotUtilities.Tests
                 Console.WriteLine($"❌ ERROR in FixtureTearDown: {ex.Message}");
             }
         }
-            _logger.Information("--------------------------------------------------");
-        }
-
-
-        [OneTimeTearDown]
-        public void FixtureTearDown()
-        {
-             _logger.Information("--------------------------------------------------");
-             _logger.Information("Finished PDFImportTests Test Fixture");
-             _logger.Information("--------------------------------------------------");
-             Log.CloseAndFlush(); // Ensure logs are written
-        }
 
 
         [SetUp]
