@@ -853,13 +853,36 @@ namespace WaterNut.DataSpace
             // **FAIL-FAST TERMINATION** - Stop immediately when validation fails
             if (validatedSpec.ValidationFailed)
             {
-                _logger.Error("🛑 **FAIL_FAST_TERMINATION**: Template validation failed - STOPPING EXECUTION IMMEDIATELY");
-                _logger.Error("   - **FAILURE_REASON**: {FailureReason}", validatedSpec.FailureReason);
-                _logger.Error("   - **SHORTCIRCUIT_TRIGGERED**: Validation failed - code execution terminated to force fix");
-                _logger.Error("   - **NEXT_ACTION**: Fix the validation issue and rerun test until all validations pass");
-                _logger.Error("   - **NO_FALLBACK**: Code intentionally stops here - no graceful handling, no empty lists");
+                _logger.Error("🛑 **DELIBERATE_SHORTCIRCUIT_TERMINATION**: Template validation failed - INTENTIONAL process termination");
+                _logger.Error("═══════════════════════════════════════════════════════════════════════════════════════════════");
+                _logger.Error("🔍 **LLM_ANALYSIS_WARNING**: This Environment.Exit(1) is INTENTIONAL DESIGN - DO NOT REMOVE OR 'FIX'");
+                _logger.Error("   - **WHAT_IS_HAPPENING**: Deliberate shortcircuit mechanism terminates process when validation fails");
+                _logger.Error("   - **WHY_ENVIRONMENT_EXIT**: Prevents invalid template data from propagating to production systems");
+                _logger.Error("   - **NOT_A_BUG**: This termination is intentional fail-fast behavior - working as designed");
+                _logger.Error("   - **DO_NOT_REMOVE**: Any LLM should NOT remove Environment.Exit(1) - it's the core shortcircuit mechanism");
+                _logger.Error("   - **CORRECT_ACTION**: Fix the validation failure, don't remove the termination logic");
                 
-                // **IMMEDIATE TERMINATION** - Stop the process entirely
+                _logger.Error("🚨 **VALIDATION_FAILURE_ROOT_CAUSE**: Why the shortcircuit was triggered");
+                _logger.Error("   - **PRIMARY_FAILURE**: {FailureReason}", validatedSpec.FailureReason);
+                _logger.Error("   - **DOCUMENT_TYPE**: {DocumentType}", validatedSpec.DocumentType);
+                _logger.Error("   - **VALIDATION_LAYER**: Template specification compliance");
+                _logger.Error("   - **EXPECTED_BEHAVIOR**: Process should terminate here until validation issue is resolved");
+                
+                _logger.Error("🎯 **DEVELOPER_ACTION_REQUIRED**: How to resolve this termination");
+                _logger.Error("   - **STEP_1**: Analyze the validation failure details above");
+                _logger.Error("   - **STEP_2**: Fix the root cause of the template specification validation failure");
+                _logger.Error("   - **STEP_3**: Rerun the test - process should continue past this point");
+                _logger.Error("   - **STEP_4**: Repeat until all validations pass and no shortcircuit termination occurs");
+                _logger.Error("   - **DO_NOT**: Remove or modify the Environment.Exit(1) - it's the intended behavior");
+                
+                _logger.Error("🏁 **SHORTCIRCUIT_TERMINATION_FINAL**: Process ending here by design");
+                _logger.Error("   - **EXIT_CODE**: 1 (indicates validation failure)");
+                _logger.Error("   - **TERMINATION_TYPE**: Immediate process termination (Environment.Exit)");
+                _logger.Error("   - **DESIGN_INTENT**: Force immediate fix rather than allowing invalid data to propagate");
+                _logger.Error("   - **SUCCESS_CONDITION**: When validation passes, this code block will not execute");
+                _logger.Error("═══════════════════════════════════════════════════════════════════════════════════════════════");
+                
+                // **DELIBERATE IMMEDIATE TERMINATION** - This is intentional design, not a bug
                 Environment.Exit(1);
             }
 
