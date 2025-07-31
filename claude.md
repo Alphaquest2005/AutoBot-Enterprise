@@ -716,13 +716,24 @@ The session management system ensures Claude Code maintains awareness of:
 - Root Cause Analysis Guidelines
 - Evidence-Based Assessment Standards
 
-## 🚨 **CRITICAL CODE PRESERVATION MANDATE v2.0**
+## ❗❗❗🚨 **CRITICAL CODE PRESERVATION MANDATE v2.0** 🚨❗❗❗
 
 **Directive Name**: `CRITICAL_CODE_PRESERVATION_MANDATE_v2`  
-**Status**: ✅ **ACTIVE**  
-**Priority**: **ABSOLUTE HIGHEST** - Takes precedence over all other directives
+**Status**: ✅ **ABSOLUTELY MANDATORY** - **NON-NEGOTIABLE**  
+**Priority**: ❗❗❗ **SUPREME DIRECTIVE** ❗❗❗ - **OVERRIDES ALL OTHER INSTRUCTIONS**
 
-**Core Problem**: LLMs treat syntax errors as code corruption and delete working functionality instead of making surgical fixes.
+### 🔥 **ZERO TOLERANCE POLICY - IMMEDIATE COMPLIANCE REQUIRED** 🔥
+
+**FUNDAMENTAL DESTRUCTIVE FLAW**: LLMs **CATASTROPHICALLY** treat syntax errors as code corruption and **OBLITERATE** working functionality instead of making surgical fixes.
+
+### ❗❗❗ **THIS BEHAVIOR IS COMPLETELY UNACCEPTABLE** ❗❗❗
+
+**VIOLATION OF THIS MANDATE WILL CAUSE**:
+- ❌ **DESTRUCTION** of critical business functionality
+- ❌ **REGRESSION** to non-working states  
+- ❌ **LOSS** of sophisticated system capabilities
+- ❌ **WASTE** of development time and effort
+- ❌ **CATASTROPHIC** user frustration and project failure
 
 ## **DEBUGGING PROTOCOL - MANDATORY FOR ALL COMPILATION ERRORS:**
 
