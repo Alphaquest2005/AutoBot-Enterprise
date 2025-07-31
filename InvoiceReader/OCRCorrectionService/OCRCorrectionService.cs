@@ -2588,9 +2588,10 @@ namespace WaterNut.DataSpace
             var normalized = documentType.ToLowerInvariant().Replace(" ", "");
             
             // Map known EntryType values to validation-compatible format
+            // Note: Database template mappings exist for "Invoice", not "shipmentinvoice"
             return normalized switch
             {
-                "shipmentinvoice" => "shipmentinvoice",  // Already normalized
+                "shipmentinvoice" => "invoice",          // Map to "invoice" (has database mappings)
                 "invoice" => "invoice",                  // Already normalized
                 "simplifieddeclaration" => "simplifieddeclaration",
                 "c71" => "c71",
