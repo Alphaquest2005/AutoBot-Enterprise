@@ -37,18 +37,126 @@ namespace WaterNut.DataSpace
 
         public HybridDocumentDetectionService(ILogger logger, OCRContext context = null)
         {
+            // 🧠 **ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v4.2**: Comprehensive constructor logging
+            
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _context = context ?? new OCRContext();
+            _logger.Error("🔍 **HYBRID_CONSTRUCTOR_START**: Initializing HybridDocumentDetectionService with ultradiagnostic logging");
+            _logger.Error("   - **LOGGER_STATUS**: {LoggerStatus}", logger != null ? "PROVIDED" : "NULL");
+            _logger.Error("   - **CONTEXT_STATUS**: {ContextStatus}", context != null ? "PROVIDED" : "WILL_CREATE_NEW");
             
-            // Initialize hybrid system components
-            _databaseEngine = new DatabaseDocumentDetectionEngine(_logger, _context);
-            _aiEngine = new AIDocumentDetectionEngine(_logger);
-            _learningSystem = new DocumentLearningSystem(_logger, _context);
-            _completenessValidator = new DocumentCompletenessValidator(_logger);
-            _separationIntelligence = new TextSeparationIntelligence(_logger);
-            _fileTypeEngine = new FileTypePatternDetectionEngine(_logger, _context);
+            try
+            {
+                _logger.Error("🗄️ **CREATING_OCR_CONTEXT**: Attempting to create/assign OCRContext");
+                _context = context ?? new OCRContext();
+                _logger.Error("✅ **OCR_CONTEXT_SUCCESS**: OCRContext created/assigned successfully");
+            }
+            catch (Exception contextEx)
+            {
+                _logger.Error(contextEx, "❌ **OCR_CONTEXT_FAILED**: Critical failure creating OCRContext");
+                throw new InvalidOperationException("Failed to create OCRContext for hybrid detection", contextEx);
+            }
             
-            _logger.Information("🏗️ **HYBRID_DETECTION_INITIALIZED**: Database + AI + Learning + FileType pattern detection ready");
+            // Initialize hybrid system components with extensive error trapping
+            _logger.Error("🔧 **COMPONENT_INITIALIZATION_START**: Creating hybrid system components");
+            
+            try 
+            {
+                _logger.Error("🗄️ **CREATING_DATABASE_ENGINE**: Attempting DatabaseDocumentDetectionEngine creation");
+                _databaseEngine = new DatabaseDocumentDetectionEngine(_logger, _context);
+                _logger.Error("✅ **DATABASE_ENGINE_SUCCESS**: DatabaseDocumentDetectionEngine created");
+            }
+            catch (Exception dbEx)
+            {
+                _logger.Error(dbEx, "❌ **DATABASE_ENGINE_FAILED**: DatabaseDocumentDetectionEngine creation failed");
+                _databaseEngine = null; // Will handle gracefully in detection method
+            }
+            
+            try 
+            {
+                _logger.Error("🤖 **CREATING_AI_ENGINE**: Attempting AIDocumentDetectionEngine creation");
+                _aiEngine = new AIDocumentDetectionEngine(_logger);
+                _logger.Error("✅ **AI_ENGINE_SUCCESS**: AIDocumentDetectionEngine created");
+            }
+            catch (Exception aiEx)
+            {
+                _logger.Error(aiEx, "❌ **AI_ENGINE_FAILED**: AIDocumentDetectionEngine creation failed");
+                _aiEngine = null; // Will handle gracefully in detection method
+            }
+            
+            try 
+            {
+                _logger.Error("🧠 **CREATING_LEARNING_SYSTEM**: Attempting DocumentLearningSystem creation");
+                _learningSystem = new DocumentLearningSystem(_logger, _context);
+                _logger.Error("✅ **LEARNING_SYSTEM_SUCCESS**: DocumentLearningSystem created");
+            }
+            catch (Exception learnEx)
+            {
+                _logger.Error(learnEx, "❌ **LEARNING_SYSTEM_FAILED**: DocumentLearningSystem creation failed");
+                _learningSystem = null; // Will handle gracefully in detection method
+            }
+            
+            try 
+            {
+                _logger.Error("✅ **CREATING_COMPLETENESS_VALIDATOR**: Attempting DocumentCompletenessValidator creation");
+                _completenessValidator = new DocumentCompletenessValidator(_logger);
+                _logger.Error("✅ **COMPLETENESS_VALIDATOR_SUCCESS**: DocumentCompletenessValidator created");
+            }
+            catch (Exception compEx)
+            {
+                _logger.Error(compEx, "❌ **COMPLETENESS_VALIDATOR_FAILED**: DocumentCompletenessValidator creation failed");
+                _completenessValidator = null; // Will handle gracefully in detection method
+            }
+            
+            try 
+            {
+                _logger.Error("🔍 **CREATING_SEPARATION_INTELLIGENCE**: Attempting TextSeparationIntelligence creation");
+                _separationIntelligence = new TextSeparationIntelligence(_logger);
+                _logger.Error("✅ **SEPARATION_INTELLIGENCE_SUCCESS**: TextSeparationIntelligence created");
+            }
+            catch (Exception sepEx)
+            {
+                _logger.Error(sepEx, "❌ **SEPARATION_INTELLIGENCE_FAILED**: TextSeparationIntelligence creation failed");
+                _separationIntelligence = null; // Will handle gracefully in detection method
+            }
+            
+            try 
+            {
+                _logger.Error("📁 **CREATING_FILETYPE_ENGINE**: Attempting FileTypePatternDetectionEngine creation");
+                _fileTypeEngine = new FileTypePatternDetectionEngine(_logger, _context);
+                _logger.Error("✅ **FILETYPE_ENGINE_SUCCESS**: FileTypePatternDetectionEngine created");
+            }
+            catch (Exception fileEx)
+            {
+                _logger.Error(fileEx, "❌ **FILETYPE_ENGINE_FAILED**: FileTypePatternDetectionEngine creation failed");
+                _fileTypeEngine = null; // Will handle gracefully in detection method
+            }
+            
+            // **COMPONENT AVAILABILITY SUMMARY**
+            _logger.Error("📊 **HYBRID_COMPONENT_SUMMARY**: Component availability status");
+            _logger.Error("   - **DATABASE_ENGINE**: {Status}", _databaseEngine != null ? "AVAILABLE" : "FAILED");
+            _logger.Error("   - **AI_ENGINE**: {Status}", _aiEngine != null ? "AVAILABLE" : "FAILED");
+            _logger.Error("   - **LEARNING_SYSTEM**: {Status}", _learningSystem != null ? "AVAILABLE" : "FAILED");
+            _logger.Error("   - **COMPLETENESS_VALIDATOR**: {Status}", _completenessValidator != null ? "AVAILABLE" : "FAILED");
+            _logger.Error("   - **SEPARATION_INTELLIGENCE**: {Status}", _separationIntelligence != null ? "AVAILABLE" : "FAILED");
+            _logger.Error("   - **FILETYPE_ENGINE**: {Status}", _fileTypeEngine != null ? "AVAILABLE" : "FAILED");
+            
+            var availableComponents = new[] { _databaseEngine, _aiEngine, _learningSystem, _completenessValidator, _separationIntelligence, _fileTypeEngine }
+                .Count(c => c != null);
+            
+            _logger.Error("🏗️ **HYBRID_INITIALIZATION_COMPLETE**: {Available}/{Total} components available", availableComponents, 6);
+            
+            if (availableComponents == 0)
+            {
+                _logger.Error("🚨 **CRITICAL_HYBRID_FAILURE**: No hybrid components successfully initialized - system will operate in degraded mode");
+            }
+            else if (availableComponents < 6)
+            {
+                _logger.Error("⚠️ **PARTIAL_HYBRID_INITIALIZATION**: Some components failed - system will operate with limited functionality");
+            }
+            else
+            {
+                _logger.Error("✅ **FULL_HYBRID_INITIALIZATION**: All components initialized - full hybrid functionality available");
+            }
         }
 
         /// <summary>
