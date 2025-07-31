@@ -1311,6 +1311,286 @@ namespace WaterNut.DataSpace
         }
 
         /// <summary>
+        /// **ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v4.2**: Construct Template object from DeepSeek JSON response
+        /// **ARCHITECTURAL_INTENT**: Convert LLM-generated JSON structure into database-compatible Template with OcrTemplates, Parts, Lines, Fields
+        /// **BUSINESS_RULE**: Created Template must be compatible with existing pipeline infrastructure and HandleImportSuccessStateStep processing
+        /// **DESIGN_SPECIFICATION**: Build complete Template hierarchy from JSON with proper entity relationships and regex patterns
+        /// </summary>
+        private Template ConstructTemplateFromJson(JsonElement templateData, string filePath, string jsonContent)
+        {
+            _logger.Error("🏗️ **TEMPLATE_CONSTRUCTION_START**: Building complete Template object from DeepSeek JSON");
+            _logger.Error("   - **ARCHITECTURAL_INTENT**: Create pipeline-compatible Template with OcrTemplates, Parts, Lines, Fields hierarchy");
+            _logger.Error("   - **INPUT_JSON_LENGTH**: {JsonLength} characters", jsonContent?.Length ?? 0);
+            _logger.Error("   - **TARGET_FILE_PATH**: {FilePath}", filePath);
+            _logger.Error("   - **CONSTRUCTION_GOAL**: Build fully functional Template with regex patterns for data extraction");
+
+            try 
+            {
+                // **STEP 1: Extract template metadata from JSON**
+                _logger.Error("📋 **STEP_1_METADATA_EXTRACTION**: Extracting template name and basic structure from JSON");
+                
+                if (!templateData.TryGetProperty("template_name", out var templateNameElement))
+                {
+                    _logger.Error("❌ **METADATA_EXTRACTION_FAILED**: Missing required 'template_name' property in JSON");
+                    return null;
+                }
+                
+                string templateName = templateNameElement.GetString() ?? "DeepSeek_Generated_Template";
+                _logger.Error("✅ **TEMPLATE_NAME_EXTRACTED**: '{TemplateName}'", templateName);
+
+                // **STEP 2: Create basic OcrTemplates object**
+                _logger.Error("🏗️ **STEP_2_OCR_TEMPLATES_CREATION**: Creating OcrTemplates entity for Template instantiation"); 
+                var ocrTemplates = CreateBasicOcrInvoices(templateName, filePath);
+                
+                if (ocrTemplates == null)
+                {
+                    _logger.Error("❌ **OCR_TEMPLATES_CREATION_FAILED**: Cannot create Template without valid OcrTemplates object");
+                    return null;
+                }
+
+                // **STEP 3: Process Parts array from JSON**
+                _logger.Error("📊 **STEP_3_PARTS_PROCESSING**: Processing 'parts' array from DeepSeek JSON");
+                
+                if (!templateData.TryGetProperty("parts", out var partsElement) || partsElement.ValueKind != JsonValueKind.Array)
+                {
+                    _logger.Error("❌ **PARTS_EXTRACTION_FAILED**: Missing or invalid 'parts' array in JSON");
+                    return null;
+                }
+
+                var partsList = new List<OCR.Business.Entities.Parts>();
+                int partIndex = 0;
+
+                foreach (var partElement in partsElement.EnumerateArray())
+                {
+                    partIndex++;
+                    _logger.Error("🔧 **PROCESSING_PART_{PartIndex}**: Creating Part entity from JSON", partIndex);
+
+                    var part = ProcessPartFromJson(partElement, ocrTemplates.Id, partIndex);
+                    if (part != null)
+                    {
+                        partsList.Add(part);
+                        _logger.Error("✅ **PART_{PartIndex}_CREATED**: Part '{PartName}' with {LineCount} lines", 
+                            partIndex, part.PartTypes?.Name ?? "Unknown", part.Lines?.Count ?? 0);
+                    }
+                    else
+                    {
+                        _logger.Error("⚠️ **PART_{PartIndex}_SKIPPED**: Part creation failed, continuing with remaining parts", partIndex);
+                    }
+                }
+
+                // **STEP 4: Create Template object with all components**
+                _logger.Error("🎯 **STEP_4_TEMPLATE_ASSEMBLY**: Assembling final Template object with {PartCount} parts", partsList.Count);
+                
+                ocrTemplates.Parts = partsList;
+                var template = new Template(ocrTemplates, _logger);
+                
+                // Set essential template properties
+                template.FormattedPdfText = System.IO.File.Exists(filePath) ? System.IO.File.ReadAllText(filePath) : "";
+                
+                _logger.Error("✅ **TEMPLATE_CONSTRUCTION_SUCCESS**: Template object created successfully");
+                _logger.Error("   - **TEMPLATE_ID**: {TemplateId}", template.OcrTemplates?.Id ?? 0);
+                _logger.Error("   - **TEMPLATE_NAME**: '{TemplateName}'", template.OcrTemplates?.Name ?? "Unknown");
+                _logger.Error("   - **PARTS_COUNT**: {PartsCount}", template.OcrTemplates?.Parts?.Count ?? 0);
+                _logger.Error("   - **TOTAL_LINES**: {LinesCount}", template.OcrTemplates?.Parts?.Sum(p => p.Lines?.Count ?? 0) ?? 0);
+                _logger.Error("   - **PIPELINE_COMPATIBILITY**: Template ready for HandleImportSuccessStateStep processing");
+
+                return template;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "🚨 **TEMPLATE_CONSTRUCTION_EXCEPTION**: Critical failure during Template object construction");
+                _logger.Error("   - **EXCEPTION_TYPE**: {ExceptionType}", ex.GetType().FullName);
+                _logger.Error("   - **EXCEPTION_MESSAGE**: {ExceptionMessage}", ex.Message);
+                _logger.Error("   - **JSON_CONTENT_PREVIEW**: {JsonPreview}", 
+                    jsonContent?.Length > 200 ? jsonContent.Substring(0, 200) + "..." : jsonContent ?? "NULL");
+                _logger.Error("   - **CONSTRUCTION_FAILURE_IMPACT**: Template creation aborted, will return null");
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// **TEMPLATE_CONSTRUCTION_HELPER**: Process individual Part from DeepSeek JSON structure
+        /// **ARCHITECTURAL_INTENT**: Convert JSON part definition into OCR.Business.Entities.Parts with Lines and Fields
+        /// **BUSINESS_RULE**: Each Part must have valid PartTypes and Lines collection for template functionality
+        /// </summary>
+        private OCR.Business.Entities.Parts ProcessPartFromJson(JsonElement partElement, int templateId, int partIndex)
+        {
+            _logger.Error("🔧 **PART_PROCESSING_START**: Processing Part {PartIndex} from JSON", partIndex);
+
+            try
+            {
+                // Extract part name
+                string partName = "Unknown_Part";
+                if (partElement.TryGetProperty("part_name", out var partNameElement))
+                {
+                    partName = partNameElement.GetString() ?? $"Part_{partIndex}";
+                }
+
+                _logger.Error("📋 **PART_METADATA**: Name='{PartName}', TemplateId={TemplateId}", partName, templateId);
+
+                // Create PartTypes entity
+                var partType = new OCR.Business.Entities.PartTypes 
+                { 
+                    Name = partName,
+                    Id = partIndex // Temporary ID - will be set by database
+                };
+
+                // Create Parts entity  
+                var part = new OCR.Business.Entities.Parts
+                {
+                    Id = partIndex, // Temporary ID
+                    TemplateId = templateId,
+                    PartTypes = partType,
+                    Lines = new List<OCR.Business.Entities.Lines>()
+                };
+
+                // Process lines array
+                if (partElement.TryGetProperty("lines", out var linesElement) && linesElement.ValueKind == JsonValueKind.Array)
+                {
+                    int lineIndex = 0;
+                    foreach (var lineElement in linesElement.EnumerateArray())
+                    {
+                        lineIndex++;
+                        var line = ProcessLineFromJson(lineElement, part.Id, lineIndex);
+                        if (line != null)
+                        {
+                            part.Lines.Add(line);
+                        }
+                    }
+                }
+
+                _logger.Error("✅ **PART_PROCESSING_SUCCESS**: Part '{PartName}' created with {LineCount} lines", 
+                    partName, part.Lines?.Count ?? 0);
+
+                return part;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "❌ **PART_PROCESSING_EXCEPTION**: Failed to process Part {PartIndex}", partIndex);
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// **TEMPLATE_CONSTRUCTION_HELPER**: Process individual Line from DeepSeek JSON structure  
+        /// **ARCHITECTURAL_INTENT**: Convert JSON line definition into OCR.Business.Entities.Lines with Fields and RegularExpressions
+        /// **BUSINESS_RULE**: Each Line must have regex pattern and field mappings for data extraction functionality
+        /// </summary>
+        private OCR.Business.Entities.Lines ProcessLineFromJson(JsonElement lineElement, int partId, int lineIndex)
+        {
+            _logger.Error("🔧 **LINE_PROCESSING_START**: Processing Line {LineIndex} from JSON", lineIndex);
+
+            try
+            {
+                // Extract line metadata
+                string lineName = $"Line_{lineIndex}";
+                string regexPattern = "";
+
+                if (lineElement.TryGetProperty("line_name", out var lineNameElement))
+                {
+                    lineName = lineNameElement.GetString() ?? lineName;
+                }
+
+                if (lineElement.TryGetProperty("regex_pattern", out var regexElement))
+                {
+                    regexPattern = regexElement.GetString() ?? "";
+                }
+
+                _logger.Error("📋 **LINE_METADATA**: Name='{LineName}', Pattern='{Pattern}'", lineName, regexPattern);
+
+                // Create RegularExpressions entity
+                var regex = new OCR.Business.Entities.RegularExpressions
+                {
+                    Id = lineIndex, // Temporary ID
+                    RegEx = regexPattern
+                };
+
+                // Create Lines entity
+                var line = new OCR.Business.Entities.Lines
+                {
+                    Id = lineIndex, // Temporary ID  
+                    PartId = partId,
+                    Name = lineName,
+                    RegularExpressions = regex,
+                    Fields = new List<OCR.Business.Entities.Fields>()
+                };
+
+                // Process fields array
+                if (lineElement.TryGetProperty("fields", out var fieldsElement) && fieldsElement.ValueKind == JsonValueKind.Array)
+                {
+                    int fieldIndex = 0;
+                    foreach (var fieldElement in fieldsElement.EnumerateArray())
+                    {
+                        fieldIndex++;
+                        var field = ProcessFieldFromJson(fieldElement, line.Id, fieldIndex);
+                        if (field != null)
+                        {
+                            line.Fields.Add(field);
+                        }
+                    }
+                }
+
+                _logger.Error("✅ **LINE_PROCESSING_SUCCESS**: Line '{LineName}' created with {FieldCount} fields and pattern '{Pattern}'", 
+                    lineName, line.Fields?.Count ?? 0, regexPattern);
+
+                return line;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "❌ **LINE_PROCESSING_EXCEPTION**: Failed to process Line {LineIndex}", lineIndex);
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// **TEMPLATE_CONSTRUCTION_HELPER**: Process individual Field from DeepSeek JSON structure
+        /// **ARCHITECTURAL_INTENT**: Convert JSON field definition into OCR.Business.Entities.Fields with proper entity mappings
+        /// **BUSINESS_RULE**: Each Field must have valid Key, Field name, and EntityType for database mapping functionality
+        /// </summary>
+        private OCR.Business.Entities.Fields ProcessFieldFromJson(JsonElement fieldElement, int lineId, int fieldIndex)
+        {
+            _logger.Error("🔧 **FIELD_PROCESSING_START**: Processing Field {FieldIndex} from JSON", fieldIndex);
+
+            try
+            {
+                string fieldName = "";
+                string entityType = "ShipmentInvoice"; // Default entity type
+
+                if (fieldElement.TryGetProperty("field_name", out var fieldNameElement))
+                {
+                    fieldName = fieldNameElement.GetString() ?? "";
+                }
+
+                if (fieldElement.TryGetProperty("entity_type", out var entityTypeElement))
+                {
+                    entityType = entityTypeElement.GetString() ?? entityType;
+                }
+
+                _logger.Error("📋 **FIELD_METADATA**: Name='{FieldName}', EntityType='{EntityType}'", fieldName, entityType);
+
+                // Create Fields entity
+                var field = new OCR.Business.Entities.Fields
+                {
+                    Id = fieldIndex, // Temporary ID
+                    LineId = lineId,
+                    Key = $"{fieldName}_{Guid.NewGuid().ToString("N")[..8]}", // Unique key
+                    Field = fieldName,
+                    EntityType = entityType
+                };
+
+                _logger.Error("✅ **FIELD_PROCESSING_SUCCESS**: Field '{FieldName}' created with Key='{Key}' and EntityType='{EntityType}'", 
+                    fieldName, field.Key, entityType);
+
+                return field;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "❌ **FIELD_PROCESSING_EXCEPTION**: Failed to process Field {FieldIndex}", fieldIndex);
+                return null;
+            }
+        }
+
+        /// <summary>
         /// **ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v5**: Create minimal OcrTemplates object for template instantiation
         /// **ARCHITECTURAL_INTENT**: Provide minimum required structure for Template object instantiation in pipeline
         /// **BUSINESS_RULE**: Template must have valid OcrTemplates object to be processed by existing pipeline infrastructure
