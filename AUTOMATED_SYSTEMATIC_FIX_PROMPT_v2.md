@@ -89,33 +89,52 @@
 
 ---
 
-## **PHASE 4: PATTERN CORRECTION IMPLEMENTATION (MAX 90 MIN)**
+## **PHASE 4: CRITICAL LINE ENDING NORMALIZATION (MAX 90 MIN)**
 
-### **ACTION 4.1: Fix Pattern-Text Mismatch**
-Based on text source analysis, implement ONE of these fixes:
+### **🚨 CRITICAL DISCOVERY: LINE ENDING MISMATCH IS THE ROOT CAUSE**
+**PROBLEM IDENTIFIED**: DeepSeek receives MIXED line endings (`\r\n` + `\n`) but pipeline reconstructs with `Environment.NewLine` (`\r\n` on Windows).
 
-**OPTION A: Modify DeepSeek Patterns**
-```csharp
-// LOCATION: OCRPatternCreation.cs ValidateRegexPattern method
-// MODIFY: Transform DeepSeek patterns to match Line.Read() format
-// EXAMPLE: Change "Date:\s*(?<InvoiceDate>.+?EDT)" to "(?<InvoiceDate>.+?EDT)"
+### **ACTION 4.1: NORMALIZE LINE ENDINGS IN DEEPSEEK PROMPTS**
+```bash
+# IMMEDIATE INVESTIGATION:
+1. Find where text is prepared for DeepSeek API:
+   Grep pattern="content.*deepseek|DeepSeek.*prompt|api.*content" include="*.cs" path="/mnt/c/Insight Software/AutoBot-Enterprise/WaterNut.Business.Services/Utils/DeepSeek"
+
+2. Locate text normalization before API calls:
+   Grep pattern="Replace.*\\\\r\\\\n|Replace.*\\\\n|Environment.NewLine" include="*.cs" path="/mnt/c/Insight Software/AutoBot-Enterprise/InvoiceReader"
 ```
 
-**OPTION B: Enhance Line.Read() Context**
+### **ACTION 4.2: IMPLEMENT LINE ENDING CONSISTENCY**
+**PRIMARY FIX - Normalize text sent to DeepSeek:**
 ```csharp
-// LOCATION: Invoice/Read.cs or Template Read methods
-// MODIFY: Provide context labels that DeepSeek expects
-// EXAMPLE: Ensure Line.Read() includes "Date:" prefix for date fields
+// LOCATION: Before sending text to DeepSeek API
+// ADD: Normalize all line endings to match pipeline expectations
+string normalizedText = inputText.Replace("\r\n", "\n").Replace("\r", "\n").Replace("\n", Environment.NewLine);
+
+// EXAMPLE LOCATION: DeepSeekInvoiceApi.cs or OCRPromptCreation.cs
+// ENSURE: All text sent to DeepSeek uses consistent Windows line endings (\r\n)
 ```
 
-**OPTION C: Improve WindowText Population**
+**SECONDARY FIX - Ensure pipeline consistency:**
 ```csharp
-// LOCATION: OCR correction context creation
-// MODIFY: Ensure WindowText contains full OCR context with labels
-// EXAMPLE: Populate WindowText with complete OCR section text
+// LOCATION: FindStart.cs line 270, OCRCorrectionApplication.cs line 660
+// VERIFY: All pipeline text reconstruction uses Environment.NewLine consistently
+// CURRENT: string.Join(Environment.NewLine, ...) ✅ ALREADY CORRECT
+// ACTION: Ensure ALL text processing uses same line ending format
 ```
 
-**SUCCESS CRITERIA**: ValidateRegexPattern method shows patterns successfully matching text during validation.
+### **ACTION 4.3: UPDATE DEEPSEEK PROMPT INSTRUCTIONS**
+```csharp
+// LOCATION: OCRPromptCreation.cs - Add explicit line ending instruction
+// ADD TO PROMPT:
+"CRITICAL: When creating regex patterns, expect text to use Windows line endings (\\r\\n). 
+Patterns must match text that has been processed with Environment.NewLine on Windows systems."
+```
+
+**SUCCESS CRITERIA**: 
+- DeepSeek prompt text shows consistent `\r\n` line endings in logs
+- Patterns created by DeepSeek successfully match pipeline-reconstructed text
+- ValidateRegexPattern method shows successful pattern matching
 
 ---
 
