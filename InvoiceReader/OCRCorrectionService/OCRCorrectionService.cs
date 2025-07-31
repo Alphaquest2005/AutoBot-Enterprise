@@ -872,9 +872,9 @@ namespace WaterNut.DataSpace
                 _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
             }
 
-            // **DOCUMENT_TYPE_NORMALIZATION**: Convert database EntryType to validation-compatible format
-            string normalizedDocumentType = NormalizeDocumentTypeForValidation(documentType);
-            _logger.Error($"🔄 **DOCUMENT_TYPE_NORMALIZED**: '{documentType}' → '{normalizedDocumentType}' for validation compatibility");
+            // **DOCUMENT_TYPE_NORMALIZATION**: Use FileTypeManager.EntryTypes enum as single source of truth
+            string normalizedDocumentType = FileTypeManager.EntryTypes.GetEntryType(documentType);
+            _logger.Error($"🔄 **DOCUMENT_TYPE_NORMALIZED**: '{documentType}' → '{normalizedDocumentType}' using EntryTypes enum");
 
             // Create template specification object for document type with dual-layer validation
             var templateSpec = TemplateSpecification.CreateForTemplateCreation(normalizedDocumentType, createdTemplates, pdfText);
