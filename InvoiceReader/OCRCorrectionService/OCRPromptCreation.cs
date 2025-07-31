@@ -506,20 +506,41 @@ namespace WaterNut.DataSpace
                     }
                     else
                     {
-                        _logger.Warning("⚠️ **TEMPLATE_EMPTY**: Template system returned empty prompt, falling back to hardcoded implementation");
+                        // Check fallback configuration before using hardcoded prompt
+                        if (!_fallbackConfig.EnableTemplateFallback)
+                        {
+                            _logger.Error("🚨 **FALLBACK_DISABLED_TERMINATION**: Template fallbacks disabled - failing immediately on empty template prompt");
+                            throw new InvalidOperationException("Template system returned empty prompt. Template fallbacks are disabled - cannot use hardcoded implementation.");
+                        }
+                        
+                        _logger.Warning("⚠️ **TEMPLATE_EMPTY**: Template system returned empty prompt, falling back to hardcoded implementation (fallbacks enabled)");
                     }
                 }
                 catch (Exception ex)
                 {
-                    _logger.Warning(ex, "⚠️ **TEMPLATE_FALLBACK**: Template system failed, falling back to hardcoded implementation");
+                    // Check fallback configuration before using hardcoded prompt
+                    if (!_fallbackConfig.EnableTemplateFallback)
+                    {
+                        _logger.Error(ex, "🚨 **FALLBACK_DISABLED_TERMINATION**: Template fallbacks disabled - failing immediately on template system exception");
+                        throw new InvalidOperationException("Template system failed with exception. Template fallbacks are disabled - cannot use hardcoded implementation.", ex);
+                    }
+                    
+                    _logger.Warning(ex, "⚠️ **TEMPLATE_FALLBACK**: Template system failed, falling back to hardcoded implementation (fallbacks enabled)");
                 }
             }
             else
             {
-                _logger.Information("ℹ️ **HARDCODED_FALLBACK**: Template service not available, using hardcoded prompt implementation");
+                // Check fallback configuration before using hardcoded prompt
+                if (!_fallbackConfig.EnableTemplateFallback)
+                {
+                    _logger.Error("🚨 **FALLBACK_DISABLED_TERMINATION**: Template fallbacks disabled - failing immediately on null template service");
+                    throw new InvalidOperationException("Template service is not available. Template fallbacks are disabled - cannot use hardcoded implementation.");
+                }
+                
+                _logger.Information("ℹ️ **HARDCODED_FALLBACK**: Template service not available, using hardcoded prompt implementation (fallbacks enabled)");
             }
 
-            _logger.Information("🔄 **HARDCODED_IMPLEMENTATION**: Using legacy hardcoded prompt generation");
+            _logger.Information("🔄 **HARDCODED_IMPLEMENTATION**: Using legacy hardcoded prompt generation (fallback configuration allowed this)");
 
             var currentValues = new Dictionary<string, object>
             {
