@@ -159,18 +159,22 @@ namespace WaterNut.DataSpace
         /// <summary>
         /// Gets the relevant EntityTypes for a specific document type
         /// Based on Template_Specifications.md EntityType mapping
+        /// Uses FileTypeManager.EntryTypes enum as single source of truth
         /// </summary>
         private static List<string> GetEntityTypesForDocument(string documentType)
         {
-            return documentType.ToLower() switch
+            // Normalize document type using EntryTypes enum
+            var normalizedType = FileTypeManager.EntryTypes.GetEntryType(documentType);
+            
+            return normalizedType switch
             {
-                "invoice" => new List<string> { "Invoice", "InvoiceDetails", "EntryData", "EntryDataDetails" },
-                "shipmentbl" or "billoflading" => new List<string> { "ShipmentBL", "ShipmentBLDetails" },
-                "freight" => new List<string> { "ShipmentFreight", "ShipmentFreightDetails" },
-                "manifest" => new List<string> { "ShipmentManifest" },
-                "rider" => new List<string> { "ShipmentRider", "ShipmentRiderDetails" },
-                "purchaseorder" => new List<string> { "PurchaseOrders", "PurchaseOrderDetails" },
-                _ => new List<string> { "Invoice", "InvoiceDetails", "EntryData", "EntryDataDetails" } // Default fallback
+                FileTypeManager.EntryTypes.ShipmentInvoice => new List<string> { "Invoice", "ShipmentInvoiceDetails", "EntryData", "EntryDataDetails" },
+                FileTypeManager.EntryTypes.BL => new List<string> { "ShipmentBL", "ShipmentBLDetails" },
+                FileTypeManager.EntryTypes.Freight => new List<string> { "ShipmentFreight", "ShipmentFreightDetails" },
+                FileTypeManager.EntryTypes.Manifest => new List<string> { "ShipmentManifest" },
+                FileTypeManager.EntryTypes.Rider => new List<string> { "ShipmentRider", "ShipmentRiderDetails" },
+                FileTypeManager.EntryTypes.Po => new List<string> { "PurchaseOrders", "PurchaseOrderDetails" },
+                _ => new List<string> { "Invoice", "ShipmentInvoiceDetails", "EntryData", "EntryDataDetails" } // Default fallback - use ShipmentInvoiceDetails
             };
         }
 
