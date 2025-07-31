@@ -47,10 +47,15 @@ namespace WaterNut.DataSpace
         /// </summary>
         public ILogger Logger => _innerLogger;
 
-        // Convenience methods for common logging scenarios
+        // Convenience methods for common logging scenarios with monitoring
         public void Error(string messageTemplate)
         {
-            Write(LogEventLevel.Error, messageTemplate);
+            _innerLogger.Error(messageTemplate);
+            
+            if (_enableMonitoring)
+            {
+                GlobalFailureMonitor.MonitorLogMessage(_innerLogger, messageTemplate, LogEventLevel.Error);
+            }
         }
 
         public void Error<T>(string messageTemplate, T propertyValue)
