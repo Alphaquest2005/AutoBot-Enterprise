@@ -453,6 +453,7 @@ namespace WaterNut.DataSpace
                             result.AIDetections = new List<DetectedDocument>();
                             result.AIDetectionCount = 0;
                         }
+                    }
                     
                     _logger.Error("📊 **PHASE_4_COMPLETE**: AI fallback detection phase complete");
                     _logger.Error("   - **AI_DETECTION_COUNT**: {Count} unknown documents detected", result.AIDetectionCount);
