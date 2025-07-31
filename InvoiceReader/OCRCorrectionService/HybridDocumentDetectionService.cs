@@ -376,22 +376,84 @@ namespace WaterNut.DataSpace
                 _logger.Error("📊 **PHASE_3_COMPLETE**: Completeness validation phase complete");
                 _logger.Error("   - **FINAL_COVERAGE**: {Coverage:F2}%", result.CompletenessPercentage);
                 
-                // **AI TRIGGER DECISION**: Determine if AI detection is needed based on completeness OR filename patterns
-                var needsAIForCompleteness = completenessResult.CoveragePercentage < 100.0;
-                var needsAIForFilename = fileTypeValidation.ShouldTriggerAI;
+                // **AI TRIGGER DECISION ANALYSIS**: Determine if AI detection is needed based on completeness OR filename patterns
+                _logger.Error("🤖 **AI_TRIGGER_DECISION**: Analyzing need for AI detection");
+                var needsAIForCompleteness = result.CompletenessPercentage < 100.0;
+                var needsAIForFilename = result.FilenameTriggersAI;
                 var needsAI = needsAIForCompleteness || needsAIForFilename;
+                
+                _logger.Error("   - **COMPLETENESS_TRIGGERS_AI**: {NeedsAI} (Coverage: {Coverage:F2}%)", needsAIForCompleteness, result.CompletenessPercentage);
+                _logger.Error("   - **FILENAME_TRIGGERS_AI**: {NeedsAI}", needsAIForFilename);
+                _logger.Error("   - **OVERALL_AI_NEEDED**: {NeedsAI}", needsAI);
                 
                 if (needsAI)
                 {
                     var reasons = new List<string>();
-                    if (needsAIForCompleteness) reasons.Add($"incomplete coverage ({completenessResult.CoveragePercentage:F1}%)");
+                    if (needsAIForCompleteness) reasons.Add($"incomplete coverage ({result.CompletenessPercentage:F1}%)");
                     if (needsAIForFilename) reasons.Add("filename pattern validation");
                     
-                    _logger.Warning("⚠️ **AI_DETECTION_NEEDED**: {Reasons} - triggering AI fallback", string.Join(" + ", reasons));
+                    _logger.Error("🚨 **AI_DETECTION_TRIGGERED**: {Reasons} - proceeding with AI fallback", string.Join(" + ", reasons));
                     
                     // **PHASE 4: AI FALLBACK DETECTION** (Handle unknown types, missing content, and filename mismatches)
-                    _logger.Information("🤖 **PHASE_4_AI_FALLBACK**: Detecting unknown document types and resolving validation issues");
-                    var aiResults = await _aiEngine.DetectUnknownDocumentTypesAsync(text, result.Documents, completenessResult.MissingText);
+                    _logger.Error("🤖 **PHASE_4_START**: AI fallback detection phase beginning");
+                    
+                    // **AI ENGINE AVAILABILITY CHECK**
+                    var missingText = result.MissingTextLength > 0 ? "MissingTextAvailable" : "";
+                    if (_aiEngine == null)
+                    {
+                        _logger.Error("❌ **AI_ENGINE_UNAVAILABLE**: Cannot perform AI detection - component missing");
+                        _logger.Error("🔄 **PHASE_4_SKIP**: Skipping AI detection due to missing component");
+                    }
+                    else
+                    {
+                        _logger.Error("🔍 **AI_DETECTION_ATTEMPT**: Calling AIDocumentDetectionEngine.DetectUnknownDocumentTypesAsync");
+                        _logger.Error("   - **METHOD_SIGNATURE**: DetectUnknownDocumentTypesAsync(string text, List<DetectedDocument> knownDocuments, string missingText)");
+                        _logger.Error("   - **TEXT_LENGTH**: {Length} characters", text?.Length ?? 0);
+                        _logger.Error("   - **KNOWN_DOCUMENTS**: {Count} documents", result.Documents.Count);
+                        _logger.Error("   - **MISSING_TEXT**: {MissingText}", missingText);
+                        
+                        try
+                        {
+                            var aiResults = await _aiEngine.DetectUnknownDocumentTypesAsync(text, result.Documents, missingText);
+                            _logger.Error("✅ **AI_DETECTION_SUCCESS**: DetectUnknownDocumentTypesAsync returned successfully");
+                            _logger.Error("   - **AI_RESULTS_COUNT**: {Count} unknown documents detected", aiResults?.Count ?? 0);
+                            
+                            result.AIDetections = aiResults ?? new List<DetectedDocument>();
+                            result.AIDetectionCount = result.AIDetections.Count();
+                            
+                            // **LOG AI DETECTED DOCUMENTS**
+                            foreach (var doc in result.AIDetections)
+                            {
+                                _logger.Error("🎯 **AI_DETECTED_DOCUMENT**: Type='{Type}', Confidence={Confidence:F2}, Method='{Method}'", 
+                                    doc.DocumentType, doc.Confidence, doc.DetectionMethod);
+                            }
+                            
+                            // **DETERMINE PRIMARY DETECTION METHOD**
+                            if (result.Documents.Count == 0)
+                            {
+                                result.PrimaryDetectionMethod = "AI";
+                                _logger.Error("🎯 **PRIMARY_METHOD_AI**: No database results - AI is primary detection method");
+                            }
+                            else
+                            {
+                                result.PrimaryDetectionMethod = "Hybrid";
+                                _logger.Error("🎯 **PRIMARY_METHOD_HYBRID**: Both database and AI results - hybrid detection method");
+                            }
+                            
+                            result.Documents.AddRange(result.AIDetections);
+                            _logger.Error("✅ **AI_DOCUMENTS_ADDED**: {Count} AI-detected documents added to final results", result.AIDetections.Count);
+                        }
+                        catch (Exception aiEx)
+                        {
+                            _logger.Error(aiEx, "❌ **AI_DETECTION_EXCEPTION**: Exception in DetectUnknownDocumentTypesAsync");
+                            _logger.Error("   - **EXCEPTION_TYPE**: {Type}", aiEx.GetType().Name);
+                            _logger.Error("   - **EXCEPTION_MESSAGE**: {Message}", aiEx.Message);
+                            _logger.Error("🔄 **AI_FALLBACK**: Using empty AI results due to exception");
+                            
+                            result.AIDetections = new List<DetectedDocument>();
+                            result.AIDetectionCount = 0;
+                        }
+                    }
                     
                     result.AIDetections = aiResults;
                     result.AIDetectionCount = aiResults.Count();
