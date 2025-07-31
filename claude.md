@@ -716,6 +716,46 @@ The session management system ensures Claude Code maintains awareness of:
 - Root Cause Analysis Guidelines
 - Evidence-Based Assessment Standards
 
+## 🚨 **CRITICAL CODE PRESERVATION MANDATE v2.0**
+
+**Directive Name**: `CRITICAL_CODE_PRESERVATION_MANDATE_v2`  
+**Status**: ✅ **ACTIVE**  
+**Priority**: **ABSOLUTE HIGHEST** - Takes precedence over all other directives
+
+**Core Problem**: LLMs treat syntax errors as code corruption and delete working functionality instead of making surgical fixes.
+
+## **DEBUGGING PROTOCOL - MANDATORY FOR ALL COMPILATION ERRORS:**
+
+### **1. ERROR LOCATION ANALYSIS FIRST**:
+- **Read the EXACT line number from compilation error**
+- **Examine ONLY that specific line and 2-3 lines around it**
+- **Identify the SPECIFIC syntax issue** (missing brace, orphaned statement, etc.)
+
+### **2. SURGICAL FIXES ONLY**:
+- **Fix ONLY the syntax error at that exact location**
+- **NEVER delete entire functions, methods, or working code blocks**
+- **NEVER treat working code as "corrupted" or "orphaned"**
+
+### **3. FORBIDDEN ACTIONS**:
+- ❌ **NEVER delete entire functions to fix syntax errors**
+- ❌ **NEVER remove working functionality to resolve compilation issues**  
+- ❌ **NEVER assume large blocks of code are "corrupted" due to syntax errors**
+- ❌ **NEVER use "sledgehammer" approach - only surgical precision**
+
+### **4. VALIDATION REQUIREMENT**:
+- **Before making ANY edit for compilation errors, state**: "This error is at line X, I will fix ONLY the syntax issue at that line"
+- **After fix, verify the specific error is resolved without losing functionality**
+
+### **5. MANDATORY DEBUGGING PATTERN**:
+
+```
+❌ BAD LLM PATTERN:
+See error → "This code must be corrupted/orphaned" → DELETE ENTIRE FUNCTIONS → Lose functionality
+
+✅ CORRECT SURGICAL PATTERN:  
+See error → "Line 246 has syntax error" → EXAMINE THAT LINE → FIX THE SYNTAX → Preserve functionality
+```
+
 ## 🏗️ **The Established Codebase Respect Mandate v1.0**
 
 **Directive Name**: `ESTABLISHED_CODEBASE_RESPECT_MANDATE`  
