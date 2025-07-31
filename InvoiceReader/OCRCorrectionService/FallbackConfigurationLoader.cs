@@ -71,7 +71,7 @@ namespace WaterNut.DataSpace
             try
             {
                 // Try to get the FallbackConfiguration section from appsettings.json
-                var fallbackConfigJson = ConfigurationManager.AppSettings["FallbackConfiguration"];
+                var fallbackConfigJson = System.Configuration.ConfigurationManager.AppSettings["FallbackConfiguration"];
                 
                 if (string.IsNullOrEmpty(fallbackConfigJson))
                 {
