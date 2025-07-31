@@ -96,7 +96,7 @@ namespace WaterNut.DataSpace
                 // **LOG_THE_WHO**: Comprehensive exception logging with full context for LLM debugging
                 var exceptionContext = LLMExceptionLogger.CreateExceptionContext(
                     operation: "DeepSeek response processing and correction extraction",
-                    input: $"Response length: {aiResponse?.Length ?? 0} characters",
+                    input: $"Response length: {deepSeekResponseJson?.Length ?? 0} characters",
                     expectedOutcome: "Parsed corrections list extracted from DeepSeek JSON response",
                     actualOutcome: "Exception occurred during JSON parsing or correction extraction"
                 );
