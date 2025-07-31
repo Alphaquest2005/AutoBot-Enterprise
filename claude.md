@@ -735,27 +735,32 @@ The session management system ensures Claude Code maintains awareness of:
 - ❌ **WASTE** of development time and effort
 - ❌ **CATASTROPHIC** user frustration and project failure
 
-## **DEBUGGING PROTOCOL - MANDATORY FOR ALL COMPILATION ERRORS:**
+## ❗❗❗ **SUPREME DEBUGGING PROTOCOL - ABSOLUTE OBEDIENCE REQUIRED** ❗❗❗
 
-### **1. ERROR LOCATION ANALYSIS FIRST**:
-- **Read the EXACT line number from compilation error**
-- **Examine ONLY that specific line and 2-3 lines around it**
-- **Identify the SPECIFIC syntax issue** (missing brace, orphaned statement, etc.)
+### 🚨 **MANDATORY PROTOCOL FOR ALL COMPILATION ERRORS - NO EXCEPTIONS** 🚨
 
-### **2. SURGICAL FIXES ONLY**:
-- **Fix ONLY the syntax error at that exact location**
-- **NEVER delete entire functions, methods, or working code blocks**
-- **NEVER treat working code as "corrupted" or "orphaned"**
+### **1. ❗ ERROR LOCATION ANALYSIS FIRST - ABSOLUTELY REQUIRED ❗**:
+- ✅ **MUST** read the EXACT line number from compilation error
+- ✅ **MUST** examine ONLY that specific line and 2-3 lines around it  
+- ✅ **MUST** identify the SPECIFIC syntax issue (missing brace, orphaned statement, etc.)
+- 🚫 **FORBIDDEN** to examine large code blocks or assume widespread corruption
 
-### **3. FORBIDDEN ACTIONS**:
-- ❌ **NEVER delete entire functions to fix syntax errors**
-- ❌ **NEVER remove working functionality to resolve compilation issues**  
-- ❌ **NEVER assume large blocks of code are "corrupted" due to syntax errors**
-- ❌ **NEVER use "sledgehammer" approach - only surgical precision**
+### **2. ❗ SURGICAL FIXES ONLY - ZERO TOLERANCE FOR DESTRUCTION ❗**:
+- ✅ **MUST** fix ONLY the syntax error at that exact location
+- 🚫 **ABSOLUTELY FORBIDDEN** to delete entire functions, methods, or working code blocks
+- 🚫 **ABSOLUTELY FORBIDDEN** to treat working code as "corrupted" or "orphaned"
+- 🚫 **CATASTROPHICALLY FORBIDDEN** to use "sledgehammer" approaches
 
-### **4. VALIDATION REQUIREMENT**:
-- **Before making ANY edit for compilation errors, state**: "This error is at line X, I will fix ONLY the syntax issue at that line"
-- **After fix, verify the specific error is resolved without losing functionality**
+### **3. ❗❗❗ ABSOLUTELY FORBIDDEN ACTIONS - IMMEDIATE VIOLATION DETECTION ❗❗❗**:
+- 🚫 **DEATH PENALTY**: NEVER delete entire functions to fix syntax errors
+- 🚫 **DEATH PENALTY**: NEVER remove working functionality to resolve compilation issues  
+- 🚫 **DEATH PENALTY**: NEVER assume large blocks of code are "corrupted" due to syntax errors
+- 🚫 **DEATH PENALTY**: NEVER use destructive approaches when surgical precision is required
+
+### **4. ❗ MANDATORY VALIDATION PROTOCOL - ENFORCE COMPLIANCE ❗**:
+- ✅ **REQUIRED STATEMENT**: Before making ANY edit for compilation errors, MUST state: "This error is at line X, I will fix ONLY the syntax issue at that line"
+- ✅ **REQUIRED VERIFICATION**: After fix, MUST verify the specific error is resolved without losing functionality
+- ✅ **REQUIRED PRESERVATION**: MUST confirm all existing working code remains intact
 
 ### **5. MANDATORY DEBUGGING PATTERN**:
 
