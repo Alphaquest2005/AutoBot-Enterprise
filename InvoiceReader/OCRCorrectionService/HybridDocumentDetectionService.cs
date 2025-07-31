@@ -441,7 +441,7 @@ namespace WaterNut.DataSpace
                             }
                             
                             result.Documents.AddRange(result.AIDetections);
-                            _logger.Error("✅ **AI_DOCUMENTS_ADDED**: {Count} AI-detected documents added to final results", result.AIDetections.Count);
+                            _logger.Error("✅ **AI_DOCUMENTS_ADDED**: {Count} AI-detected documents added to final results", result.AIDetections.Count());
                         }
                         catch (Exception aiEx)
                         {
