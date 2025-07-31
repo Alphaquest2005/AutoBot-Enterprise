@@ -1,7 +1,7 @@
 // File: OCRCorrectionService/FallbackConfigurationLoader.cs
-// Fallback Configuration Loader - Loads fallback settings from appsettings.json or creates defaults
+// Fallback Configuration Loader - Loads fallback settings from Config/fallback-config.json or creates defaults
 using System;
-using System.Configuration;
+using System.IO;
 using Serilog;
 using Newtonsoft.Json;
 
