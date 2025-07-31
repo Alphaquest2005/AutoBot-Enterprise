@@ -79,6 +79,98 @@ namespace WaterNut.DataSpace
                     
                     corrections = ExtractCorrectionsFromResponseElement(responseDataRoot.Value, originalDocumentText);
                     
+                    // **🔬 ULTRA_DIAGNOSTIC_CORRECTION_SERIALIZATION**: Complete corrections data visibility for analysis
+                    _logger.Information("🔬 **CORRECTIONS_DATA_SERIALIZATION**: Serializing extracted corrections for complete data visibility");
+                    _logger.Information("   - **ARCHITECTURAL_INTENT**: Provide complete corrections data structure for debugging and analysis");
+                    _logger.Information("   - **DIAGNOSTIC_PURPOSE**: Enable full inspection of DeepSeek correction parsing results");
+                    
+                    if (corrections != null && corrections.Any())
+                    {
+                        try
+                        {
+                            // **COMPLETE_CORRECTIONS_JSON_SERIALIZATION**: Full corrections list as JSON
+                            var correctionsJson = JsonSerializer.Serialize(corrections, new JsonSerializerOptions 
+                            { 
+                                WriteIndented = true,
+                                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                                Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+                            });
+                            
+                            _logger.Information("📋 **COMPLETE_CORRECTIONS_JSON**: Full corrections data structure");
+                            _logger.Information("CORRECTIONS_JSON_START\n{CorrectionsJson}\nCORRECTIONS_JSON_END", correctionsJson);
+                            
+                            // **INDIVIDUAL_CORRECTION_ANALYSIS**: Detailed breakdown of each correction
+                            _logger.Information("🔍 **INDIVIDUAL_CORRECTION_BREAKDOWN**: Analyzing each correction for detailed visibility");
+                            
+                            for (int i = 0; i < corrections.Count; i++)
+                            {
+                                var correction = corrections[i];
+                                _logger.Information("🔧 **CORRECTION_{Index}**: Detailed correction analysis", i + 1);
+                                _logger.Information("   - **FIELD_NAME**: '{FieldName}'", correction.FieldName ?? "NULL");
+                                _logger.Information("   - **CORRECTION_TYPE**: '{CorrectionType}'", correction.CorrectionType ?? "NULL");
+                                _logger.Information("   - **OLD_VALUE**: '{OldValue}'", correction.OldValue ?? "NULL");
+                                _logger.Information("   - **NEW_VALUE**: '{NewValue}'", correction.NewValue ?? "NULL");
+                                _logger.Information("   - **PATTERN**: '{Pattern}'", correction.Pattern ?? "NULL");
+                                _logger.Information("   - **SUGGESTED_REGEX**: '{SuggestedRegex}'", correction.SuggestedRegex ?? "NULL");
+                                _logger.Information("   - **REPLACEMENT**: '{Replacement}'", correction.Replacement ?? "NULL");
+                                _logger.Information("   - **LINE_TEXT**: '{LineText}'", correction.LineText ?? "NULL");
+                                _logger.Information("   - **LINE_NUMBER**: {LineNumber}", correction.LineNumber);
+                                _logger.Information("   - **CONFIDENCE**: {Confidence:F2}", correction.Confidence);
+                                _logger.Information("   - **REASONING**: '{Reasoning}'", correction.Reasoning ?? "NULL");
+                                _logger.Information("   - **SUCCESS**: {Success}", correction.Success);
+                                _logger.Information("   - **WINDOW_TEXT**: '{WindowText}'", correction.WindowText ?? "NULL");
+                                _logger.Information("   - **EXISTING_REGEX**: '{ExistingRegex}'", correction.ExistingRegex ?? "NULL");
+                                
+                                // **CONTEXT_LINES_ANALYSIS**: Show context lines if available
+                                if (correction.ContextLinesBefore != null && correction.ContextLinesBefore.Any())
+                                {
+                                    _logger.Information("   - **CONTEXT_LINES_BEFORE**: [{ContextBefore}]", 
+                                        string.Join(" | ", correction.ContextLinesBefore));
+                                }
+                                if (correction.ContextLinesAfter != null && correction.ContextLinesAfter.Any())
+                                {
+                                    _logger.Information("   - **CONTEXT_LINES_AFTER**: [{ContextAfter}]", 
+                                        string.Join(" | ", correction.ContextLinesAfter));
+                                }
+                            }
+                            
+                            // **CORRECTIONS_SUMMARY_STATISTICS**: Statistical analysis of corrections
+                            _logger.Information("📊 **CORRECTIONS_SUMMARY_STATISTICS**: Statistical analysis of extracted corrections");
+                            var fieldTypes = corrections.GroupBy(c => c.FieldName).Select(g => new { Field = g.Key, Count = g.Count() });
+                            var correctionTypes = corrections.GroupBy(c => c.CorrectionType).Select(g => new { Type = g.Key, Count = g.Count() });
+                            var averageConfidence = corrections.Where(c => c.Confidence > 0).Average(c => c.Confidence);
+                            var successCount = corrections.Count(c => c.Success);
+                            
+                            _logger.Information("   - **FIELD_DISTRIBUTION**: {FieldDistribution}", 
+                                string.Join(", ", fieldTypes.Select(f => $"{f.Field}:{f.Count}")));
+                            _logger.Information("   - **CORRECTION_TYPE_DISTRIBUTION**: {TypeDistribution}", 
+                                string.Join(", ", correctionTypes.Select(t => $"{t.Type}:{t.Count}")));
+                            _logger.Information("   - **AVERAGE_CONFIDENCE**: {AverageConfidence:F2}", averageConfidence);
+                            _logger.Information("   - **SUCCESS_RATE**: {SuccessCount}/{TotalCount} ({SuccessRate:P1})", 
+                                successCount, corrections.Count, (double)successCount / corrections.Count);
+                            
+                        }
+                        catch (Exception serializationEx)
+                        {
+                            _logger.Error(serializationEx, "❌ **SERIALIZATION_ERROR**: Error serializing corrections for data visibility");
+                            _logger.Error("   - **FALLBACK_INFO**: CorrectionCount={Count}, SerializationFailed=true", corrections.Count);
+                            
+                            // **FALLBACK_INDIVIDUAL_LOGGING**: Show basic info even if serialization fails
+                            foreach (var correction in corrections)
+                            {
+                                _logger.Information("🔧 **CORRECTION_BASIC**: FieldName='{FieldName}', Type='{Type}', Success={Success}", 
+                                    correction.FieldName, correction.CorrectionType, correction.Success);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        _logger.Information("⚠️ **NO_CORRECTIONS_EXTRACTED**: Corrections list is null or empty");
+                        _logger.Information("   - **CORRECTIONS_NULL**: {IsNull}", corrections == null);
+                        _logger.Information("   - **CORRECTIONS_EMPTY**: {IsEmpty}", corrections != null && !corrections.Any());
+                        _logger.Information("   - **DIAGNOSTIC_IMPACT**: No correction data available for serialization");
+                    }
+                    
                     _logger.Information("📊 **EXTRACTION_COMPLETE**: Correction extraction finished");
                     _logger.Information("   - **EXTRACTED_CORRECTIONS**: {CorrectionCount} corrections extracted", corrections.Count);
                     _logger.Information("   - **PROCESSING_SUCCESS**: JSON successfully converted to structured corrections");
