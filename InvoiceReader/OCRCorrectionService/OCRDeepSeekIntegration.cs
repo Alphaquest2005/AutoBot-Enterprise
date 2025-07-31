@@ -801,12 +801,20 @@ namespace WaterNut.DataSpace
             }
             catch (Exception ex)
             {
-                // **v4.2 EXCEPTION HANDLING**: Enhanced exception handling with success criteria impact assessment
-                _logger.Error(ex, "🚨 **AI_REQUEST_EXCEPTION**: Critical exception in DeepSeek regex creation request");
-                _logger.Error("📋 **AVAILABLE_LOG_DATA**: Exception context - FieldName='{FieldName}', ExceptionType='{ExceptionType}'", 
-                    correction.FieldName, ex.GetType().Name);
-                _logger.Error("🔍 **PATTERN_ANALYSIS**: Exception prevents AI request completion and regex generation");
-                _logger.Error("💡 **LOG_BASED_HYPOTHESIS**: Critical exceptions indicate AI service failures or network issues");
+                // **LOG_THE_WHO**: Comprehensive exception logging with full context for LLM debugging
+                var exceptionContext = LLMExceptionLogger.CreateExceptionContext(
+                    operation: "DeepSeek AI regex creation request",
+                    input: $"FieldName: {correction.FieldName}, CorrectionType: {correction.CorrectionType}",
+                    expectedOutcome: "Successful AI-generated regex pattern with high confidence",
+                    actualOutcome: "Critical exception preventing regex generation - may indicate AI service or network failure"
+                );
+
+                LLMExceptionLogger.LogComprehensiveException(
+                    _logger, 
+                    ex, 
+                    "CRITICAL: DeepSeek AI request failed - regex generation impossible", 
+                    exceptionContext
+                );
                 _logger.Error("📚 **FIX_RATIONALE**: Exception handling ensures graceful failure with null result return");
                 _logger.Error("🔍 **FIX_VALIDATION**: Exception documented for troubleshooting and AI service monitoring");
                 
