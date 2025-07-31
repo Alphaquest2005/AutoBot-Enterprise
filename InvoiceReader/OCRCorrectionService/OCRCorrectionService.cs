@@ -28,6 +28,8 @@ namespace WaterNut.DataSpace
         private readonly OCRLlmClient _llmClient;
 
         private readonly ILogger _logger;
+        
+        private readonly FallbackConfiguration _fallbackConfig;
 
         private bool _disposed = false;
 
