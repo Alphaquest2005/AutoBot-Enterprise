@@ -270,7 +270,18 @@ namespace WaterNut.DataSpace
                     _logger.Error("   - **VALIDATION_FAILURE**: Cannot parse null or empty response into JsonElement");
                     _logger.Error("   - **PROCESSING_IMPACT**: Template/correction creation must fail without valid response");
                     _logger.Error("   - **API_ISSUE**: Potential DeepSeek API failure or network communication problem");
-                    return null;
+                    
+                    // **FALLBACK_CONFIGURATION_CONTROL**: Apply fallback policy based on configuration
+                    if (!_fallbackConfig.EnableLogicFallbacks)
+                    {
+                        _logger.Error("🚨 **FALLBACK_DISABLED_TERMINATION**: Logic fallbacks disabled - failing immediately on null DeepSeek response");
+                        throw new InvalidOperationException("DeepSeek response is null or empty in ParseDeepSeekResponse. Logic fallbacks are disabled - cannot return null.");
+                    }
+                    else
+                    {
+                        _logger.Error("   - **FALLBACK_BEHAVIOR**: Returning null (legacy fallback enabled)");
+                        return null;
+                    }
                 }
                 
                 _logger.Information("✅ **STEP_1_VALIDATION_PASSED**: Raw response is present and ready for cleaning");
