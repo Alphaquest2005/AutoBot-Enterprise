@@ -2628,35 +2628,83 @@ If you find no new omissions or corrections, return an empty errors array with d
         /// </summary>
         private static bool ValidateActualDataCompliance(TemplateSpecification spec, string documentType)
         {
-            // **PRIMARY VALIDATION LAYERS** - ALL must pass for compliance
+            // **PRIMARY VALIDATION LAYERS** - FAIL-FAST on critical failures
             
             // LAYER 1: Required Fields Validation (Template_Specifications.md: "Standard Required Fields by EntityType")
             bool requiredFieldsValid = ValidateRequiredFieldsCompliance(spec, documentType);
+            if (!requiredFieldsValid)
+            {
+                var evidence = $"Required fields validation failed for {documentType} - missing critical fields";
+                Log.Error("❌ **CRITICAL_VALIDATION_FAILURE**: LAYER_1_REQUIRED_FIELDS - {Evidence} - **ABORTING_PIPELINE**", evidence);
+                throw new CriticalValidationException("LAYER_1_REQUIRED_FIELDS", evidence, documentType, "ValidateActualDataCompliance");
+            }
             
             // LAYER 2: Data Type Validation (Template_Specifications.md: "Data Type System")
             bool dataTypesValid = ValidateDataTypeCompliance(spec, documentType);
+            if (!dataTypesValid)
+            {
+                var evidence = $"DataType validation failed for {documentType} - field type definitions invalid";
+                Log.Error("❌ **CRITICAL_VALIDATION_FAILURE**: LAYER_2_DATATYPE_VALIDATION - {Evidence} - **ABORTING_PIPELINE**", evidence);
+                throw new CriticalValidationException("LAYER_2_DATATYPE_VALIDATION", evidence, documentType, "ValidateActualDataCompliance");
+            }
             
             // LAYER 3: EntityType Mapping Validation (Template_Specifications.md: "EntityType Mapping")
             bool entityTypesValid = ValidateEntityTypeMappingCompliance(spec, documentType);
+            if (!entityTypesValid)
+            {
+                var evidence = $"EntityType mapping validation failed for {documentType} - invalid entity relationships";
+                Log.Error("❌ **CRITICAL_VALIDATION_FAILURE**: LAYER_3_ENTITYTYPE_MAPPING - {Evidence} - **ABORTING_PIPELINE**", evidence);
+                throw new CriticalValidationException("LAYER_3_ENTITYTYPE_MAPPING", evidence, documentType, "ValidateActualDataCompliance");
+            }
             
             // LAYER 4: Field Mapping Standards (Template_Specifications.md: "Field Mapping Patterns")
             bool fieldMappingValid = ValidateFieldMappingStandardsCompliance(spec, documentType);
+            if (!fieldMappingValid)
+            {
+                var evidence = $"Field mapping standards validation failed for {documentType} - non-compliant field patterns";
+                Log.Error("❌ **CRITICAL_VALIDATION_FAILURE**: LAYER_4_FIELD_MAPPING - {Evidence} - **ABORTING_PIPELINE**", evidence);
+                throw new CriticalValidationException("LAYER_4_FIELD_MAPPING", evidence, documentType, "ValidateActualDataCompliance");
+            }
             
             // LAYER 5: Values Column Validation (Template_Specifications.md: "Value Column Usage")
             bool valuesColumnValid = ValidateValuesColumnCompliance(spec, documentType);
+            if (!valuesColumnValid)
+            {
+                var evidence = $"Values column validation failed for {documentType} - invalid value column usage";
+                Log.Error("❌ **CRITICAL_VALIDATION_FAILURE**: LAYER_5_VALUES_COLUMN - {Evidence} - **ABORTING_PIPELINE**", evidence);
+                throw new CriticalValidationException("LAYER_5_VALUES_COLUMN", evidence, documentType, "ValidateActualDataCompliance");
+            }
             
             // LAYER 6: AppendValues Logic Validation (Template_Specifications.md: "AppendValues Functionality")
             bool appendValuesValid = ValidateAppendValuesCompliance(spec, documentType);
+            if (!appendValuesValid)
+            {
+                var evidence = $"AppendValues logic validation failed for {documentType} - invalid append functionality";
+                Log.Error("❌ **CRITICAL_VALIDATION_FAILURE**: LAYER_6_APPENDVALUES - {Evidence} - **ABORTING_PIPELINE**", evidence);
+                throw new CriticalValidationException("LAYER_6_APPENDVALUES", evidence, documentType, "ValidateActualDataCompliance");
+            }
             
             // LAYER 7: Regex Pattern Structure (Template_Specifications.md: "Regular Expression Patterns")
             bool regexPatternsValid = ValidateRegexPatternStructureCompliance(spec, documentType);
+            if (!regexPatternsValid)
+            {
+                var evidence = $"Regex pattern structure validation failed for {documentType} - invalid pattern structures";
+                Log.Error("❌ **CRITICAL_VALIDATION_FAILURE**: LAYER_7_REGEX_PATTERNS - {Evidence} - **ABORTING_PIPELINE**", evidence);
+                throw new CriticalValidationException("LAYER_7_REGEX_PATTERNS", evidence, documentType, "ValidateActualDataCompliance");
+            }
             
             // LAYER 8: Multi-Format Support (Template_Specifications.md: "Multi-Supplier and Multi-Format Support")
             bool multiFormatValid = ValidateMultiFormatSupportCompliance(spec, documentType);
+            if (!multiFormatValid)
+            {
+                var evidence = $"Multi-format support validation failed for {documentType} - invalid multi-format configuration";
+                Log.Error("❌ **CRITICAL_VALIDATION_FAILURE**: LAYER_8_MULTIFORMAT - {Evidence} - **ABORTING_PIPELINE**", evidence);
+                throw new CriticalValidationException("LAYER_8_MULTIFORMAT", evidence, documentType, "ValidateActualDataCompliance");
+            }
 
-            return requiredFieldsValid && dataTypesValid && entityTypesValid && 
-                   fieldMappingValid && valuesColumnValid && appendValuesValid &&
-                   regexPatternsValid && multiFormatValid;
+            // If we reach here, all validations passed
+            Log.Information("✅ **ALL_VALIDATION_LAYERS_PASSED**: 8-layer validation successful for {DocumentType}", documentType);
+            return true;
         }
 
         /// <summary>
