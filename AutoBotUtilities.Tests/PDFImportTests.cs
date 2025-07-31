@@ -109,10 +109,6 @@ namespace AutoBotUtilities.Tests
                 _logger.Error(ex, "❌ Error in sophisticated logging config - using fallback");
             }
         }
-        //}
-
-        [OneTimeSetUp]
-        public void FixtureSetup()
         {
             // LogFilterState initialization (as before)
             LogFilterState.TargetSourceContextForDetails = null;
