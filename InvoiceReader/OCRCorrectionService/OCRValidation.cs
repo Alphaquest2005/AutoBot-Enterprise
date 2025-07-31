@@ -226,7 +226,13 @@ namespace WaterNut.DataSpace
                 var templateMapping = invoice.FileTypeId != null 
                     ? DatabaseTemplateHelper.GetTemplateMappingByFileTypeId(invoice.FileTypeId)
                     : null;
-                string documentType = templateMapping?.DocumentType ?? FileTypeManager.EntryTypes.ShipmentInvoice;
+                // **NO_FALLBACK_POLICY**: Fail immediately if no database mapping exists
+                if (templateMapping?.DocumentType == null)
+                {
+                    _logger.Error("🚨 **NO_FALLBACK_TERMINATION**: No database mapping found for FileTypeId={FileTypeId} - FAILING IMMEDIATELY", invoice.FileTypeId);
+                    throw new InvalidOperationException($"No database template mapping found for FileTypeId={invoice.FileTypeId}. Fallback policy is DISABLED.");
+                }
+                string documentType = templateMapping.DocumentType;
                 _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} (FileTypeId={invoice.FileTypeId}) - Using database-driven validation rules");
                 
                 // **TEMPLATE_SPEC_1: AI MATHEMATICAL RECOMMENDATION QUALITY + ACTUAL MATHEMATICAL DATA VALIDATION**
@@ -570,7 +576,13 @@ namespace WaterNut.DataSpace
                 var templateMapping = invoice.FileTypeId != null 
                     ? DatabaseTemplateHelper.GetTemplateMappingByFileTypeId(invoice.FileTypeId)
                     : null;
-                string documentType = templateMapping?.DocumentType ?? FileTypeManager.EntryTypes.ShipmentInvoice;
+                // **NO_FALLBACK_POLICY**: Fail immediately if no database mapping exists
+                if (templateMapping?.DocumentType == null)
+                {
+                    _logger.Error("🚨 **NO_FALLBACK_TERMINATION**: No database mapping found for FileTypeId={FileTypeId} - FAILING IMMEDIATELY", invoice.FileTypeId);
+                    throw new InvalidOperationException($"No database template mapping found for FileTypeId={invoice.FileTypeId}. Fallback policy is DISABLED.");
+                }
+                string documentType = templateMapping.DocumentType;
                 _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} (FileTypeId={invoice.FileTypeId}) - Using database-driven cross-field validation rules");
                 
                 // **TEMPLATE_SPEC_1: AI CROSS-FIELD RECOMMENDATION QUALITY + ACTUAL CROSS-FIELD DATA VALIDATION**
@@ -848,7 +860,13 @@ namespace WaterNut.DataSpace
                 var templateMapping = originalInvoice?.FileTypeId != null 
                     ? DatabaseTemplateHelper.GetTemplateMappingByFileTypeId(originalInvoice.FileTypeId)
                     : null;
-                string documentType = templateMapping?.DocumentType ?? FileTypeManager.EntryTypes.ShipmentInvoice;
+                // **NO_FALLBACK_POLICY**: Fail immediately if no database mapping exists
+                if (templateMapping?.DocumentType == null)
+                {
+                    _logger.Error("🚨 **NO_FALLBACK_TERMINATION**: No database mapping found for FileTypeId={FileTypeId} - FAILING IMMEDIATELY", invoice.FileTypeId);
+                    throw new InvalidOperationException($"No database template mapping found for FileTypeId={invoice.FileTypeId}. Fallback policy is DISABLED.");
+                }
+                string documentType = templateMapping.DocumentType;
                 _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} (FileTypeId={originalInvoice?.FileTypeId}) - Using database-driven conflict resolution validation rules");
                 
                 // **TEMPLATE_SPEC_1: AI CONFLICT RESOLUTION RECOMMENDATION QUALITY + ACTUAL CONFLICT RESOLUTION DATA VALIDATION**
@@ -1120,7 +1138,13 @@ namespace WaterNut.DataSpace
                 var templateMapping = originalInvoice?.FileTypeId != null 
                     ? DatabaseTemplateHelper.GetTemplateMappingByFileTypeId(originalInvoice.FileTypeId)
                     : null;
-                string documentType = templateMapping?.DocumentType ?? FileTypeManager.EntryTypes.ShipmentInvoice;
+                // **NO_FALLBACK_POLICY**: Fail immediately if no database mapping exists
+                if (templateMapping?.DocumentType == null)
+                {
+                    _logger.Error("🚨 **NO_FALLBACK_TERMINATION**: No database mapping found for FileTypeId={FileTypeId} - FAILING IMMEDIATELY", invoice.FileTypeId);
+                    throw new InvalidOperationException($"No database template mapping found for FileTypeId={invoice.FileTypeId}. Fallback policy is DISABLED.");
+                }
+                string documentType = templateMapping.DocumentType;
                 _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} (FileTypeId={originalInvoice?.FileTypeId}) - Using database-driven mathematical impact validation rules");
                 
                 // **TEMPLATE_SPEC_1: AI MATHEMATICAL IMPACT RECOMMENDATION QUALITY + ACTUAL MATHEMATICAL IMPACT DATA VALIDATION**
