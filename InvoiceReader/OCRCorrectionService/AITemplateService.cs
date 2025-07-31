@@ -2901,10 +2901,21 @@ If you find no new omissions or corrections, return an empty errors array with d
         {
             return documentType.ToLower() switch
             {
-                "invoice" => new Dictionary<string, string> 
+                "invoice" or "shipmentinvoice" => new Dictionary<string, string> 
                 { 
+                    // Core required fields
                     { "InvoiceNo", "String" }, { "InvoiceDate", "Date" }, { "InvoiceTotal", "Number" },
-                    { "SubTotal", "Number" }, { "Currency", "String" }, { "Quantity", "Number" }
+                    // Accept BOTH SupplierCode AND SupplierName (pipeline reality)
+                    { "SupplierCode", "String" }, { "SupplierName", "String" },
+                    // Common ShipmentInvoice properties that DeepSeek creates
+                    { "SubTotal", "Number" }, { "Currency", "String" }, 
+                    { "TotalInternalFreight", "Number" }, { "TotalOtherCost", "Number" }, 
+                    { "TotalInsurance", "Number" }, { "TotalDeduction", "Number" },
+                    // InvoiceDetails (line item) fields that DeepSeek creates
+                    { "ItemDescription", "String" }, { "Quantity", "Number" }, { "Cost", "Number" }, 
+                    { "TotalCost", "Number" }, { "LineNumber", "Number" }, { "ItemNumber", "String" }, 
+                    { "Units", "String" }, { "Discount", "Number" }, { "TariffCode", "String" }, 
+                    { "Category", "String" }, { "SalesFactor", "Number" }
                 },
                 "shipmentbl" => new Dictionary<string, string> 
                 { 
