@@ -52,6 +52,10 @@ namespace WaterNut.DataSpace
         
         public bool IsValid => ValidationResults.All(r => r.IsSuccess);
         public bool HasFailure => ValidationResults.Any(r => !r.IsSuccess);
+        
+        // **GRACEFUL TERMINATION PROPERTIES** - For detecting validation failures without exceptions
+        public bool ValidationFailed { get; set; } = false;
+        public string FailureReason { get; set; } = null;
 
         public static TemplateSpecification CreateForRecommendations(string documentType = "Invoice")
         {
