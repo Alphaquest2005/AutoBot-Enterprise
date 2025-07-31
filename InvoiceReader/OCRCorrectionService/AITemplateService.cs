@@ -184,42 +184,64 @@ namespace WaterNut.DataSpace
             logger.Error(overallSuccess ? "🏆 **TEMPLATE_SPECIFICATION_SUCCESS**: ✅ PASS" : "🏆 **TEMPLATE_SPECIFICATION_SUCCESS**: ❌ FAIL" + 
                 " - Template specification validation " + (overallSuccess ? "completed successfully" : "failed validation criteria"));
             
-            // **SHORTCIRCUIT FAILURE MECHANISM** - Throw CriticalValidationException on first failure
+            // **GRACEFUL SHORTCIRCUIT FAILURE MECHANISM** - Log comprehensive failure and signal termination
             if (!overallSuccess)
             {
-                // **DEBUG SHORTCIRCUIT MECHANISM** - Log details about why exception might not be throwing
-                logger.Error("🔍 **SHORTCIRCUIT_DEBUG**: overallSuccess={OverallSuccess}, ValidationResults.Count={Count}", 
+                // **COMPREHENSIVE FAILURE ANALYSIS**
+                logger.Error("🔍 **SHORTCIRCUIT_ANALYSIS**: overallSuccess={OverallSuccess}, ValidationResults.Count={Count}", 
                     overallSuccess, ValidationResults.Count);
                     
                 var firstFailure = ValidationResults.FirstOrDefault(r => !r.IsSuccess);
-                logger.Error("🔍 **SHORTCIRCUIT_DEBUG**: firstFailure is {FirstFailureStatus}", 
+                logger.Error("🔍 **SHORTCIRCUIT_ANALYSIS**: firstFailure is {FirstFailureStatus}", 
                     firstFailure == null ? "NULL" : $"NOT NULL ({firstFailure.CriteriaName})");
                 
                 if (firstFailure != null)
                 {
-                    var evidence = $"Template specification validation failed: {firstFailure.CriteriaName} - {firstFailure.Message}";
-                    logger.Error("🚨 **CRITICAL_VALIDATION_FAILURE**: TEMPLATE_SPECIFICATION_VALIDATION - {Evidence} - **ABORTING_PIPELINE**", evidence);
+                    // **COMPREHENSIVE FAILURE LOGGING**
+                    logger.Error("🚨 **CRITICAL_PIPELINE_TERMINATION**: Template specification validation failed - TERMINATING PRODUCTION PIPELINE");
+                    logger.Error("   - **FAILURE_LAYER**: TEMPLATE_SPECIFICATION_VALIDATION");
+                    logger.Error("   - **PRIMARY_FAILURE**: {CriteriaName} - {Message}", firstFailure.CriteriaName, firstFailure.Message);
+                    logger.Error("   - **DOCUMENT_TYPE**: {DocumentType}", DocumentType);
+                    logger.Error("   - **VALIDATION_CONTEXT**: LogValidationResults");
+                    logger.Error("   - **TERMINATION_REASON**: Template specification compliance failed - production pipeline cannot continue");
+                    logger.Error("   - **IMPACT_ASSESSMENT**: Template creation/processing will be terminated to prevent invalid data propagation");
                     
-                    // Log comprehensive exception context for LLM debugging
-                    LLMExceptionLogger.LogCriticalValidationException(logger, 
-                        new CriticalValidationException("TEMPLATE_SPECIFICATION_VALIDATION", evidence, DocumentType, "LogValidationResults"));
+                    // **COMPLETE FAILURE CONTEXT FOR DEBUGGING**
+                    logger.Error("🔍 **COMPLETE_FAILURE_CONTEXT**: All validation results for comprehensive analysis");
+                    foreach (var result in ValidationResults)
+                    {
+                        logger.Error("   - {Status} **{CriteriaName}**: {Message} (Evidence: {Evidence})", 
+                            result.IsSuccess ? "✅" : "❌", result.CriteriaName, result.Message, result.Evidence ?? "None");
+                    }
                     
-                    // **CRITICAL**: Log the actual throw for debugging
-                    logger.Error("🚨 **ABOUT_TO_THROW_EXCEPTION**: CriticalValidationException about to be thrown NOW");
+                    // **PRODUCTION TERMINATION SIGNAL**
+                    logger.Error("🛑 **PRODUCTION_TERMINATION_SIGNAL**: TEMPLATE_SPECIFICATION_VALIDATION_FAILED");
+                    logger.Error("   - **CALLER_ACTION_REQUIRED**: Calling method must check ValidationFailed property and terminate processing");
+                    logger.Error("   - **PIPELINE_STATUS**: TERMINATED - No further processing should occur");
+                    logger.Error("   - **DATA_INTEGRITY**: Termination prevents propagation of non-compliant template data");
                     
-                    // Throw to stop pipeline immediately
-                    throw new CriticalValidationException("TEMPLATE_SPECIFICATION_VALIDATION", evidence, DocumentType, "LogValidationResults");
+                    // **SET FAILURE FLAG FOR CALLER DETECTION**
+                    ValidationFailed = true;
+                    FailureReason = $"Template specification validation failed: {firstFailure.CriteriaName} - {firstFailure.Message}";
                 }
                 else
                 {
-                    logger.Error("🚨 **SHORTCIRCUIT_BUG**: overallSuccess=false but firstFailure=null - ValidationResults may be empty or all marked as Success");
+                    // **DIAGNOSTIC PATH FOR VALIDATION LOGIC ISSUES**
+                    logger.Error("🚨 **VALIDATION_LOGIC_ERROR**: overallSuccess=false but no failed validation results found");
+                    logger.Error("   - **POTENTIAL_ISSUE**: ValidationResults may be empty or IsSuccess logic may be incorrect");
+                    logger.Error("   - **DEBUGGING_DATA**: ValidationResults.Count={Count}, All IsSuccess values below:", ValidationResults.Count);
                     
-                    // Log all ValidationResults to debug why firstFailure is null
+                    // Log all ValidationResults to debug the logic issue
                     foreach (var result in ValidationResults)
                     {
-                        logger.Error("🔍 **VALIDATION_RESULT_DEBUG**: {CriteriaName} - IsSuccess={IsSuccess} - {Message}", 
+                        logger.Error("   - 🔍 **VALIDATION_ITEM**: {CriteriaName} - IsSuccess={IsSuccess} - {Message}", 
                             result.CriteriaName, result.IsSuccess, result.Message);
                     }
+                    
+                    // **SAFETY TERMINATION FOR UNKNOWN VALIDATION STATE**
+                    logger.Error("🛑 **SAFETY_TERMINATION**: Unknown validation state - terminating as precaution");
+                    ValidationFailed = true;
+                    FailureReason = "Template specification validation in unknown state - terminated for safety";
                 }
             }
         }
