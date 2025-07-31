@@ -849,8 +849,28 @@ namespace WaterNut.DataSpace
             _logger.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: Template creation dual-layer template specification compliance analysis");
 
             // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
-            string documentType = createdTemplates.FirstOrDefault()?.FileType?.FileImporterInfos?.EntryType ?? "Invoice";
-            _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
+            var entryType = createdTemplates.FirstOrDefault()?.FileType?.FileImporterInfos?.EntryType;
+            
+            string documentType;
+            if (string.IsNullOrEmpty(entryType))
+            {
+                // **FALLBACK_CONFIGURATION_CONTROL**: Apply fallback policy based on configuration
+                if (!_fallbackConfig.EnableDocumentTypeAssumption)
+                {
+                    _logger.Error("🚨 **FALLBACK_DISABLED_TERMINATION**: DocumentType assumption disabled - failing immediately on null EntryType");
+                    throw new InvalidOperationException("Cannot determine DocumentType from templates - EntryType is null/empty. DocumentType assumption fallbacks are disabled.");
+                }
+                else
+                {
+                    documentType = "Invoice";
+                    _logger.Error($"📋 **DOCUMENT_TYPE_ASSUMED**: Assumed '{documentType}' (legacy fallback enabled) - EntryType was null/empty");
+                }
+            }
+            else
+            {
+                documentType = entryType;
+                _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
+            }
 
             // Create template specification object for document type with dual-layer validation
             var templateSpec = TemplateSpecification.CreateForTemplateCreation(documentType, createdTemplates, pdfText);
