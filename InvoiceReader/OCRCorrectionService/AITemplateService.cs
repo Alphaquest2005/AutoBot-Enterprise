@@ -2569,12 +2569,16 @@ If you find no new omissions or corrections, return an empty errors array with d
 
         /// <summary>
         /// Gets field-to-EntityType mappings per Template_Specifications.md entity specifications
+        /// Uses FileTypeManager.EntryTypes enum as single source of truth
         /// </summary>
         private static Dictionary<string, List<string>> GetFieldEntityTypeMappingsForDocument(string documentType)
         {
-            return documentType.ToLower() switch
+            // Normalize document type using EntryTypes enum
+            var normalizedType = FileTypeManager.EntryTypes.GetEntryType(documentType);
+            
+            return normalizedType switch
             {
-                "invoice" or "shipmentinvoice" => new Dictionary<string, List<string>>
+                FileTypeManager.EntryTypes.ShipmentInvoice => new Dictionary<string, List<string>>
                 {
                     // Core ShipmentInvoice fields
                     { "InvoiceNo", new List<string> { "ShipmentInvoice", "Invoice", "EntryData" } },
@@ -2593,18 +2597,18 @@ If you find no new omissions or corrections, return an empty errors array with d
                     { "TotalInsurance", new List<string> { "ShipmentInvoice", "Invoice", "EntryData" } },
                     { "TotalDeduction", new List<string> { "ShipmentInvoice", "Invoice", "EntryData" } },
                     
-                    // Detail fields (InvoiceDetails entity fields)
-                    { "ItemNumber", new List<string> { "InvoiceDetails", "EntryDataDetails" } },
-                    { "ItemDescription", new List<string> { "InvoiceDetails", "EntryDataDetails" } },
-                    { "Quantity", new List<string> { "InvoiceDetails", "EntryDataDetails" } },
-                    { "Cost", new List<string> { "InvoiceDetails", "EntryDataDetails" } },
-                    { "TotalCost", new List<string> { "InvoiceDetails", "EntryDataDetails" } },
-                    { "LineNumber", new List<string> { "InvoiceDetails", "EntryDataDetails" } },
-                    { "Units", new List<string> { "InvoiceDetails", "EntryDataDetails" } },
-                    { "Discount", new List<string> { "InvoiceDetails", "EntryDataDetails" } },
-                    { "TariffCode", new List<string> { "InvoiceDetails", "EntryDataDetails" } },
-                    { "Category", new List<string> { "InvoiceDetails", "EntryDataDetails" } },
-                    { "SalesFactor", new List<string> { "InvoiceDetails", "EntryDataDetails" } }
+                    // Detail fields (ShipmentInvoiceDetails entity fields) - FIXED: InvoiceDetails → ShipmentInvoiceDetails
+                    { "ItemNumber", new List<string> { "ShipmentInvoiceDetails", "EntryDataDetails" } },
+                    { "ItemDescription", new List<string> { "ShipmentInvoiceDetails", "EntryDataDetails" } },
+                    { "Quantity", new List<string> { "ShipmentInvoiceDetails", "EntryDataDetails" } },
+                    { "Cost", new List<string> { "ShipmentInvoiceDetails", "EntryDataDetails" } },
+                    { "TotalCost", new List<string> { "ShipmentInvoiceDetails", "EntryDataDetails" } },
+                    { "LineNumber", new List<string> { "ShipmentInvoiceDetails", "EntryDataDetails" } },
+                    { "Units", new List<string> { "ShipmentInvoiceDetails", "EntryDataDetails" } },
+                    { "Discount", new List<string> { "ShipmentInvoiceDetails", "EntryDataDetails" } },
+                    { "TariffCode", new List<string> { "ShipmentInvoiceDetails", "EntryDataDetails" } },
+                    { "Category", new List<string> { "ShipmentInvoiceDetails", "EntryDataDetails" } },
+                    { "SalesFactor", new List<string> { "ShipmentInvoiceDetails", "EntryDataDetails" } }
                 },
                 "shipmentbl" => new Dictionary<string, List<string>>
                 {
