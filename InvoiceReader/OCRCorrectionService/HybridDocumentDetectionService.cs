@@ -492,7 +492,7 @@ namespace WaterNut.DataSpace
                         _logger.Error("📁 **FILENAME_LEARNING_ATTEMPT**: Learning filename patterns from AI detections");
                         try
                         {
-                            await LearnFilenamePatterns(documentPath, result.AIDetections);
+                            await LearnFilenamePatterns(documentPath, result.AIDetections.ToList());
                             _logger.Error("✅ **FILENAME_LEARNING_SUCCESS**: Filename patterns learned");
                         }
                         catch (Exception fileLearnEx)
