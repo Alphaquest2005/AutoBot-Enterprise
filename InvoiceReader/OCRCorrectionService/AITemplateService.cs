@@ -2495,12 +2495,18 @@ If you find no new omissions or corrections, return an empty errors array with d
                     { "TotalInsurance", new List<string> { "ShipmentInvoice", "Invoice", "EntryData" } },
                     { "TotalDeduction", new List<string> { "ShipmentInvoice", "Invoice", "EntryData" } },
                     
-                    // Detail fields
+                    // Detail fields (InvoiceDetails entity fields)
                     { "ItemNumber", new List<string> { "InvoiceDetails", "EntryDataDetails" } },
                     { "ItemDescription", new List<string> { "InvoiceDetails", "EntryDataDetails" } },
                     { "Quantity", new List<string> { "InvoiceDetails", "EntryDataDetails" } },
                     { "Cost", new List<string> { "InvoiceDetails", "EntryDataDetails" } },
-                    { "TotalCost", new List<string> { "InvoiceDetails", "EntryDataDetails" } }
+                    { "TotalCost", new List<string> { "InvoiceDetails", "EntryDataDetails" } },
+                    { "LineNumber", new List<string> { "InvoiceDetails", "EntryDataDetails" } },
+                    { "Units", new List<string> { "InvoiceDetails", "EntryDataDetails" } },
+                    { "Discount", new List<string> { "InvoiceDetails", "EntryDataDetails" } },
+                    { "TariffCode", new List<string> { "InvoiceDetails", "EntryDataDetails" } },
+                    { "Category", new List<string> { "InvoiceDetails", "EntryDataDetails" } },
+                    { "SalesFactor", new List<string> { "InvoiceDetails", "EntryDataDetails" } }
                 },
                 "shipmentbl" => new Dictionary<string, List<string>>
                 {
