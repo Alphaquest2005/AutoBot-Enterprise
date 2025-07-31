@@ -579,8 +579,8 @@ namespace WaterNut.DataSpace
                 // **NO_FALLBACK_POLICY**: Fail immediately if no database mapping exists
                 if (templateMapping?.DocumentType == null)
                 {
-                    _logger.Error("🚨 **NO_FALLBACK_TERMINATION**: No database mapping found for FileTypeId={FileTypeId} - FAILING IMMEDIATELY", originalInvoice.FileTypeId);
-                    throw new InvalidOperationException($"No database template mapping found for FileTypeId={originalInvoice.FileTypeId}. Fallback policy is DISABLED.");
+                    _logger.Error("🚨 **NO_FALLBACK_TERMINATION**: No database mapping found for FileTypeId={FileTypeId} - FAILING IMMEDIATELY", invoice.FileTypeId);
+                    throw new InvalidOperationException($"No database template mapping found for FileTypeId={invoice.FileTypeId}. Fallback policy is DISABLED.");
                 }
                 string documentType = templateMapping.DocumentType;
                 _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} (FileTypeId={invoice.FileTypeId}) - Using database-driven cross-field validation rules");
