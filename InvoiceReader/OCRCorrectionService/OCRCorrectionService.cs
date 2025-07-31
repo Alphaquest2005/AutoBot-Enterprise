@@ -77,11 +77,20 @@ namespace WaterNut.DataSpace
             }
             catch (Exception ex)
             {
-                // **LOG_THE_WHO**: Function returns, state changes, error details, success/failure
-                _logger.Error(ex, "❌ **LLM_CLIENT_CREATION_FAILED**: CRITICAL FAILURE - OCRLlmClient constructor threw exception");
-                _logger.Error("   - **FAILURE_IMPACT**: Service cannot function without LLM client - constructor must abort");
-                _logger.Error("   - **EXCEPTION_TYPE**: {ExceptionType}", ex.GetType().FullName);
-                _logger.Error("   - **EXCEPTION_MESSAGE**: {ExceptionMessage}", ex.Message);
+                // **LOG_THE_WHO**: Comprehensive exception logging with full context for LLM debugging
+                var exceptionContext = LLMExceptionLogger.CreateExceptionContext(
+                    operation: "OCRLlmClient constructor initialization",
+                    input: "Logger instance for LLM client creation",
+                    expectedOutcome: "Successfully initialized OCRLlmClient with DeepSeek and Gemini capabilities",
+                    actualOutcome: "CRITICAL FAILURE - LLM client constructor threw exception, service cannot function"
+                );
+
+                LLMExceptionLogger.LogComprehensiveException(
+                    _logger, 
+                    ex, 
+                    "CRITICAL: LLM client creation failed - service cannot function without LLM capabilities", 
+                    exceptionContext
+                );
                 _logger.Error("   - **ARCHITECTURAL_VIOLATION**: LLM client is critical dependency - cannot proceed without it");
                 throw;
             }
@@ -428,10 +437,20 @@ namespace WaterNut.DataSpace
                 }
                 catch (Exception ex)
                 {
-                    // **v4.2 EXCEPTION HANDLING**: Enhanced exception handling with success criteria impact assessment
-                    _logger.Error(ex, "🚨 **ORCHESTRATION_EXCEPTION**: Critical exception in OCR correction orchestration");
-                    _logger.Error("📋 **AVAILABLE_LOG_DATA**: Exception context - InvoiceNo='{InvoiceNo}', ExceptionType='{ExceptionType}'", 
-                        invoice?.InvoiceNo, ex.GetType().Name);
+                    // **LOG_THE_WHO**: Comprehensive exception logging with full context for LLM debugging
+                    var exceptionContext = LLMExceptionLogger.CreateExceptionContext(
+                        operation: "OCR correction orchestration for invoice processing",
+                        input: $"InvoiceId: {invoice?.Id}, InvoiceNo: {invoice?.InvoiceNo}",
+                        expectedOutcome: "Successful OCR corrections applied with balanced totals",
+                        actualOutcome: "Critical exception during OCR correction orchestration"
+                    );
+
+                    LLMExceptionLogger.LogComprehensiveException(
+                        _logger, 
+                        ex, 
+                        "CRITICAL: OCR correction orchestration failed - may cause invoice processing failure", 
+                        exceptionContext
+                    );
                     _logger.Error("🔍 **PATTERN_ANALYSIS**: Exception prevents orchestration completion and correction application");
                     _logger.Error("💡 **LOG_BASED_HYPOTHESIS**: Critical exceptions indicate infrastructure failures or data corruption");
                     _logger.Error("📚 **FIX_RATIONALE**: Exception handling ensures graceful failure with transaction rollback");
