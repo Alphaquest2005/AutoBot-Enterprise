@@ -2574,5 +2574,28 @@ namespace WaterNut.DataSpace
         // **ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v5_IMPLEMENTATION_COMPLETE**
         // All methods in OCRCorrectionService.cs enhanced with comprehensive ultradiagnostic logging
         // following the What, How, Why, Who, What-If pattern for complete self-contained narrative
+
+        /// <summary>
+        /// Normalizes document type from database EntryType format to validation system format
+        /// Fixes the "Shipment Invoice" → "shipmentinvoice" mismatch that causes validation failures
+        /// </summary>
+        private static string NormalizeDocumentTypeForValidation(string documentType)
+        {
+            if (string.IsNullOrWhiteSpace(documentType))
+                return "invoice"; // Default fallback
+            
+            // Convert to lowercase and remove spaces for validation compatibility
+            var normalized = documentType.ToLowerInvariant().Replace(" ", "");
+            
+            // Map known EntryType values to validation-compatible format
+            return normalized switch
+            {
+                "shipmentinvoice" => "shipmentinvoice",  // Already normalized
+                "invoice" => "invoice",                  // Already normalized
+                "simplifieddeclaration" => "simplifieddeclaration",
+                "c71" => "c71",
+                _ => normalized // Return normalized version for unknown types
+            };
+        }
     }
 }
