@@ -33,24 +33,24 @@ namespace WaterNut.DataSpace
                     return _cachedConfiguration;
                 }
 
-                _logger.Information("📖 **FALLBACK_CONFIG_LOADING**: Loading fallback configuration from appsettings.json");
+                _logger.Information("📖 **FALLBACK_CONFIG_LOADING**: Loading fallback configuration from Config/fallback-config.json");
 
                 try
                 {
-                    // Try to load from appsettings.json
+                    // Try to load from Config/fallback-config.json file
                     var configuration = LoadFromAppSettings();
                     
                     if (configuration != null)
                     {
                         _cachedConfiguration = configuration;
-                        _logger.Information("✅ **FALLBACK_CONFIG_LOADED**: Successfully loaded fallback configuration from appsettings.json");
+                        _logger.Information("✅ **FALLBACK_CONFIG_LOADED**: Successfully loaded fallback configuration from Config/fallback-config.json");
                         LogConfigurationState(configuration, "LOADED_FROM_CONFIG");
                         return configuration;
                     }
                 }
                 catch (Exception ex)
                 {
-                    _logger.Warning(ex, "⚠️ **FALLBACK_CONFIG_ERROR**: Failed to load from appsettings.json, using defaults");
+                    _logger.Warning(ex, "⚠️ **FALLBACK_CONFIG_ERROR**: Failed to load from Config/fallback-config.json, using defaults");
                 }
 
                 // Fallback to default configuration
