@@ -1259,7 +1259,23 @@ namespace WaterNut.DataSpace
                 _logger.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: Enhanced field mapping dual-layer template specification compliance analysis");
 
                 // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
-                string documentType = enhancedInfo?.EntityType ?? "Invoice";
+                string documentType;
+                if (enhancedInfo?.EntityType != null)
+                {
+                    documentType = enhancedInfo.EntityType;
+                }
+                else
+                {
+                    // Check fallback configuration before using hardcoded DocumentType assumption
+                    if (!_fallbackConfig.EnableDocumentTypeAssumption)
+                    {
+                        _logger.Error("🚨 **FALLBACK_DISABLED_TERMINATION**: DocumentType assumption fallbacks disabled - failing immediately on null EntityType");
+                        throw new InvalidOperationException("Enhanced field info EntityType is null in MapDeepSeekFieldToEnhancedInfo. DocumentType assumption fallbacks are disabled - cannot default to 'Invoice'.");
+                    }
+                    
+                    _logger.Warning("⚠️ **FALLBACK_APPLIED**: Using DocumentType assumption fallback 'Invoice' (fallbacks enabled)");
+                    documentType = "Invoice";
+                }
                 _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
 
                 // Create template specification object for document type with dual-layer validation
