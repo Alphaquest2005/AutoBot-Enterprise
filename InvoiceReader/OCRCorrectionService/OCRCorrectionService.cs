@@ -514,7 +514,7 @@ namespace WaterNut.DataSpace
                 _logger.Error("📋 **AVAILABLE_LOG_DATA**: Validation failure - PDF text is null or empty");
                 _logger.Error("💡 **LOG_BASED_HYPOTHESIS**: Null PDF text prevents template creation processing");
                 _logger.Error("📚 **FIX_RATIONALE**: Input validation ensures template creation has valid document content");
-                _logger.Error("🔍 **FIX_VALIDATION**: Input validation failed - returning empty template list");
+                _logger.Error("🔍 **FIX_VALIDATION**: Input validation failed");
                 
                 // **STEP 4: MANDATORY SUCCESS CRITERIA VALIDATION - INPUT VALIDATION FAILURE PATH**
                 _logger.Error("🎯 **BUSINESS_SUCCESS_CRITERIA_VALIDATION**: Template creation failed due to input validation failure");
@@ -522,13 +522,22 @@ namespace WaterNut.DataSpace
                 _logger.Error("❌ **OUTPUT_COMPLETENESS**: No template results possible due to invalid input");
                 _logger.Error("❌ **PROCESS_COMPLETION**: Template creation workflow terminated at input validation");
                 _logger.Error("❌ **DATA_QUALITY**: No template processing possible with null PDF text");
-                _logger.Error("✅ **ERROR_HANDLING**: Input validation handled gracefully with empty template list return");
                 _logger.Error("❌ **BUSINESS_LOGIC**: Template creation objective cannot be achieved without valid PDF content");
                 _logger.Error("❌ **INTEGRATION_SUCCESS**: No template processing possible without valid document data");
                 _logger.Error("✅ **PERFORMANCE_COMPLIANCE**: Validation completed within reasonable timeframe");
                 _logger.Error("🏆 **OVERALL_METHOD_SUCCESS**: ❌ FAIL - Template creation terminated due to input validation failure");
                 
-                return new List<Template>();
+                // **FALLBACK_CONFIGURATION_CONTROL**: Apply fallback policy based on configuration
+                if (!_fallbackConfig.EnableLogicFallbacks)
+                {
+                    _logger.Error("🚨 **FALLBACK_DISABLED_TERMINATION**: Logic fallbacks disabled - failing immediately on null PDF text");
+                    throw new InvalidOperationException("PDF text is null or empty for template creation. Logic fallbacks are disabled - cannot return empty template list.");
+                }
+                else
+                {
+                    _logger.Error("✅ **ERROR_HANDLING**: Input validation handled gracefully with empty template list return (legacy fallback enabled)");
+                    return new List<Template>();
+                }
             }
 
             var createdTemplates = new List<Template>();
