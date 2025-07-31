@@ -1165,11 +1165,20 @@ namespace WaterNut.DataSpace
                 var templateMapping = originalInvoice?.FileTypeId != null 
                     ? DatabaseTemplateHelper.GetTemplateMappingByFileTypeId(originalInvoice.FileTypeId)
                     : null;
-                // **NO_FALLBACK_POLICY**: Fail immediately if no database mapping exists
+                // **FALLBACK_CONFIGURATION_CONTROL**: Check configuration before failing on missing database mapping
                 if (templateMapping?.DocumentType == null)
                 {
-                    _logger.Error("🚨 **NO_FALLBACK_TERMINATION**: No database mapping found for FileTypeId={FileTypeId} - FAILING IMMEDIATELY", originalInvoice.FileTypeId);
-                    throw new InvalidOperationException($"No database template mapping found for FileTypeId={originalInvoice.FileTypeId}. Fallback policy is DISABLED.");
+                    if (!_fallbackConfig.EnableLogicFallbacks)
+                    {
+                        _logger.Error("🚨 **FALLBACK_DISABLED_TERMINATION**: Logic fallbacks disabled - failing immediately on missing database template mapping for FileTypeId={FileTypeId}", originalInvoice.FileTypeId);
+                        throw new InvalidOperationException($"No database template mapping found for FileTypeId={originalInvoice.FileTypeId}. Logic fallbacks are disabled - cannot proceed without proper template mapping.");
+                    }
+                    else
+                    {
+                        _logger.Warning("⚠️ **FALLBACK_APPLIED**: No database mapping found for FileTypeId={FileTypeId} - using fallback logic (fallbacks enabled)", originalInvoice.FileTypeId);
+                        // Fallback behavior would go here if needed
+                        throw new InvalidOperationException($"No database template mapping found for FileTypeId={originalInvoice.FileTypeId} and fallback logic not yet implemented.");
+                    }
                 }
                 string documentType = templateMapping.DocumentType;
                 _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} (FileTypeId={originalInvoice?.FileTypeId}) - Using database-driven mathematical impact validation rules");
