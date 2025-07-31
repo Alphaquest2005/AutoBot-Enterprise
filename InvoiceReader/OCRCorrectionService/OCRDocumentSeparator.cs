@@ -171,17 +171,23 @@ namespace WaterNut.DataSpace
         /// </summary>
         private async Task<Dictionary<string, double>> DetectDocumentTypesAsync(string text)
         {
-            _logger.Information("🎯 **HYBRID_DETECTION_START**: Database-first with AI fallback and learning system");
-            _logger.Information("   - **TEXT_LENGTH**: {Length} characters", text?.Length ?? 0);
-            _logger.Information("   - **DETECTION_APPROACH**: Database → FileType → AI → Learning → Completeness");
+            _logger.Error("🔍 **DETECT_DOCUMENT_TYPES_METHOD_ENTRY**: Starting DetectDocumentTypesAsync execution");
+            _logger.Error("   - **TEXT_LENGTH**: {Length} characters", text?.Length ?? 0);
+            _logger.Error("   - **METHOD_CALLER**: Called from SeparateDocumentsAsync");
 
             var detection = new Dictionary<string, double>();
 
             try
             {
+                _logger.Error("🎯 **HYBRID_SERVICE_CREATION_ATTEMPT**: About to create HybridDocumentDetectionService");
+                
                 // **HYBRID DETECTION SERVICE**: Use comprehensive hybrid system
                 var hybridService = new HybridDocumentDetectionService(_logger);
+                _logger.Error("✅ **HYBRID_SERVICE_CREATED**: HybridDocumentDetectionService instantiated successfully");
+                
+                _logger.Error("🔄 **HYBRID_DETECTION_CALL_ATTEMPT**: About to call DetectDocumentTypesAsync on hybrid service");
                 var hybridResult = await hybridService.DetectDocumentTypesAsync(text, "OCRDocumentSeparator");
+                _logger.Error("✅ **HYBRID_DETECTION_CALL_COMPLETE**: Hybrid service call completed successfully");
                 
                 if (hybridResult.Success)
                 {
