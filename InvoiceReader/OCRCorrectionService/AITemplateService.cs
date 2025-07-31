@@ -3028,8 +3028,32 @@ If you find no new omissions or corrections, return an empty errors array with d
 
         private static bool IsRequiredMappingGroup(string mappingKey, string documentType)
         {
-            // Simplified implementation - would contain logic for document-specific required mappings
-            return true;
+            // Document-specific required mapping logic
+            return documentType.ToLower() switch
+            {
+                "invoice" or "shipmentinvoice" => mappingKey switch
+                {
+                    // Core required fields for all invoices
+                    "InvoiceIdentifier" => true,    // InvoiceNo or EntryDataId
+                    "InvoiceTotal" => true,         // InvoiceTotal
+                    "Currency" => true,             // Currency
+                    "SupplierCode" => true,         // SupplierCode
+                    
+                    // Optional fields that may not exist in retail invoices
+                    "InvoiceDate" => false,         // Retail invoices often don't have dates
+                    "SubTotal" => false,            // Nice to have but not required
+                    "PONumber" => false,            // Retail purchases don't use PO numbers
+                    
+                    _ => false
+                },
+                "shipmentbl" => mappingKey switch
+                {
+                    "BLNumber" => true,
+                    "WeightKG" => true,
+                    _ => false
+                },
+                _ => false
+            };
         }
 
         private static bool ValidateSupplierIdentificationValues(TemplateSpecification spec, string documentType)
