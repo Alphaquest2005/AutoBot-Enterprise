@@ -95,6 +95,10 @@ namespace AutoBotUtilities.Tests
                         bool hasMemberName = evt.Properties.TryGetValue("MemberName", out var memberNameValue);
                         string memberName = hasMemberName && memberNameValue is ScalarValue svMem ? svMem.Value?.ToString() : null;
 
+                        // 🔧 DIAGNOSTIC INSTRUMENTATION - Enable for strategic lens troubleshooting
+                        // Uncomment next line to debug lens filter behavior:
+                        // TestContext.Progress.WriteLine($"FILTER_DIAG: Level={evt.Level}, SrcCtx='{sourceContext}', Cat='{category}', Member='{memberName}' | TargetSrcCtx='{LogFilterState.TargetSourceContextForDetails}', TargetMethod='{LogFilterState.TargetMethodNameForDetails}', TargetLevel='{LogFilterState.DetailTargetMinimumLevel}' || EnabledLevelForCatUndef={(LogFilterState.EnabledCategoryLevels.TryGetValue(LogCategory.Undefined, out var l) ? l.ToString() : "NotSet")}");
+
                         // 🔍 STRATEGIC LENS: Check if we're targeting a specific source context for details
                         if (!string.IsNullOrEmpty(LogFilterState.TargetSourceContextForDetails) &&
                             sourceContext != null &&
