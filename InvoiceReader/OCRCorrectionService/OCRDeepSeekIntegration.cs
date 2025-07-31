@@ -51,9 +51,19 @@ namespace WaterNut.DataSpace
                 _logger.Warning("⚠️ **EMPTY_DEEPSEEK_RESPONSE**: DeepSeek response is null, empty, or whitespace");
                 _logger.Warning("   - **INPUT_STATE**: '{ResponseValue}'", deepSeekResponseJson ?? "NULL");
                 _logger.Warning("   - **PROCESSING_IMPACT**: No corrections can be extracted from empty response");
-                _logger.Warning("   - **FALLBACK_BEHAVIOR**: Returning empty corrections list");
                 _logger.Warning("   - **POTENTIAL_CAUSES**: DeepSeek API failure, network issues, or invalid request");
-                return corrections;
+                
+                // **FALLBACK_CONFIGURATION_CONTROL**: Apply fallback policy based on configuration
+                if (!_fallbackConfig.EnableLogicFallbacks)
+                {
+                    _logger.Error("🚨 **FALLBACK_DISABLED_TERMINATION**: Logic fallbacks disabled - failing immediately on empty DeepSeek response");
+                    throw new InvalidOperationException("DeepSeek response is empty or null. Logic fallbacks are disabled - cannot return empty corrections list.");
+                }
+                else
+                {
+                    _logger.Warning("   - **FALLBACK_BEHAVIOR**: Returning empty corrections list (legacy fallback enabled)");
+                    return corrections;
+                }
             }
             
             // **LOG_THE_WHY**: Processing rationale and architectural importance
