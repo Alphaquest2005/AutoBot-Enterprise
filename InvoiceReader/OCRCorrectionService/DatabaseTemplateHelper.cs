@@ -35,7 +35,7 @@ namespace WaterNut.DataSpace
         {
             // Primary invoice types
             { "INV", "Invoice" },
-            { "Shipment Invoice", "Invoice" },
+            { FileTypeManager.EntryTypes.ShipmentInvoice, "ShipmentInvoice" },
             
             // Purchase order types
             { "PO", "PurchaseOrder" },
