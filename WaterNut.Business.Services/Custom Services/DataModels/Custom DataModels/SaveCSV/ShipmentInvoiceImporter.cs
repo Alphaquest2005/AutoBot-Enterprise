@@ -169,7 +169,7 @@ namespace WaterNut.DataSpace
 
                     var invoice = new ShipmentInvoice();
 
-                    if (x["InvoiceDetails"] == null)
+                    if (x["ShipmentInvoiceDetails"] == null)
                     {
                         itemLogger.Warning("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]",
                             nameof(ProcessInvoiceItem), "Validation", "InvoiceDetails is null, skipping item.", "");
