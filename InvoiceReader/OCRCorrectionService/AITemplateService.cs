@@ -2287,7 +2287,8 @@ If you find no new omissions or corrections, return an empty errors array with d
             return normalizedType switch
             {
                 // Invoice Documents - Template_Specifications.md Section: Invoice Processing Entities
-                FileTypeManager.EntryTypes.ShipmentInvoice => new List<string> { "Invoice", "ShipmentInvoiceDetails", "EntryData", "EntryDataDetails" },
+                // ✅ ALIGNED WITH DATABASE: Must match DatabaseTemplateHelper.GetExpectedEntityTypesForDocumentType 
+                FileTypeManager.EntryTypes.ShipmentInvoice => new List<string> { "ShipmentInvoice", "InvoiceDetails", "ShipmentInvoiceFreight" },
                 
                 // Shipping Documents - Template_Specifications.md Section: Shipping & Logistics Entities  
                 FileTypeManager.EntryTypes.BL => new List<string> { "ShipmentBL", "ShipmentBLDetails" },
