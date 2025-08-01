@@ -891,7 +891,7 @@ namespace WaterNut.DataSpace
             _logger.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: IsFieldSupported dual-layer template specification compliance analysis");
 
             // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
-            string documentType = "Invoice"; // Field support checking is document-type agnostic
+            string documentType = "Shipment Invoice"; // Field support checking is document-type agnostic
             _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
 
             // Create template specification object for document type with dual-layer validation
@@ -1091,7 +1091,7 @@ namespace WaterNut.DataSpace
             _logger.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: ValidateUpdateRequest dual-layer template specification compliance analysis");
 
             // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
-            string documentType = "Invoice"; // Request validation is document-type agnostic
+            string documentType = "Shipment Invoice"; // Request validation is document-type agnostic
             _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
 
             // Create template specification object for document type with dual-layer validation
@@ -1237,7 +1237,7 @@ namespace WaterNut.DataSpace
             // Note: Static method - no logger available, validation performed without logging
             
             // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
-            string documentType = "Invoice"; // Learning record access is document-type agnostic
+            string documentType = "Shipment Invoice"; // Learning record access is document-type agnostic
             
             // Create template specification object for document type with dual-layer validation
             var templateSpec = TemplateSpecification.CreateForUtilityOperation(documentType, "GetSuggestedRegexFromLearningRecord", 
