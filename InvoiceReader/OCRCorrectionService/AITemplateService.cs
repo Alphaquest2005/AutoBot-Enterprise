@@ -2288,6 +2288,7 @@ If you find no new omissions or corrections, return an empty errors array with d
             {
                 // Invoice Documents - Template_Specifications.md Section: Invoice Processing Entities
                 FileTypeManager.EntryTypes.ShipmentInvoice => new List<string> { "Invoice", "ShipmentInvoiceDetails", "EntryData", "EntryDataDetails" },
+                "Shipment Invoice" => new List<string> { "Invoice", "ShipmentInvoiceDetails", "EntryData", "EntryDataDetails" }, // Explicit fallback for string matching
                 
                 // Shipping Documents - Template_Specifications.md Section: Shipping & Logistics Entities  
                 FileTypeManager.EntryTypes.BL => new List<string> { "ShipmentBL", "ShipmentBLDetails" },
