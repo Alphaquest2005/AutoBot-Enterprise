@@ -770,6 +770,48 @@ namespace AutoBotUtilities.Tests
         }
 
         /// <summary>
+        /// Investigate FileTypes-FileImporterInfo table for FileTypeId=1147 to fix EntryType issue
+        /// </summary>
+        [Test]
+        [Explicit("Run manually to investigate FileTypes-FileImporterInfo")]
+        public async Task InvestigateFileTypesFileImporterInfo()
+        {
+            _logger.Information("🔍 **FILETYPES_INVESTIGATION**: Investigating FileTypes-FileImporterInfo for FileTypeId=1147");
+
+            // Check what's in FileTypes-FileImporterInfo table
+            var fileTypesScript = @"
+                SELECT Id, EntryType, FileExtension, Description, Format
+                FROM [dbo].[FileTypes-FileImporterInfo]
+                WHERE Id = 1147 OR EntryType LIKE '%Invoice%' OR EntryType LIKE '%Shipment%'
+                ORDER BY Id;
+            ";
+
+            await this.ExecuteSqlScript(fileTypesScript, "FileTypes-FileImporterInfo for 1147 and Invoice types").ConfigureAwait(false);
+
+            // Check all FileTypeIds around 1147
+            var nearbyScript = @"
+                SELECT Id, EntryType, FileExtension, Description, Format
+                FROM [dbo].[FileTypes-FileImporterInfo]
+                WHERE Id BETWEEN 1145 AND 1150
+                ORDER BY Id;
+            ";
+
+            await this.ExecuteSqlScript(nearbyScript, "FileTypes-FileImporterInfo around 1147").ConfigureAwait(false);
+
+            // Check what EntryType should be for Shipment Invoice
+            var shipmentInvoiceScript = @"
+                SELECT Id, EntryType, FileExtension, Description, Format
+                FROM [dbo].[FileTypes-FileImporterInfo]
+                WHERE EntryType = 'Shipment Invoice' OR Description LIKE '%Shipment%' OR Description LIKE '%Invoice%'
+                ORDER BY Id;
+            ";
+
+            await this.ExecuteSqlScript(shipmentInvoiceScript, "Look for Shipment Invoice EntryType").ConfigureAwait(false);
+            
+            _logger.Information("✅ **INVESTIGATION_COMPLETE**: FileTypes-FileImporterInfo investigation complete");
+        }
+
+        /// <summary>
         /// Fix FileTypeId for existing "Shipment Invoice" mapping to match MANGO templates (FileTypeId 1147)
         /// </summary>
         [Test]
