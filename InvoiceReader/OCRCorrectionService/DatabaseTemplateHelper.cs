@@ -483,8 +483,8 @@ namespace WaterNut.DataSpace
                         {
                             if (reader.Read())
                             {
-                                mostUsedFileTypeId = reader.GetInt32("FileTypeId");
-                                _logger.Information("🔍 **FILETYPE_DISCOVERY**: Using most common FileTypeId={FileTypeId} with {UsageCount} records", mostUsedFileTypeId, reader.GetInt32("UsageCount"));
+                                mostUsedFileTypeId = Convert.ToInt32(reader["FileTypeId"]);
+                                _logger.Information("🔍 **FILETYPE_DISCOVERY**: Using most common FileTypeId={FileTypeId} with {UsageCount} records", mostUsedFileTypeId, Convert.ToInt32(reader["UsageCount"]));
                             }
                         }
                     }
