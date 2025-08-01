@@ -712,7 +712,7 @@ namespace WaterNut.DataSpace
                         Field = capturedField,
                         Key = $"InvoiceDetail_{capturedField}_{uniqueFieldId}",
                         LineId = line.Id,
-                        EntityType = "InvoiceDetails", // Line item fields target InvoiceDetails entity
+                        EntityType = "ShipmentInvoiceDetails", // Line item fields target ShipmentInvoiceDetails entity
                         // DisplayName = ConvertToDisplayName(capturedField), // Not in schema
                         DataType = InferDataTypeFromField(capturedField, null),
                         IsRequired = IsRequiredLineItemField(capturedField),
