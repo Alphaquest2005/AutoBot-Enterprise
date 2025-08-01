@@ -428,5 +428,70 @@ namespace WaterNut.DataSpace
             var expectedEntityTypes = GetExpectedEntityTypesForDocumentType(documentType, applicationSettingsId);
             return expectedEntityTypes.Contains(entityType, StringComparer.OrdinalIgnoreCase);
         }
+
+        /// <summary>
+        /// Ensures the OCR_TemplateTableMapping table has the required "Shipment Invoice" mapping
+        /// This method creates the missing database mapping for EntryTypes enum compliance
+        /// </summary>
+        /// <param name="applicationSettingsId">Application settings ID</param>
+        /// <returns>True if mapping exists or was created successfully</returns>
+        public static bool EnsureShipmentInvoiceMappingExists(int applicationSettingsId = 1)
+        {
+            try
+            {
+                _logger.Information("🔧 **DATABASE_MAPPING_UPDATE**: Ensuring 'Shipment Invoice' mapping exists in OCR_TemplateTableMapping");
+
+                using (var context = new CoreEntities.Business.Entities.CoreEntitiesContext())
+                {
+                    // Check if mapping already exists
+                    var checkQuery = @"
+                        SELECT COUNT(*) 
+                        FROM [dbo].[OCR_TemplateTableMapping] 
+                        WHERE [DocumentType] = 'Shipment Invoice' AND [IsActive] = 1";
+
+                    using (var checkCommand = new SqlCommand(checkQuery, context.Database.Connection as SqlConnection))
+                    {
+                        if (context.Database.Connection.State != System.Data.ConnectionState.Open)
+                            context.Database.Connection.Open();
+
+                        int existingCount = (int)checkCommand.ExecuteScalar();
+                        
+                        if (existingCount > 0)
+                        {
+                            _logger.Information("✅ **DATABASE_MAPPING_EXISTS**: 'Shipment Invoice' mapping already exists ({Count} records)", existingCount);
+                            return true;
+                        }
+                    }
+
+                    // Create the missing mapping
+                    var insertQuery = @"
+                        INSERT INTO [dbo].[OCR_TemplateTableMapping] 
+                        ([DocumentType], [TargetTable], [RequiredFields], [OptionalFields], [FileTypeId], [IsActive])
+                        VALUES 
+                        ('Shipment Invoice', 'ShipmentInvoice', 'InvoiceNo,InvoiceTotal,SupplierCode', 'InvoiceDate,Currency,SubTotal,TotalInternalFreight,TotalOtherCost,TotalInsurance,TotalDeduction', 1147, 1)";
+
+                    using (var insertCommand = new SqlCommand(insertQuery, context.Database.Connection as SqlConnection))
+                    {
+                        int rowsAffected = insertCommand.ExecuteNonQuery();
+                        
+                        if (rowsAffected > 0)
+                        {
+                            _logger.Information("✅ **DATABASE_MAPPING_CREATED**: Successfully created 'Shipment Invoice' mapping ({Rows} rows inserted)", rowsAffected);
+                            return true;
+                        }
+                        else
+                        {
+                            _logger.Warning("⚠️ **DATABASE_MAPPING_WARNING**: INSERT returned 0 rows affected");
+                            return false;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "❌ **DATABASE_MAPPING_ERROR**: Failed to ensure 'Shipment Invoice' mapping exists");
+                return false;
+            }
+        }
     }
 }
