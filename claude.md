@@ -10,6 +10,7 @@
 - **Main Branch**: `/mnt/c/Insight Software/AutoBot-Enterprise` (master branch)
 - **Problem**: InvoiceReader project exists only in main branch, NOT in this worktree
 - **MCP Server**: Must use main branch location
+- **Git Status**: CLAUDE.md now in .gitignore - won't sync with main branch
 
 ### **Worktree Build Commands**
 ```bash
@@ -33,7 +34,14 @@ npm start
 - Use current log file, not old ones
 - **CRITICAL**: All paths must use worktree location except MCP server
 
-## Git Worktree Sync Issue
-**Problem**: Files added to master after worktree creation are missing
-**Solution**: Restart Claude Code to reload correct paths
-**Status**: Updated CLAUDE.md with correct worktree paths
+## Git Worktree Sync Issue Resolution
+**Problem**: Files added to master after worktree creation are missing (InvoiceReader)
+**Current Fix**: CLAUDE.md added to .gitignore to prevent sync conflicts
+**Next Step**: Restart Claude Code to reload correct paths in memory
+**Status**: ✅ Ready for Claude Code restart
+
+## 🎯 **COMPLETED TASKS**
+✅ Fixed critical validation failure in AITemplateService.cs  
+✅ Replaced magic strings with FileTypeManager.EntryTypes constants  
+✅ Updated CLAUDE.md with correct worktree paths  
+✅ Added CLAUDE.md to .gitignore to prevent main branch conflicts
