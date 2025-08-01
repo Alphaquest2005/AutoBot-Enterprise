@@ -1130,7 +1130,7 @@ namespace WaterNut.DataSpace
             };
             
             _logger.Verbose("✅ **ERROR_VALIDATED**: {OriginalField} → {DatabaseField} ({EntityType})", 
-                error.Field, fieldName, isLineItem ? "InvoiceDetails" : "ShipmentInvoice");
+                error.Field, fieldName, isLineItem ? "ShipmentInvoiceDetails" : "ShipmentInvoice");
                 
             return validatedError;
         }
