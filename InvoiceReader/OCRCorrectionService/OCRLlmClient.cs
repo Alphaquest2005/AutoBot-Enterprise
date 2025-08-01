@@ -591,7 +591,7 @@ namespace WaterNut.DataSpace
             _logger.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: CallGeminiAsync dual-layer template specification compliance analysis");
 
             // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
-            string documentType = "Invoice"; // Gemini API integration is document-type agnostic
+            string documentType = "Shipment Invoice"; // Gemini API integration is document-type agnostic
             _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
 
             // Create template specification object for document type with dual-layer validation
