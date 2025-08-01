@@ -1076,7 +1076,7 @@ namespace WaterNut.DataSpace
             if (!schemaFields.ContainsKey(fieldName))
             {
                 _logger.Warning("❌ **FIELD_NOT_IN_SCHEMA**: {Field} → {MappedField} not found in {Entity} schema", 
-                    error.Field, fieldName, isLineItem ? "InvoiceDetails" : "ShipmentInvoice");
+                    error.Field, fieldName, isLineItem ? "ShipmentInvoiceDetails" : "ShipmentInvoice");
                 return null;
             }
 
