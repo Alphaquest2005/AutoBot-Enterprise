@@ -173,7 +173,7 @@ namespace WaterNut.Business.Services.Utils
      * JSON contains unclosed brackets/braces
      * Any field is truncated mid-name
    - Required fields:
-     * InvoiceDetails.TariffCode (use ""000000"" if missing)
+     * ShipmentInvoiceDetails.TariffCode (use ""000000"" if missing)
      * CustomsDeclarations.Freight (0.0 if not found)
      * CustomsDeclarations[] (must exist even if empty)
 
@@ -204,7 +204,7 @@ namespace WaterNut.Business.Services.Utils
     ""SupplierName"": ""<str>"",     //Full Business name of supplier
     ""SupplierAddress"": ""<str>"",  //Full address of supplier IF NOT available use email address domain
     ""SupplierCountryCode"": ""<ISO3166-2>"",
-    ""InvoiceDetails"": [{{
+    ""ShipmentInvoiceDetails"": [{{
       ""ItemNumber"": ""<str|null>"",
       ""ItemDescription"": ""<str>"",
       ""Quantity"": <float>,
@@ -394,16 +394,16 @@ try
                         dict["TotalInternalFreight"] = freight.GetDecimal();
                     if (!jsonIsNull(inv, "TotalInsurance", out var insurance))
                         dict["TotalInsurance"] = insurance.GetDecimal(); //GetNullableDecimalValue(inv, "TotalInsurance");
-                    dict["InvoiceDetails"] = ParseInvoiceDetails(inv);
+                    dict["ShipmentInvoiceDetails"] = ParseShipmentInvoiceDetails(inv);
                     documents.Add(dict);
                 }
             }
         }
 
-        private List<IDictionary<string, object>> ParseInvoiceDetails(JsonElement invoiceElement)
+        private List<IDictionary<string, object>> ParseShipmentInvoiceDetails(JsonElement invoiceElement)
         {
             var details = new List<IDictionary<string, object>>();
-            if (invoiceElement.TryGetProperty("InvoiceDetails", out var detailsElement))
+            if (invoiceElement.TryGetProperty("ShipmentInvoiceDetails", out var detailsElement))
             {
                 foreach (var det in detailsElement.EnumerateArray())
                 {
