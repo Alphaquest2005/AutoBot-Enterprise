@@ -27,7 +27,7 @@ namespace WaterNut.DataSpace
                 var matches = Regex.Matches(line, OCR_Lines.RegularExpressions.RegEx,
                     (OCR_Lines.RegularExpressions.MultiLine == true
                         ? RegexOptions.Multiline
-                        : RegexOptions.Singleline) | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
+                        : RegexOptions.Singleline) | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture,TimeSpan.FromSeconds(2));
                 if (matches.Count == 0) return false;
                 var values = new Dictionary<(Fields Fields, int Instance), string>();
                 //var instance = 0;
@@ -140,7 +140,7 @@ namespace WaterNut.DataSpace
             var match = Regex.Match(strValue.Trim(), childField.Lines.RegularExpressions.RegEx,
                 (childField.Lines.RegularExpressions.MultiLine == true
                     ? RegexOptions.Multiline
-                    : RegexOptions.Singleline) | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
+                    : RegexOptions.Singleline) | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture, TimeSpan.FromSeconds(2));
             if (!match.Success) return;
             foreach (var field in childField.Lines.Fields)
             {

@@ -162,6 +162,7 @@ namespace WaterNut.Business.Services.Utils
 
             public static string GetEntryType(string entry)
             {
+                if(entry == null) return EntryTypes.Unknown;
                 return _entryTypes.FirstOrDefault(x =>
                     x.ToUpper().Replace(" ", "") == entry.ToUpper().Replace(" ", "")) ?? EntryTypes.Unknown;
 
