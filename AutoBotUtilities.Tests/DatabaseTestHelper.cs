@@ -770,6 +770,45 @@ namespace AutoBotUtilities.Tests
         }
 
         /// <summary>
+        /// Fix FileTypeId for existing "Shipment Invoice" mapping to match MANGO templates (FileTypeId 1147)
+        /// </summary>
+        [Test]
+        [Explicit("Run manually to fix Shipment Invoice FileTypeId")]
+        public async Task FixShipmentInvoiceFileTypeId()
+        {
+            _logger.Information("🔧 **DATABASE_FILETYPE_FIX**: Updating Shipment Invoice mapping to use correct FileTypeId=1147");
+
+            // Check current FileTypeId
+            var checkCurrentScript = @"
+                SELECT Id, DocumentType, TargetTable, FileTypeId, IsActive
+                FROM [dbo].[OCR_TemplateTableMapping]
+                WHERE DocumentType = 'Shipment Invoice';
+            ";
+
+            await this.ExecuteSqlScript(checkCurrentScript, "Current Shipment Invoice mapping").ConfigureAwait(false);
+
+            // Update FileTypeId to 1147 (matches MANGO templates)
+            var updateScript = @"
+                UPDATE [dbo].[OCR_TemplateTableMapping] 
+                SET FileTypeId = 1147
+                WHERE DocumentType = 'Shipment Invoice' AND IsActive = 1;
+            ";
+
+            await this.ExecuteSqlScript(updateScript, "Update Shipment Invoice FileTypeId to 1147").ConfigureAwait(false);
+
+            // Verify the update was successful
+            var verifyScript = @"
+                SELECT Id, DocumentType, TargetTable, FileTypeId, IsActive
+                FROM [dbo].[OCR_TemplateTableMapping]
+                WHERE DocumentType = 'Shipment Invoice';
+            ";
+
+            await this.ExecuteSqlScript(verifyScript, "Verify FileTypeId update").ConfigureAwait(false);
+            
+            _logger.Information("✅ **FILETYPE_FIX_COMPLETE**: Shipment Invoice FileTypeId updated to 1147");
+        }
+
+        /// <summary>
         /// Insert missing "Shipment Invoice" mapping into OCR_TemplateTableMapping table
         /// This enables EntryTypes enum compliance by providing the required database mapping
         /// </summary>
