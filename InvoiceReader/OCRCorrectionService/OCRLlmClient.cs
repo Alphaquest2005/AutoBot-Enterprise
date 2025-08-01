@@ -997,7 +997,7 @@ namespace WaterNut.DataSpace
                 _logger?.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: Dispose(bool) dual-layer template specification compliance analysis");
 
                 // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
-                string documentType = "Invoice"; // Resource disposal is document-type agnostic
+                string documentType = "Shipment Invoice"; // Resource disposal is document-type agnostic
                 _logger?.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
 
                 // Create template specification object for document type with dual-layer validation
@@ -1027,7 +1027,7 @@ namespace WaterNut.DataSpace
                 _logger?.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: Dispose(bool) dual-layer template specification compliance analysis");
 
                 // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
-                string documentType = "Invoice"; // Resource disposal is document-type agnostic
+                string documentType = "Shipment Invoice"; // Resource disposal is document-type agnostic
                 _logger?.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
 
                 // Create template specification object for document type with dual-layer validation
@@ -1076,7 +1076,7 @@ namespace WaterNut.DataSpace
             _logger?.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: Dispose() dual-layer template specification compliance analysis");
 
             // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
-            string documentType = "Invoice"; // Public disposal interface is document-type agnostic
+            string documentType = "Shipment Invoice"; // Public disposal interface is document-type agnostic
             _logger?.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
 
             // Create template specification object for document type with dual-layer validation
@@ -1118,7 +1118,7 @@ namespace WaterNut.DataSpace
                 // Note: Static method - no logger available, validation performed without logging
                 
                 // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
-                string documentTypeStringEmpty = "Invoice"; // Text counting utility is document-type agnostic
+                string documentTypeStringEmpty = "Shipment Invoice"; // Text counting utility is document-type agnostic
                 
                 // Create template specification object for document type with dual-layer validation
                 var templateSpecStringNull = TemplateSpecification.CreateForUtilityOperation(documentTypeStringEmpty, "CountOccurrences", 
