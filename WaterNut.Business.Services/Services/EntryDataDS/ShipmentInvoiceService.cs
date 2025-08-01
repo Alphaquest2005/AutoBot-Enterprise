@@ -229,7 +229,7 @@ namespace EntryDataDS.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "InvoiceDetails":
+                            case "ShipmentInvoiceDetails":
                                 return
                                     await
                                         GetWhere<InvoiceDetails>(dbContext, exp, itm.Value, "Invoice", "Select", includesLst)
@@ -752,7 +752,7 @@ namespace EntryDataDS.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "InvoiceDetails":
+                            case "ShipmentInvoiceDetails":
                                 return await CountWhere<InvoiceDetails>(dbContext, exp, itm.Value, "Invoice", "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "InvoiceExtraInfo":
@@ -875,7 +875,7 @@ namespace EntryDataDS.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "InvoiceDetails":
+                            case "ShipmentInvoiceDetails":
                                 return
                                     await
                                         LoadRangeWhere<InvoiceDetails>(startIndex, count, dbContext, exp, itm.Value, "Invoice", "Select")
@@ -1274,7 +1274,7 @@ namespace EntryDataDS.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "InvoiceDetails":
+                            case "ShipmentInvoiceDetails":
                                 return await SumWhere<InvoiceDetails>(dbContext, exp, itm.Value, "Invoice", field, "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "InvoiceExtraInfo":
