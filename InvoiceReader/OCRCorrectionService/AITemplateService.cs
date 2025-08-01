@@ -58,7 +58,7 @@ namespace WaterNut.DataSpace
         public bool ValidationFailed { get; set; } = false;
         public string FailureReason { get; set; } = null;
 
-        public static TemplateSpecification CreateForRecommendations(string documentType = "Invoice")
+        public static TemplateSpecification CreateForRecommendations(string documentType = "Shipment Invoice")
         {
             return new TemplateSpecification
             {
