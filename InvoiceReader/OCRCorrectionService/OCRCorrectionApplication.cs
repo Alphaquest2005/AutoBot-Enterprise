@@ -413,7 +413,7 @@ namespace WaterNut.DataSpace
             _logger.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: Correction application dual-layer template specification compliance analysis");
 
             // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
-            string documentType = "Invoice"; // Hardcoded as ShipmentInvoice doesn't have FileType property
+            string documentType = "Shipment Invoice"; // Hardcoded as ShipmentInvoice doesn't have FileType property
             _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
 
             // Create template specification object for document type with dual-layer validation
