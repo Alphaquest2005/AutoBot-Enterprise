@@ -1989,3 +1989,27 @@ else
 **🎉 RECOMMENDATION**: Deploy at 90% completion - provides transformative fallback control with documented architectural limitation for future enhancement.
 
 ---
+
+## 🚨 **WORKTREE ENVIRONMENT** (debug-beta branch)
+**Current Path**: `/mnt/c/Insight Software/AutoBot-Enterprise-beta`
+**Branch**: `debug-beta`
+**Status**: Active development worktree
+
+### **Worktree-Specific Commands**
+```bash
+# Build (use current worktree path)
+"/mnt/c/Program Files/Microsoft Visual Studio/2022/Enterprise/MSBuild/Current/Bin/MSBuild.exe" "./AutoBotUtilities.Tests/AutoBotUtilities.Tests.csproj" /t:Rebuild /p:Configuration=Debug /p:Platform=x64
+
+# Test execution (use current worktree path)  
+"/mnt/c/Program Files/Microsoft Visual Studio/2022/Enterprise/Common7/IDE/CommonExtensions/Microsoft/TestWindow/vstest.console.exe" "./AutoBotUtilities.Tests/bin/x64/Debug/net48/AutoBotUtilities.Tests.dll" /TestCaseFilter:"FullyQualifiedName~ImportShipment" "/Logger:console;verbosity=detailed"
+
+# Current working directory
+pwd  # Should show: /mnt/c/Insight Software/AutoBot-Enterprise-beta
+git branch --show-current  # Should show: debug-beta
+```
+
+### **Key Differences from Main Branch**
+- All paths use `AutoBot-Enterprise-beta` instead of `AutoBot-Enterprise`
+- Build and test commands use relative paths `./` from current directory
+- Must ensure changes are made in worktree, not main branch location
+
