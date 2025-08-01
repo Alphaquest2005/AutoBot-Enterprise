@@ -2551,7 +2551,7 @@ If you find no new omissions or corrections, return an empty errors array with d
         {
             return documentType.ToLower() switch
             {
-                "invoice" or "shipmentinvoice" => new List<string> { 
+                "invoice" or "shipmentinvoice" or "shipment invoice" => new List<string> { 
                     // Core required fields
                     "InvoiceNo", "InvoiceTotal", 
                     // Accept BOTH SupplierCode AND SupplierName (pipeline reality)
