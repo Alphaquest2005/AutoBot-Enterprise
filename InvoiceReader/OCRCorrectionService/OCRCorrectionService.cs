@@ -863,7 +863,7 @@ namespace WaterNut.DataSpace
                 }
                 else
                 {
-                    documentType = "Invoice";
+                    documentType = FileTypeManager.EntryTypes.ShipmentInvoice;
                     _logger.Error($"📋 **DOCUMENT_TYPE_ASSUMED**: Assumed '{documentType}' (legacy fallback enabled) - EntryType was null/empty");
                 }
             }
