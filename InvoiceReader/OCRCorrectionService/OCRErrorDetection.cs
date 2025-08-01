@@ -78,7 +78,7 @@ namespace WaterNut.DataSpace
             _logger.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: Error detection diagnostic wrapper dual-layer template specification compliance analysis");
 
             // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
-            string documentType = "Invoice"; // ShipmentInvoice doesn't have EntityType property
+            string documentType = "Shipment Invoice"; // ShipmentInvoice doesn't have EntityType property
             _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
 
             // Create template specification object for document type with dual-layer validation
@@ -190,7 +190,7 @@ namespace WaterNut.DataSpace
             _logger.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: Enhanced diagnostic wrapper dual-layer template specification compliance analysis");
 
             // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
-            string documentType = "Invoice"; // ShipmentInvoice doesn't have EntityType property
+            string documentType = "Shipment Invoice"; // ShipmentInvoice doesn't have EntityType property
             _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
 
             // Create template specification object for document type with dual-layer validation
@@ -382,7 +382,7 @@ namespace WaterNut.DataSpace
                 _logger.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: Dual-pathway error detection dual-layer template specification compliance analysis");
 
                 // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
-                string documentType = "Invoice"; // ShipmentInvoice doesn't have EntityType property
+                string documentType = "Shipment Invoice"; // ShipmentInvoice doesn't have EntityType property
                 _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
 
                 // Create template specification object for document type with dual-layer validation
@@ -607,7 +607,7 @@ namespace WaterNut.DataSpace
                 _logger.Error("🎯 **TEMPLATE_SPECIFICATION_VALIDATION**: Dual-pathway error detection dual-layer template specification compliance analysis");
 
                 // Determine document type using DatabaseTemplateHelper (MANDATORY - NO HARDCODING)
-                string documentType = "Invoice"; // ShipmentInvoice doesn't have EntityType property
+                string documentType = "Shipment Invoice"; // ShipmentInvoice doesn't have EntityType property
                 _logger.Error($"📋 **DOCUMENT_TYPE_DETECTED**: {documentType} - Using DatabaseTemplateHelper document-specific validation rules");
 
                 // Create template specification object for document type with dual-layer validation
