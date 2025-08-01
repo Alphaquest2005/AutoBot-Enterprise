@@ -498,6 +498,7 @@ namespace WaterNut.DataSpace
 
                     using (var insertCommand = new SqlCommand(insertQuery, context.Database.Connection as SqlConnection))
                     {
+                        insertCommand.Parameters.AddWithValue("@FileTypeId", mostUsedFileTypeId);
                         int rowsAffected = insertCommand.ExecuteNonQuery();
                         
                         if (rowsAffected > 0)
