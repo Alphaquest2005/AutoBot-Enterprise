@@ -825,9 +825,9 @@ namespace AutoBotUtilities.Tests
             // Create the missing mapping
             var insertScript = @"
                 INSERT INTO [dbo].[OCR_TemplateTableMapping] 
-                ([DocumentType], [TargetTable], [RequiredFields], [OptionalFields], [FileTypeId], [IsActive], [Keywords])
+                ([DocumentType], [TargetTable], [RequiredFields], [OptionalFields], [FileTypeId], [IsActive], [Keywords], [TemplatePrefix])
                 VALUES 
-                ('Shipment Invoice', 'ShipmentInvoice', 'InvoiceNo,InvoiceTotal,SupplierCode', 'InvoiceDate,Currency,SubTotal,TotalInternalFreight,TotalOtherCost,TotalInsurance,TotalDeduction', @FileTypeId, 1, 'Shipment,Invoice,Customs,Import,Export,Freight');
+                ('Shipment Invoice', 'ShipmentInvoice', 'InvoiceNo,InvoiceTotal,SupplierCode', 'InvoiceDate,Currency,SubTotal,TotalInternalFreight,TotalOtherCost,TotalInsurance,TotalDeduction', @FileTypeId, 1, 'Shipment,Invoice,Customs,Import,Export,Freight', 'SI');
             ";
 
             var parameters = new Dictionary<string, object>
