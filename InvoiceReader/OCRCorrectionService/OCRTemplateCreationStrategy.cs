@@ -1208,7 +1208,7 @@ namespace WaterNut.DataSpace
                 {
                     if (!allCapturedFields.Contains(requiredField))
                     {
-                        missingRequiredFields.Add($"InvoiceDetails.{requiredField}");
+                        missingRequiredFields.Add($"ShipmentInvoiceDetails.{requiredField}");
                         _logger.Warning("⚠️ **MISSING_REQUIRED_LINE_FIELD**: {Field}", requiredField);
                     }
                 }
