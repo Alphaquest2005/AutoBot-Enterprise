@@ -2629,14 +2629,15 @@ If you find no new omissions or corrections, return an empty errors array with d
         /// </summary>
         private static List<string> GetExpectedFieldsForDocument(string documentType)
         {
-            return documentType.ToLower().Replace(" ", "") switch
+            var normalizedType = FileTypeManager.EntryTypes.GetEntryType(documentType);
+            return normalizedType switch
             {
-                "invoice" or "shipmentinvoice" => new List<string> { "InvoiceNo", "InvoiceDate", "InvoiceTotal", "SubTotal", "Currency", "SupplierCode", "PONumber", "ItemNumber", "ItemDescription", "Quantity", "Cost", "TotalCost" },
-                "shipmentbl" => new List<string> { "BLNumber", "Vessel", "Voyage", "Container", "WeightKG", "VolumeM3", "xBond_Item_Id", "Item_Id", "DutyLiabilityPercent" },
-                "freight" => new List<string> { "FreightInvoiceNo", "FreightTotal", "CarrierName", "ServiceType", "Weight", "Volume" },
-                "manifest" => new List<string> { "ManifestNo", "VesselName", "VoyageNo", "PortOfLoading", "PortOfDischarge" },
-                "rider" => new List<string> { "RiderNo", "RiderDate", "RiderTotal", "RiderDescription" },
-                "purchaseorder" => new List<string> { "PONumber", "LineNumber", "Quantity", "UnitPrice", "LineTotal" },
+                FileTypeManager.EntryTypes.Inv or FileTypeManager.EntryTypes.ShipmentInvoice => new List<string> { "InvoiceNo", "InvoiceDate", "InvoiceTotal", "SubTotal", "Currency", "SupplierCode", "PONumber", "ItemNumber", "ItemDescription", "Quantity", "Cost", "TotalCost" },
+                FileTypeManager.EntryTypes.BL => new List<string> { "BLNumber", "Vessel", "Voyage", "Container", "WeightKG", "VolumeM3", "xBond_Item_Id", "Item_Id", "DutyLiabilityPercent" },
+                FileTypeManager.EntryTypes.Freight => new List<string> { "FreightInvoiceNo", "FreightTotal", "CarrierName", "ServiceType", "Weight", "Volume" },
+                FileTypeManager.EntryTypes.Manifest => new List<string> { "ManifestNo", "VesselName", "VoyageNo", "PortOfLoading", "PortOfDischarge" },
+                FileTypeManager.EntryTypes.Rider => new List<string> { "RiderNo", "RiderDate", "RiderTotal", "RiderDescription" },
+                FileTypeManager.EntryTypes.Po => new List<string> { "PONumber", "LineNumber", "Quantity", "UnitPrice", "LineTotal" },
                 _ => new List<string> { "InvoiceNo", "InvoiceDate", "InvoiceTotal", "SubTotal", "Currency", "SupplierCode", "PONumber" } // Default to Invoice fields
             };
         }
@@ -3068,9 +3069,10 @@ If you find no new omissions or corrections, return an empty errors array with d
 
         private static Dictionary<string, string> GetDocumentTypeFieldDataTypes(string documentType)
         {
-            return documentType.ToLower().Replace(" ", "") switch
+            var normalizedType = FileTypeManager.EntryTypes.GetEntryType(documentType);
+            return normalizedType switch
             {
-                "invoice" or "shipmentinvoice" => new Dictionary<string, string> 
+                FileTypeManager.EntryTypes.Inv or FileTypeManager.EntryTypes.ShipmentInvoice => new Dictionary<string, string> 
                 { 
                     // Core required fields
                     { "InvoiceNo", "String" }, { "InvoiceDate", "Date" }, { "InvoiceTotal", "Number" },
@@ -3086,11 +3088,11 @@ If you find no new omissions or corrections, return an empty errors array with d
                     { "Units", "String" }, { "Discount", "Number" }, { "TariffCode", "String" }, 
                     { "Category", "String" }, { "SalesFactor", "Number" }
                 },
-                "shipmentbl" => new Dictionary<string, string> 
+                FileTypeManager.EntryTypes.BL => new Dictionary<string, string> 
                 { 
                     { "BLNumber", "String" }, { "WeightKG", "Number" }, { "VolumeM3", "Number" }
                 },
-                "purchaseorder" => new Dictionary<string, string> 
+                FileTypeManager.EntryTypes.Po => new Dictionary<string, string> 
                 { 
                     { "PONumber", "String" }, { "LineNumber", "Number" }, { "Quantity", "Number" }
                 },
