@@ -769,6 +769,86 @@ namespace AutoBotUtilities.Tests
             await this.ExecuteSqlScript(currentStateScript, "Current Amazon template state for Caribbean customs").ConfigureAwait(false);
         }
 
+        /// <summary>
+        /// Insert missing "Shipment Invoice" mapping into OCR_TemplateTableMapping table
+        /// This enables EntryTypes enum compliance by providing the required database mapping
+        /// </summary>
+        [Test]
+        [Explicit("Run manually to create Shipment Invoice database mapping")]
+        public async Task CreateShipmentInvoiceMapping()
+        {
+            _logger.Information("🔧 **DATABASE_MAPPING_CREATION**: Creating missing 'Shipment Invoice' mapping");
+
+            // First check what mappings currently exist
+            var checkExistingScript = @"
+                SELECT DocumentType, TargetTable, RequiredFields, OptionalFields, FileTypeId, IsActive
+                FROM [dbo].[OCR_TemplateTableMapping]
+                WHERE DocumentType LIKE '%Invoice%'
+                ORDER BY DocumentType;
+            ";
+
+            await this.ExecuteSqlScript(checkExistingScript, "Current Invoice-related mappings").ConfigureAwait(false);
+
+            // Check if 'Shipment Invoice' mapping already exists
+            var checkSpecificScript = @"
+                SELECT COUNT(*) as ExistingCount
+                FROM [dbo].[OCR_TemplateTableMapping]
+                WHERE DocumentType = 'Shipment Invoice' AND IsActive = 1;
+            ";
+
+            var existingResult = await this.ExecuteSqlScript(checkSpecificScript, "Check if Shipment Invoice mapping exists").ConfigureAwait(false);
+            
+            if (existingResult.Rows.Count > 0 && Convert.ToInt32(existingResult.Rows[0]["ExistingCount"]) > 0)
+            {
+                _logger.Information("✅ **MAPPING_EXISTS**: Shipment Invoice mapping already exists - no action needed");
+                return;
+            }
+
+            // Find the most commonly used FileTypeId to use for our new mapping
+            var fileTypeScript = @"
+                SELECT TOP 3 FileTypeId, COUNT(*) as UsageCount 
+                FROM [dbo].[OCR_TemplateTableMapping] 
+                WHERE IsActive = 1
+                GROUP BY FileTypeId 
+                ORDER BY COUNT(*) DESC;
+            ";
+
+            var fileTypeResult = await this.ExecuteSqlScript(fileTypeScript, "Most commonly used FileTypeId values").ConfigureAwait(false);
+            
+            int fileTypeId = 1;
+            if (fileTypeResult.Rows.Count > 0)
+            {
+                fileTypeId = Convert.ToInt32(fileTypeResult.Rows[0]["FileTypeId"]);
+                _logger.Information("🎯 **FILETYPE_SELECTED**: Using FileTypeId={FileTypeId} (most common)", fileTypeId);
+            }
+
+            // Create the missing mapping
+            var insertScript = @"
+                INSERT INTO [dbo].[OCR_TemplateTableMapping] 
+                ([DocumentType], [TargetTable], [RequiredFields], [OptionalFields], [FileTypeId], [IsActive])
+                VALUES 
+                ('Shipment Invoice', 'ShipmentInvoice', 'InvoiceNo,InvoiceTotal,SupplierCode', 'InvoiceDate,Currency,SubTotal,TotalInternalFreight,TotalOtherCost,TotalInsurance,TotalDeduction', @FileTypeId, 1);
+            ";
+
+            var parameters = new Dictionary<string, object>
+            {
+                { "FileTypeId", fileTypeId }
+            };
+
+            await this.ExecuteSqlScript(insertScript, "Insert Shipment Invoice mapping", parameters).ConfigureAwait(false);
+
+            // Verify the insertion was successful
+            var verifyScript = @"
+                SELECT DocumentType, TargetTable, RequiredFields, OptionalFields, FileTypeId, IsActive
+                FROM [dbo].[OCR_TemplateTableMapping]
+                WHERE DocumentType = 'Shipment Invoice';
+            ";
+
+            await this.ExecuteSqlScript(verifyScript, "Verify Shipment Invoice mapping creation").ConfigureAwait(false);
+            
+            _logger.Information("✅ **MAPPING_CREATION_COMPLETE**: Shipment Invoice mapping successfully created");
+        }
+
         #endregion
     }
 }

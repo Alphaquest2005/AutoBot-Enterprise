@@ -469,12 +469,32 @@ namespace WaterNut.DataSpace
                         }
                     }
 
-                    // Create the missing mapping
+                    // First check what FileTypeId values exist in the system
+                    var fileTypeQuery = @"
+                        SELECT TOP 5 FileTypeId, COUNT(*) as UsageCount 
+                        FROM [dbo].[OCR_TemplateTableMapping] 
+                        GROUP BY FileTypeId 
+                        ORDER BY COUNT(*) DESC";
+                    
+                    int mostUsedFileTypeId = 1;
+                    using (var fileTypeCommand = new SqlCommand(fileTypeQuery, context.Database.Connection as SqlConnection))
+                    {
+                        using (SqlDataReader reader = fileTypeCommand.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                mostUsedFileTypeId = reader.GetInt32("FileTypeId");
+                                _logger.Information("🔍 **FILETYPE_DISCOVERY**: Using most common FileTypeId={FileTypeId} with {UsageCount} records", mostUsedFileTypeId, reader.GetInt32("UsageCount"));
+                            }
+                        }
+                    }
+
+                    // Create the missing mapping with discovered FileTypeId
                     var insertQuery = @"
                         INSERT INTO [dbo].[OCR_TemplateTableMapping] 
                         ([DocumentType], [TargetTable], [RequiredFields], [OptionalFields], [FileTypeId], [IsActive])
                         VALUES 
-                        ('Shipment Invoice', 'ShipmentInvoice', 'InvoiceNo,InvoiceTotal,SupplierCode', 'InvoiceDate,Currency,SubTotal,TotalInternalFreight,TotalOtherCost,TotalInsurance,TotalDeduction', 1147, 1)";
+                        ('Shipment Invoice', 'ShipmentInvoice', 'InvoiceNo,InvoiceTotal,SupplierCode', 'InvoiceDate,Currency,SubTotal,TotalInternalFreight,TotalOtherCost,TotalInsurance,TotalDeduction', @FileTypeId, 1)";
 
                     using (var insertCommand = new SqlCommand(insertQuery, context.Database.Connection as SqlConnection))
                     {
