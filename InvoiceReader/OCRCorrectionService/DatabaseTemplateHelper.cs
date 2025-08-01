@@ -212,6 +212,12 @@ namespace WaterNut.DataSpace
             {
                 _logger.Information("🔍 **DATABASE_TEMPLATE_LOOKUP_BY_TYPE**: Retrieving template mappings for DocumentType={DocumentType}", documentType);
 
+                // Ensure required database mappings exist for EntryTypes enum compliance
+                if (documentType == "Shipment Invoice")
+                {
+                    EnsureShipmentInvoiceMappingExists(applicationSettingsId);
+                }
+
                 var mappings = new List<TemplateMapping>();
 
                 using (var context = new CoreEntities.Business.Entities.CoreEntitiesContext())
