@@ -2629,9 +2629,9 @@ If you find no new omissions or corrections, return an empty errors array with d
         /// </summary>
         private static List<string> GetExpectedFieldsForDocument(string documentType)
         {
-            return documentType.ToLower() switch
+            return documentType.ToLower().Replace(" ", "") switch
             {
-                "invoice" => new List<string> { "InvoiceNo", "InvoiceDate", "InvoiceTotal", "SubTotal", "Currency", "SupplierCode", "PONumber", "ItemNumber", "ItemDescription", "Quantity", "Cost", "TotalCost" },
+                "invoice" or "shipmentinvoice" => new List<string> { "InvoiceNo", "InvoiceDate", "InvoiceTotal", "SubTotal", "Currency", "SupplierCode", "PONumber", "ItemNumber", "ItemDescription", "Quantity", "Cost", "TotalCost" },
                 "shipmentbl" => new List<string> { "BLNumber", "Vessel", "Voyage", "Container", "WeightKG", "VolumeM3", "xBond_Item_Id", "Item_Id", "DutyLiabilityPercent" },
                 "freight" => new List<string> { "FreightInvoiceNo", "FreightTotal", "CarrierName", "ServiceType", "Weight", "Volume" },
                 "manifest" => new List<string> { "ManifestNo", "VesselName", "VoyageNo", "PortOfLoading", "PortOfDischarge" },
@@ -3068,7 +3068,7 @@ If you find no new omissions or corrections, return an empty errors array with d
 
         private static Dictionary<string, string> GetDocumentTypeFieldDataTypes(string documentType)
         {
-            return documentType.ToLower() switch
+            return documentType.ToLower().Replace(" ", "") switch
             {
                 "invoice" or "shipmentinvoice" => new Dictionary<string, string> 
                 { 
