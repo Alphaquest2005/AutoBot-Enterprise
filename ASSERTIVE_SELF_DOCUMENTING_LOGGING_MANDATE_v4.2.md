@@ -1,6 +1,24 @@
 # **🧠 ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v4.2**
 ## **WITH BUSINESS SUCCESS CRITERIA VALIDATION**
 
+## 🏠 WORKTREE ENVIRONMENT DETECTION
+
+### **🎯 Current Environment Commands**
+```bash
+# Always run this first to identify your current environment
+echo "Current Environment: $(pwd)"
+echo "Current Branch: $(git branch --show-current)"
+echo "Repository Root: $(git rev-parse --show-toplevel)"
+git worktree list
+```
+
+**Available Environments**:
+- **Main Repository**: `AutoBot-Enterprise` (primary development)
+- **Alpha Worktree**: `AutoBot-Enterprise-alpha` (experimental work)
+- **Beta Worktree**: `AutoBot-Enterprise-beta` (baseline comparison)
+
+---
+
 **Directive Name**: `ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v4.2`  
 **Status**: ✅ **ACTIVE**  
 **Version**: 4.2 - Enhanced with Business Success Criteria Validation  
@@ -255,7 +273,7 @@ _logger.Error("🏆 **OVERALL_METHOD_SUCCESS**: [✅ PASS / ❌ FAIL] - [Summary
 
 ## **📚 REFERENCE IMPLEMENTATION**
 
-**Location**: `/mnt/c/Insight Software/AutoBot-Enterprise/InvoiceReader/OCRCorrectionService/OCRErrorDetection.cs`  
+**Location**: `./InvoiceReader/OCRCorrectionService/OCRErrorDetection.cs` (relative to repository root)  
 **Method**: `DetectHeaderFieldErrorsAndOmissionsAsync`  
 **Status**: ✅ **IMPLEMENTED** - Full v4.2 pattern with success criteria validation  
 

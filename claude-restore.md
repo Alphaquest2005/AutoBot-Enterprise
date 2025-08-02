@@ -1,5 +1,41 @@
 # CLAUDE.md - COMPREHENSIVE RESTORE
 
+## 🏠 WORKTREE ENVIRONMENT DETECTION
+
+### **🎯 Current Environment Commands**
+```bash
+# Always run this first to identify your current environment
+echo "Current Environment: $(pwd)"
+echo "Current Branch: $(git branch --show-current)"
+echo "Repository Root: $(git rev-parse --show-toplevel)"
+git worktree list
+```
+
+**Available Environments**:
+- **Main Repository**: `AutoBot-Enterprise` (primary development)
+- **Alpha Worktree**: `AutoBot-Enterprise-alpha` (experimental work)
+- **Beta Worktree**: `AutoBot-Enterprise-beta` (baseline comparison)
+
+---
+
+## 🏠 WORKTREE ENVIRONMENT DETECTION
+
+### **🎯 Current Environment Commands**
+```bash
+# Always run this first to identify your current environment
+echo "Current Environment: $(pwd)"
+echo "Current Branch: $(git branch --show-current)"
+echo "Repository Root: $(git rev-parse --show-toplevel)"
+git worktree list
+```
+
+**Available Environments**:
+- **Main Repository**: `AutoBot-Enterprise` (primary development)
+- **Alpha Worktree**: `AutoBot-Enterprise-alpha` (experimental work)
+- **Beta Worktree**: `AutoBot-Enterprise-beta` (baseline comparison)
+
+---
+
 *This file restores the complete CLAUDE.md content that was lost, combining all historical versions and optimizing for Claude usage.*
 
 ## 📋 TABLE OF CONTENTS
@@ -170,7 +206,7 @@ sqlcmd -Q "SELECT Success FROM OCRCorrectionLearning WHERE CreatedDate >= '2025-
 
 **Test Name**: `CanImportMango03152025TotalAmount_AfterLearning()`  
 **Purpose**: Tests OCR template creation for unknown suppliers using MANGO invoice data  
-**Location**: `/mnt/c/Insight Software/AutoBot-Enterprise/AutoBotUtilities.Tests/PDFImportTests.cs`  
+**Location**: `./AutoBotUtilities.Tests/PDFImportTests.cs` (relative to repository root)  
 **Test Data**: `03152025_TOTAL AMOUNT.txt` and related MANGO files  
 **Current Issue**: OCR service CreateInvoiceTemplateAsync returns NULL, preventing template creation
 
@@ -416,63 +452,63 @@ The session management system ensures Claude Code maintains awareness of:
 ## Tool Usage - Correct File Paths {#tool-usage---correct-file-paths}
 
 ### Repository Root
-**Correct base path**: `/mnt/c/Insight Software/AutoBot-Enterprise/`
+**Correct base path**: `$(git rev-parse --show-toplevel)` (dynamically detected)
 
 ### Key Test Files
 ```bash
 # Amazon invoice test data
-/mnt/c/Insight Software/AutoBot-Enterprise/AutoBotUtilities.Tests/Test Data/Amazon.com - Order 112-9126443-1163432.pdf
-/mnt/c/Insight Software/AutoBot-Enterprise/AutoBotUtilities.Tests/Test Data/Amazon.com - Order 112-9126443-1163432.pdf.txt
+./AutoBotUtilities.Tests/Test Data/Amazon.com - Order 112-9126443-1163432.pdf
+./AutoBotUtilities.Tests/Test Data/Amazon.com - Order 112-9126443-1163432.pdf.txt
 
 # Test configuration
-/mnt/c/Insight Software/AutoBot-Enterprise/AutoBotUtilities.Tests/appsettings.json
+./AutoBotUtilities.Tests/appsettings.json
 ```
 
 ### Key Paths
 ```bash
-# Repository root
-/mnt/c/Insight Software/AutoBot-Enterprise/
+# Repository root (dynamically detected)
+REPO_ROOT=$(git rev-parse --show-toplevel)
 
 # 🎯 CRITICAL ANALYSIS FILES
-/mnt/c/Insight Software/AutoBot-Enterprise/COMPLETE-DEEPSEEK-INTEGRATION-ANALYSIS.md         # Complete pipeline analysis (REQUIRED READING)
-/mnt/c/Insight Software/AutoBot-Enterprise/Claude OCR Correction Knowledge.md                # Extended knowledge base
-/mnt/c/Insight Software/AutoBot-Enterprise/DEEPSEEK_OCR_TEMPLATE_CREATION_KNOWLEDGEBASE.md   # Knowledge base file: Template creation system implementation
-/mnt/c/Insight Software/AutoBot-Enterprise/AutoBot1/WebSource-AutoBot Scripts/               # Foundational OCR database schema
+./COMPLETE-DEEPSEEK-INTEGRATION-ANALYSIS.md         # Complete pipeline analysis (REQUIRED READING)
+./Claude OCR Correction Knowledge.md                # Extended knowledge base
+./DEEPSEEK_OCR_TEMPLATE_CREATION_KNOWLEDGEBASE.md   # Knowledge base file: Template creation system implementation
+./AutoBot1/WebSource-AutoBot Scripts/               # Foundational OCR database schema
 
 # Main Application Entry Points
-/mnt/c/Insight Software/AutoBot-Enterprise/AutoBot1/Program.cs               # Console App (✅ Logging Implemented)
-/mnt/c/Insight Software/AutoBot-Enterprise/WaterNut/App.xaml.cs              # WPF App (❌ No Logging)
-/mnt/c/Insight Software/AutoBot-Enterprise/WCFConsoleHost/Program.cs         # WCF Service (⚠️ Basic Serilog)
+./AutoBot1/Program.cs               # Console App (✅ Logging Implemented)
+./WaterNut/App.xaml.cs              # WPF App (❌ No Logging)
+./WCFConsoleHost/Program.cs         # WCF Service (⚠️ Basic Serilog)
 
 # Project Files
-/mnt/c/Insight Software/AutoBot-Enterprise/AutoBot1/AutoBot1.csproj
-/mnt/c/Insight Software/AutoBot-Enterprise/WaterNut/AutoWaterNut.csproj
-/mnt/c/Insight Software/AutoBot-Enterprise/WCFConsoleHost/AutoWaterNutServer.csproj
+./AutoBot1/AutoBot1.csproj
+./WaterNut/AutoWaterNut.csproj
+./WCFConsoleHost/AutoWaterNutServer.csproj
 ```
 
 ### OCR Correction Service Files
 ```bash
 # Main service files
-/mnt/c/Insight Software/AutoBot-Enterprise/InvoiceReader/OCRCorrectionService/OCRCorrectionService.cs
-/mnt/c/Insight Software/AutoBot-Enterprise/InvoiceReader/OCRCorrectionService/OCRErrorDetection.cs
-/mnt/c/Insight Software/AutoBot-Enterprise/InvoiceReader/OCRCorrectionService/OCRPromptCreation.cs
-/mnt/c/Insight Software/AutoBot-Enterprise/InvoiceReader/OCRCorrectionService/OCRDeepSeekIntegration.cs
-/mnt/c/Insight Software/AutoBot-Enterprise/InvoiceReader/OCRCorrectionService/OCRCaribbeanCustomsProcessor.cs
+./InvoiceReader/OCRCorrectionService/OCRCorrectionService.cs
+./InvoiceReader/OCRCorrectionService/OCRErrorDetection.cs
+./InvoiceReader/OCRCorrectionService/OCRPromptCreation.cs
+./InvoiceReader/OCRCorrectionService/OCRDeepSeekIntegration.cs
+./InvoiceReader/OCRCorrectionService/OCRCaribbeanCustomsProcessor.cs
 
 # Pipeline infrastructure
-/mnt/c/Insight Software/AutoBot-Enterprise/InvoiceReader/InvoiceReader/PipelineInfrastructure/ReadFormattedTextStep.cs
+./InvoiceReader/InvoiceReader/PipelineInfrastructure/ReadFormattedTextStep.cs
 
 # DeepSeek API
-/mnt/c/Insight Software/AutoBot-Enterprise/WaterNut.Business.Services/Utils/DeepSeek/DeepSeekInvoiceApi.cs
+./WaterNut.Business.Services/Utils/DeepSeek/DeepSeekInvoiceApi.cs
 ```
 
 ### Common Search Patterns
 ```bash
 # Search for OCR-related files
-Grep pattern="OCR|DeepSeek" include="*.cs" path="/mnt/c/Insight Software/AutoBot-Enterprise/InvoiceReader"
+Grep pattern="OCR|DeepSeek" include="*.cs" path="./InvoiceReader"
 
 # Search for test files
-Glob pattern="*Test*.cs" path="/mnt/c/Insight Software/AutoBot-Enterprise/AutoBotUtilities.Tests"
+Glob pattern="*Test*.cs" path="./AutoBotUtilities.Tests"
 
 # Search for specific functionality
 Grep pattern="Gift Card|TotalDeduction" include="*.cs"
@@ -480,7 +516,7 @@ Grep pattern="Gift Card|TotalDeduction" include="*.cs"
 
 ### Important Notes
 - Always use forward slashes `/` in paths for tools
-- Include spaces in quoted paths: `/mnt/c/Insight Software/AutoBot-Enterprise/`
+- Use relative paths from repository root: `./` (dynamically detected)
 - Test data files have `.txt` extensions for OCR text content
 - OCR service is split across multiple partial class files
 
@@ -489,8 +525,8 @@ Grep pattern="Gift Card|TotalDeduction" include="*.cs"
 ## OCR Correction Service Architecture - COMPLETE IMPLEMENTATION ✅ {#ocr-correction-service-architecture}
 
 ### Main Components (All Implemented)
-- **Main Service**: `/mnt/c/Insight Software/AutoBot-Enterprise/InvoiceReader/OCRCorrectionService/OCRCorrectionService.cs`
-- **Pipeline Methods**: `/mnt/c/Insight Software/AutoBot-Enterprise/InvoiceReader/OCRCorrectionService/OCRDatabaseUpdates.cs`
+- **Main Service**: `./InvoiceReader/OCRCorrectionService/OCRCorrectionService.cs`
+- **Pipeline Methods**: `./InvoiceReader/OCRCorrectionService/OCRDatabaseUpdates.cs`
   - `GenerateRegexPatternInternal()` - Creates regex patterns using DeepSeek API
   - `ValidatePatternInternal()` - Validates generated patterns  
   - `ApplyToDatabaseInternal()` - Applies corrections to database using strategies
@@ -501,29 +537,29 @@ Grep pattern="Gift Card|TotalDeduction" include="*.cs"
   - `ExecuteFullPipelineInternal()` - Orchestrates complete pipeline
   - `ExecuteBatchPipelineInternal()` - Handles batch processing
 
-- **Error Detection**: `/mnt/c/Insight Software/AutoBot-Enterprise/InvoiceReader/OCRCorrectionService/OCRErrorDetection.cs`
+- **Error Detection**: `./InvoiceReader/OCRCorrectionService/OCRErrorDetection.cs`
   - `DetectInvoiceErrorsAsync()` - Comprehensive error detection (private)
   - `AnalyzeTextForMissingFields()` - Omission detection using AI
   - `ExtractMonetaryValue()` - Value extraction and validation
   - `ExtractFieldMetadataAsync()` - Field metadata extraction
 
-- **Pipeline Extension Methods**: `/mnt/c/Insight Software/AutoBot-Enterprise/InvoiceReader/OCRCorrectionService/OCRCorrectionPipeline.cs`
+- **Pipeline Extension Methods**: `./InvoiceReader/OCRCorrectionService/OCRCorrectionPipeline.cs`
   - Functional extension methods that call internal implementations
   - Clean API: `correction.GenerateRegexPattern(service, lineContext)`
   - All extension methods delegate to internal methods for testability
   - Complete pipeline orchestration support
 
-- **Database Strategies**: `/mnt/c/Insight Software/AutoBot-Enterprise/InvoiceReader/OCRCorrectionService/OCRDatabaseStrategies.cs`
+- **Database Strategies**: `./InvoiceReader/OCRCorrectionService/OCRDatabaseStrategies.cs`
   - `OmissionUpdateStrategy` - Handles missing field corrections
   - `FieldFormatUpdateStrategy` - Handles format corrections  
   - `DatabaseUpdateStrategyFactory` - Selects appropriate strategy
 
-- **Field Mapping & Validation**: `/mnt/c/Insight Software/AutoBot-Enterprise/InvoiceReader/OCRCorrectionService/OCRFieldMapping.cs`
+- **Field Mapping & Validation**: `./InvoiceReader/OCRCorrectionService/OCRFieldMapping.cs`
   - `IsFieldSupported()` - Validates supported fields (public)
   - `GetFieldValidationInfo()` - Returns field validation rules (public)
   - Caribbean customs business rule implementation
 
-- **DeepSeek Integration**: `/mnt/c/Insight Software/AutoBot-Enterprise/InvoiceReader/OCRCorrectionService/OCRDeepSeekIntegration.cs`
+- **DeepSeek Integration**: `./InvoiceReader/OCRCorrectionService/OCRDeepSeekIntegration.cs`
   - AI-powered error detection and pattern generation
   - 95%+ confidence regex pattern creation
   - Full API integration with retry logic
@@ -536,7 +572,7 @@ Grep pattern="Gift Card|TotalDeduction" include="*.cs"
   - Real FieldIds: 2579, 2580 with correct field mappings
 
 ### OCR Pipeline Entry Point ✅
-- **ReadFormattedTextStep Integration**: `/mnt/c/Insight Software/AutoBot-Enterprise/InvoiceReader/InvoiceReader/PipelineInfrastructure/ReadFormattedTextStep.cs`
+- **ReadFormattedTextStep Integration**: `./InvoiceReader/InvoiceReader/PipelineInfrastructure/ReadFormattedTextStep.cs`
   - Complete OCR correction pipeline integrated
   - Uses `ExecuteFullPipelineForInvoiceAsync()` for invoice processing
   - TotalsZero calculation triggers OCR correction automatically
@@ -772,7 +808,7 @@ using (LogLevelOverride.Begin(LogEventLevel.Verbose))
 - ❌ **Normal processing appears as errors** - confuses troubleshooting
 - 🔧 **Immediate Fix Needed**: OCRErrorDetection.cs (5 instances) and OCRDatabaseUpdates.cs (1 instance)
 
-**Note**: For comprehensive documentation, architecture details, debugging methodology, and implementation status, see `/mnt/c/Insight Software/AutoBot-Enterprise/Claude OCR Correction Knowledge.md` and `/mnt/c/Insight Software/AutoBot-Enterprise/Logging-Unification-Implementation-Plan.md`.
+**Note**: For comprehensive documentation, architecture details, debugging methodology, and implementation status, see `./Claude OCR Correction Knowledge.md` and `./Logging-Unification-Implementation-Plan.md` (relative to repository root).
 
 ---
 
@@ -968,12 +1004,12 @@ grep -A5 -B5 "TEST_RESULT\|FINAL_STATUS\|STRATEGY_COMPLETE" LogFile.log
 
 ### **📁 CRITICAL FILE PATHS**
 
-**Repository Root**: `/mnt/c/Insight Software/AutoBot-Enterprise/`
+**Repository Root**: `$(git rev-parse --show-toplevel)` (dynamically detected)
 
 **Key OCR Files**:
-- `/mnt/c/Insight Software/AutoBot-Enterprise/InvoiceReader/OCRCorrectionService/OCRCorrectionService.cs`
-- `/mnt/c/Insight Software/AutoBot-Enterprise/InvoiceReader/OCRCorrectionService/OCRErrorDetection.cs`
-- `/mnt/c/Insight Software/AutoBot-Enterprise/InvoiceReader/OCRCorrectionService/OCRPromptCreation.cs`
+- `./InvoiceReader/OCRCorrectionService/OCRCorrectionService.cs`
+- `./InvoiceReader/OCRCorrectionService/OCRErrorDetection.cs`
+- `./InvoiceReader/OCRCorrectionService/OCRPromptCreation.cs`
 
 **Critical Analysis Files**:
 - `COMPLETE-DEEPSEEK-INTEGRATION-ANALYSIS.md` - Complete pipeline analysis

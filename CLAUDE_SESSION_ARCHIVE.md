@@ -1,5 +1,23 @@
 # CLAUDE Session Archive & Detailed Technical History
 
+## 🏠 WORKTREE ENVIRONMENT DETECTION
+
+### **🎯 Current Environment Commands**
+```bash
+# Always run this first to identify your current environment
+echo "Current Environment: $(pwd)"
+echo "Current Branch: $(git branch --show-current)"
+echo "Repository Root: $(git rev-parse --show-toplevel)"
+git worktree list
+```
+
+**Available Environments**:
+- **Main Repository**: `AutoBot-Enterprise` (primary development)
+- **Alpha Worktree**: `AutoBot-Enterprise-alpha` (experimental work)
+- **Beta Worktree**: `AutoBot-Enterprise-beta` (baseline comparison)
+
+---
+
 This file contains detailed session history and technical deep-dives moved from CLAUDE.md for performance optimization.
 
 ## 📋 Session Management & Continuity Protocol
@@ -170,7 +188,7 @@ With LogLevelOverride interference eliminated, the MANGO test now shows:
 
 ### **LogLevelOverride Singleton Termination System** 🔧
 
-**File**: `/mnt/c/Insight Software/AutoBot-Enterprise/Core.Common/Core.Common/Extensions/LogLevelOverride.cs`
+**File**: `./Core.Common/Core.Common/Extensions/LogLevelOverride.cs` (relative to repository root)
 
 **Architecture**: Complete refactor from AsyncLocal pattern to singleton termination pattern:
 
@@ -216,7 +234,7 @@ public static class LogLevelOverride
 
 ### **Template FileType Preservation Fix** ✅
 
-**File**: `/mnt/c/Insight Software/AutoBot-Enterprise/InvoiceReader/InvoiceReader/PipelineInfrastructure/GetTemplatesStep.cs`
+**File**: `./InvoiceReader/InvoiceReader/PipelineInfrastructure/GetTemplatesStep.cs` (relative to repository root)
 
 **CRITICAL BUG FIXED**: GetContextTemplates was overwriting ALL templates' FileType with context.FileType, causing SimplifiedDeclaration (1185) to appear as ShipmentInvoice (1147).
 
@@ -545,7 +563,7 @@ using (LogLevelOverride.Begin(LogEventLevel.Verbose))
 - ❌ **Normal processing appears as errors** - confuses troubleshooting
 - 🔧 **Immediate Fix Needed**: OCRErrorDetection.cs (5 instances) and OCRDatabaseUpdates.cs (1 instance)
 
-**Note**: For comprehensive documentation, architecture details, debugging methodology, and implementation status, see `/mnt/c/Insight Software/AutoBot-Enterprise/Claude OCR Correction Knowledge.md` and `/mnt/c/Insight Software/AutoBot-Enterprise/Logging-Unification-Implementation-Plan.md`.
+**Note**: For comprehensive documentation, architecture details, debugging methodology, and implementation status, see `./Claude OCR Correction Knowledge.md` and `./Logging-Unification-Implementation-Plan.md` (relative to repository root).
 
 ---
 

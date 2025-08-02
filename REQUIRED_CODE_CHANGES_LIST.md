@@ -1,5 +1,23 @@
 # Required Code Changes List - MANGO Test Fix
 
+## 🏠 WORKTREE ENVIRONMENT DETECTION
+
+### **🎯 Current Environment Commands**
+```bash
+# Always run this first to identify your current environment
+echo "Current Environment: $(pwd)"
+echo "Current Branch: $(git branch --show-current)"
+echo "Repository Root: $(git rev-parse --show-toplevel)"
+git worktree list
+```
+
+**Available Environments**:
+- **Main Repository**: `AutoBot-Enterprise` (primary development)
+- **Alpha Worktree**: `AutoBot-Enterprise-alpha` (experimental work)
+- **Beta Worktree**: `AutoBot-Enterprise-beta` (baseline comparison)
+
+---
+
 **Date**: July 31, 2025  
 **Objective**: Fix MANGO test failure at STEP 4 - ShipmentInvoice creation  
 **Current Status**: Template created successfully, field validation passes, but data extraction fails  
@@ -9,7 +27,7 @@
 ## 🔥 CRITICAL CHANGES (HIGHEST PRIORITY)
 
 ### **1. Line Class Shortcut Property (OUTSIDE OCR CORRECTION SERVICE)**
-**File**: `/mnt/c/Insight Software/AutoBot-Enterprise/InvoiceReader/Line/Line.cs`  
+**File**: `./InvoiceReader/Line/Line.cs`  
 **Location**: Around line 17, after `public Lines OCR_Lines { get; }`  
 **Change**: Add shortcut property to prevent navigation hallucinations  
 ```csharp
@@ -19,7 +37,7 @@ public OCR.Business.Entities.RegularExpressions RegularExpressions => OCR_Lines?
 **Why**: This is the ROOT CAUSE of NO_REGEX issue. `ReadFormattedTextStep.cs:313` tries to access `line.RegularExpressions?.RegEx` but this property doesn't exist, causing patterns to show as "NO_REGEX".
 
 ### **2. ReadFormattedTextStep Navigation Fix (OUTSIDE OCR CORRECTION SERVICE)**
-**File**: `/mnt/c/Insight Software/AutoBot-Enterprise/InvoiceReader/InvoiceReader/PipelineInfrastructure/ReadFormattedTextStep.cs`  
+**File**: `./InvoiceReader/InvoiceReader/PipelineInfrastructure/ReadFormattedTextStep.cs`  
 **Location**: Line 313  
 **Current**: `var regexPattern = line.RegularExpressions?.RegEx ?? "NO_REGEX";`  
 **Change**: Either fix to use shortcut property OR direct navigation:  
@@ -33,7 +51,7 @@ var regexPattern = line.OCR_Lines.RegularExpressions?.RegEx ?? "NO_REGEX";
 ## 🔧 MEDIUM PRIORITY CHANGES (OUTSIDE OCR CORRECTION SERVICE)
 
 ### **3. Additional Line Class Shortcut Properties**  
-**File**: `/mnt/c/Insight Software/AutoBot-Enterprise/InvoiceReader/Line/Line.cs`  
+**File**: `./InvoiceReader/Line/Line.cs`  
 **Add these shortcut properties to prevent future hallucinations**:
 ```csharp
 // **COMMON SHORTCUT PROPERTIES**: Prevent navigation hallucinations
@@ -49,7 +67,7 @@ public List<OCR.Business.Entities.Fields> Fields => OCR_Lines.Fields;
 **Why**: Prevents LLM navigation hallucinations by providing direct access to commonly used properties.
 
 ### **4. Template Class Shortcut Properties**
-**File**: `/mnt/c/Insight Software/AutoBot-Enterprise/InvoiceReader/Invoice/Template.cs`  
+**File**: `./InvoiceReader/Invoice/Template.cs` (relative to repository root)  
 **Add these shortcut properties**:
 ```csharp
 // **TEMPLATE SHORTCUT PROPERTIES**: Route to OcrTemplates entity
@@ -61,7 +79,7 @@ public bool IsActive => OcrTemplates.IsActive;
 **Why**: Prevents navigation hallucinations for commonly accessed template properties.
 
 ### **5. Part Class Shortcut Properties**
-**File**: `/mnt/c/Insight Software/AutoBot-Enterprise/InvoiceReader/Part/Part.cs`  
+**File**: `./InvoiceReader/Part/Part.cs` (relative to repository root)  
 **Add these shortcut properties**:
 ```csharp
 // **PART SHORTCUT PROPERTIES**: Route to OCR_Part entity

@@ -1,5 +1,23 @@
 # 🚨 **HOOK-PROTECTED ENTRYTYPE REFACTORING INSTRUCTIONS**
 
+## 🏠 WORKTREE ENVIRONMENT DETECTION
+
+### **🎯 Current Environment Commands**
+```bash
+# Always run this first to identify your current environment
+echo "Current Environment: $(pwd)"
+echo "Current Branch: $(git branch --show-current)"
+echo "Repository Root: $(git rev-parse --show-toplevel)"
+git worktree list
+```
+
+**Available Environments**:
+- **Main Repository**: `AutoBot-Enterprise` (primary development)
+- **Alpha Worktree**: `AutoBot-Enterprise-alpha` (experimental work)
+- **Beta Worktree**: `AutoBot-Enterprise-beta` (baseline comparison)
+
+---
+
 **Status**: 🔥 **CRITICAL - IMMEDIATE ACTION REQUIRED**  
 **Created**: July 31, 2025  
 **Priority**: **PHASE 2 COMPLETION** - Core refactoring 70% complete, need hook-protected areas
@@ -31,7 +49,7 @@
 
 ### **CRITICAL PRIORITY 1: DeepSeekInvoiceApi.cs**
 
-**File Location**: `/mnt/c/Insight Software/AutoBot-Enterprise/WaterNut.Business.Services/Utils/DeepSeek/DeepSeekInvoiceApi.cs`
+**File Location**: `./WaterNut.Business.Services/Utils/DeepSeek/DeepSeekInvoiceApi.cs` (relative to repository root)
 
 **Required Changes:**
 ```csharp
@@ -94,7 +112,7 @@
 
 ### **PRIORITY 3: ImportPDFDeepSeek.cs**
 
-**File Location**: `/mnt/c/Insight Software/AutoBot-Enterprise/AutoBot/PDFUtils/ImportPDFDeepSeek.cs`
+**File Location**: `./AutoBot/PDFUtils/ImportPDFDeepSeek.cs` (relative to repository root)
 
 **Required Changes:**
 ```csharp

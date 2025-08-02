@@ -1,5 +1,23 @@
 # 🤖 **AUTOMATED SYSTEMATIC FIX PROMPT v2.0 - MANGO TEST SUCCESS MANDATE**
 
+## 🏠 WORKTREE ENVIRONMENT DETECTION
+
+### **🎯 Current Environment Commands**
+```bash
+# Always run this first to identify your current environment
+echo "Current Environment: $(pwd)"
+echo "Current Branch: $(git branch --show-current)"
+echo "Repository Root: $(git rev-parse --show-toplevel)"
+git worktree list
+```
+
+**Available Environments**:
+- **Main Repository**: `AutoBot-Enterprise` (primary development)
+- **Alpha Worktree**: `AutoBot-Enterprise-alpha` (experimental work)
+- **Beta Worktree**: `AutoBot-Enterprise-beta` (baseline comparison)
+
+---
+
 **DIRECTIVE**: Work through ALL issues systematically until MANGO test passes completely. Do NOT stop for user confirmation. Execute specific actions until `CanImportMango03152025TotalAmount_AfterLearning` shows `✅ STEP 4 PASSED`.
 
 ## **🎯 EXECUTION PROTOCOL - NO HUMAN INTERVENTION**
@@ -17,10 +35,10 @@
    Grep pattern="TEMPLATE_SPEC_FIELD_MAPPING_DUAL_LAYER|Field mapping validation failed" include="*.cs"
 
 2. Examine DatabaseTemplateHelper validation method:
-   Read file_path="/mnt/c/Insight Software/AutoBot-Enterprise/InvoiceReader/OCRCorrectionService/DatabaseTemplateHelper.cs"
+   Read file_path="./InvoiceReader/OCRCorrectionService/DatabaseTemplateHelper.cs"
 
 3. Check template specification validation in TemplateSpecification.cs:
-   Grep pattern="ValidateFieldMappingEnhancement|Field mapping" include="*.cs" path="/mnt/c/Insight Software/AutoBot-Enterprise/InvoiceReader"
+   Grep pattern="ValidateFieldMappingEnhancement|Field mapping" include="*.cs" path="./InvoiceReader"
 ```
 
 ### **ACTION 1.2: Fix Data Compliance Issues**
@@ -45,7 +63,7 @@
 ```bash
 # SPECIFIC DIAGNOSTIC STEPS:
 1. Check DeepSeek API timeout settings:
-   Grep pattern="timeout|Timeout" include="*.cs" path="/mnt/c/Insight Software/AutoBot-Enterprise/WaterNut.Business.Services/Utils/DeepSeek"
+   Grep pattern="timeout|Timeout" include="*.cs" path="./WaterNut.Business.Services/Utils/DeepSeek"
 
 2. Examine prompt length in logs:
    grep "REQUEST_JSON_COMPLETE.*model.*deepseek-chat" "./AutoBotUtilities.Tests/bin/x64/Debug/net48/Logs/AutoBotTests-*.log"
@@ -98,10 +116,10 @@
 ```bash
 # IMMEDIATE INVESTIGATION:
 1. Find where text is prepared for DeepSeek API:
-   Grep pattern="content.*deepseek|DeepSeek.*prompt|api.*content" include="*.cs" path="/mnt/c/Insight Software/AutoBot-Enterprise/WaterNut.Business.Services/Utils/DeepSeek"
+   Grep pattern="content.*deepseek|DeepSeek.*prompt|api.*content" include="*.cs" path="./WaterNut.Business.Services/Utils/DeepSeek"
 
 2. Locate text normalization before API calls:
-   Grep pattern="Replace.*\\\\r\\\\n|Replace.*\\\\n|Environment.NewLine" include="*.cs" path="/mnt/c/Insight Software/AutoBot-Enterprise/InvoiceReader"
+   Grep pattern="Replace.*\\\\r\\\\n|Replace.*\\\\n|Environment.NewLine" include="*.cs" path="./InvoiceReader"
 ```
 
 ### **ACTION 4.2: IMPLEMENT LINE ENDING CONSISTENCY**
