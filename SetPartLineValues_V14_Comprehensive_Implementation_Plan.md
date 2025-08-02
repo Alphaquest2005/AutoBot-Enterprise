@@ -1,5 +1,23 @@
 # SetPartLineValues V14 Comprehensive Implementation Plan
 
+## 🏠 WORKTREE ENVIRONMENT DETECTION
+
+### **🎯 Current Environment Commands**
+```bash
+# Always run this first to identify your current environment
+echo "Current Environment: $(pwd)"
+echo "Current Branch: $(git branch --show-current)"
+echo "Repository Root: $(git rev-parse --show-toplevel)"
+git worktree list
+```
+
+**Available Environments**:
+- **Main Repository**: `AutoBot-Enterprise` (primary development)
+- **Alpha Worktree**: `AutoBot-Enterprise-alpha` (experimental work)
+- **Beta Worktree**: `AutoBot-Enterprise-beta` (baseline comparison)
+
+---
+
 ## 📋 DOCUMENT METADATA
 
 - **Plan Title**: SetPartLineValues V14 - Unified Pattern-Based OCR Invoice Processing
@@ -166,7 +184,7 @@ private FieldCapture SelectBestFieldCapture(List<FieldCapture> fieldCaptures, st
 - **Target**: TotalsZero = 0 (perfectly balanced)
 
 ### **Files Modified**:
-- `/mnt/c/Insight Software/AutoBot-Enterprise/InvoiceReader/Invoice/SetPartLineValues.cs` (lines 1529+)
+- `./InvoiceReader/Invoice/SetPartLineValues.cs` (lines 1529+)
   - Added ShouldAggregateField() method
   - Added AggregateFieldCaptures() method  
   - Enhanced SelectBestFieldCapture() with aggregation support

@@ -25,21 +25,24 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                     context.Logger?.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "PdfOcr().Ocr with SingleColumn", "SYNC_EXPECTED"); // Use logger from context
                     var ocrStopwatch = Stopwatch.StartNew();
                     
-                    // **THREADABORT_EXCEPTION_FIX**: Wrap PdfOcr call with ThreadAbortException handling
+                    // **MODERN_OCR_APPROACH**: PdfOcr now uses CancellationToken - no ThreadAbortException handling needed
                     try
                     {
                         txt += new PdfOcr(context.Logger).Ocr(filePath, PageSegMode.SingleColumn); // Pass logger
                         context.Logger?.Information("✅ **SINGLECOLUMN_OCR_SUCCESS**: Single column OCR completed successfully");
                     }
-                    catch (System.Threading.ThreadAbortException threadAbortEx)
+                    catch (OperationCanceledException cancelEx)
                     {
-                        context.Logger?.Warning(threadAbortEx, "🚨 **SINGLECOLUMN_THREADABORT_CAUGHT**: ThreadAbortException during Single Column OCR - using fallback text");
-                        txt += "------------------------------------------Single Column (ThreadAbort Recovery)-------------------------\r\n";
-                        txt += "** OCR processing was interrupted - partial results may be available **\r\n";
-                        
-                        // **CRITICAL**: Reset thread abort to prevent automatic re-throw
-                        System.Threading.Thread.ResetAbort();
-                        context.Logger?.Information("✅ **THREADABORT_RESET**: Thread abort reset successfully for Single Column OCR");
+                        context.Logger?.Warning(cancelEx, "🚨 **SINGLECOLUMN_CANCELLED**: Single Column OCR was cancelled - using fallback text");
+                        txt += "------------------------------------------Single Column (Cancelled Recovery)-------------------------\r\n";
+                        txt += "** OCR processing was cancelled - partial results may be available **\r\n";
+                        // Don't re-throw - allow processing to continue with partial results
+                    }
+                    catch (Exception ocrEx)
+                    {
+                        context.Logger?.Warning(ocrEx, "🚨 **SINGLECOLUMN_ERROR**: Single Column OCR failed - using fallback text");
+                        txt += "------------------------------------------Single Column (Error Recovery)-------------------------\r\n";
+                        txt += $"** OCR processing failed: {ocrEx.Message} - partial results may be available **\r\n";
                         // Don't re-throw - allow processing to continue with partial results
                     }
                     

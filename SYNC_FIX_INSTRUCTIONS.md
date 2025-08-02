@@ -1,5 +1,23 @@
 # CLAUDE.md Sync Fix Instructions
 
+## 🏠 WORKTREE ENVIRONMENT DETECTION
+
+### **🎯 Current Environment Commands**
+```bash
+# Always run this first to identify your current environment
+echo "Current Environment: $(pwd)"
+echo "Current Branch: $(git branch --show-current)"
+echo "Repository Root: $(git rev-parse --show-toplevel)"
+git worktree list
+```
+
+**Available Environments**:
+- **Main Repository**: `AutoBot-Enterprise` (primary development)
+- **Alpha Worktree**: `AutoBot-Enterprise-alpha` (experimental work)
+- **Beta Worktree**: `AutoBot-Enterprise-beta` (baseline comparison)
+
+---
+
 ## 🚨 CRITICAL ISSUE IDENTIFIED
 
 The `claude-folder-sync.sh` script is overwriting CLAUDE.md content instead of preserving it. This causes loss of SuperClaude configuration and other important content.
@@ -124,4 +142,4 @@ The CLAUDE.md file is currently being emptied repeatedly. Apply this fix immedia
 
 After applying the fix, check these locations for any previously lost content:
 - `/home/joseph/.claude/claude-dump.md`
-- `/mnt/c/Insight Software/AutoBot-Enterprise/.claude/claude-dump.md`
+- `$(git rev-parse --show-toplevel)/.claude/claude-dump.md`

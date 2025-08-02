@@ -19,10 +19,10 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
         
         /// <summary>
         /// 🔧 **EXECUTION_MODE_TOGGLE**: Controls whether OCR operations run in parallel or sequential mode
-        /// - false: Parallel execution (faster but may cause ThreadAbortException conflicts)
-        /// - true: Sequential execution (slower but prevents threading conflicts)
+        /// - false: Parallel execution (faster, uses modern CancellationToken timeouts)
+        /// - true: Sequential execution (slower but more predictable, uses modern CancellationToken timeouts)
         /// </summary>
-        private static readonly bool UseSequentialOcrExecution = true; // **THREADABORT_FIX**: Default to sequential to prevent threading conflicts
+        private static readonly bool UseSequentialOcrExecution = true; // **MODERN_THREADING**: Default to sequential, uses CancellationToken timeout protection
 
         public async Task<bool> Execute(InvoiceProcessingContext context)
         {
@@ -134,14 +134,14 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
         {
             if (UseSequentialOcrExecution)
             {
-                context.Logger?.Information("🔄 **SEQUENTIAL_OCR_MODE**: Using sequential OCR execution to prevent ThreadAbortException conflicts");
+                context.Logger?.Information("🔄 **SEQUENTIAL_OCR_MODE**: Using sequential OCR execution with modern CancellationToken timeout protection");
                 context.Logger?.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
                     nameof(SetupAndRunTasks), "SequentialSetup", "Setting up sequential PDF text extraction tasks.", $"FilePath: {filePath}", "");
                 SetupSequentialPdfTextExtraction(context, filePath, out ripTask, out singleColumnTask, out sparseTextTask);
             }
             else
             {
-                context.Logger?.Information("⚡ **PARALLEL_OCR_MODE**: Using parallel OCR execution (may cause ThreadAbortException under load)");
+                context.Logger?.Information("⚡ **PARALLEL_OCR_MODE**: Using parallel OCR execution with modern CancellationToken timeout protection");
                 context.Logger?.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
                     nameof(SetupAndRunTasks), "ParallelSetup", "Setting up concurrent PDF text extraction tasks.", $"FilePath: {filePath}", "");
                 SetupPdfTextExtraction(context, filePath, out ripTask, out singleColumnTask, out sparseTextTask);
@@ -153,12 +153,12 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
         /// <summary>
         /// 🔄 **SEQUENTIAL_OCR_SETUP**: Creates tasks that will execute sequentially instead of parallel
-        /// This prevents ThreadAbortException conflicts in OCR processing
+        /// Uses modern CancellationToken timeout protection for reliable OCR processing
         /// </summary>
         private void SetupSequentialPdfTextExtraction(InvoiceProcessingContext context, string filePath,
             out Task<string> ripTask, out Task<string> singleColumnTask, out Task<string> sparseTextTask)
         {
-            context.Logger?.Information("🔄 **SEQUENTIAL_TASK_CREATION**: Creating sequential OCR tasks to prevent threading conflicts");
+            context.Logger?.Information("🔄 **SEQUENTIAL_TASK_CREATION**: Creating sequential OCR tasks with modern CancellationToken timeout protection");
             
             // Create tasks that will execute one after another
             ripTask = Task.Run(async () =>
@@ -193,8 +193,8 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
             context.Logger?.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
                 nameof(AwaitTasksCompletion), "Awaiting", "Awaiting completion of PDF text extraction tasks.", $"FilePath: {filePath}", "");
             
-            // **THREADABORT_EXCEPTION_FIX**: Use timeout instead of allowing thread abortion
-            // PDF OCR processing can take time, but we need to prevent indefinite blocking
+            // **MODERN_TIMEOUT_PROTECTION**: Use CancellationToken timeout for reliable processing
+            // PDF OCR processing can take time, but we prevent indefinite blocking with proper cancellation
             const int timeoutMinutes = 5; // 5-minute timeout for OCR processing
             
             try
@@ -210,89 +210,9 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                     context.Logger?.Information("✅ **OCR_TASKS_COMPLETED**: All PDF text extraction tasks completed successfully within timeout");
                 }
             }
-            catch (System.Threading.ThreadAbortException threadAbortEx)
-            {
-                var diagnosisStopwatch = Stopwatch.StartNew();
-                context.Logger?.Error(threadAbortEx, "🚨 **THREADABORT_DETECTED**: ThreadAbortException caught during PDF OCR processing - starting comprehensive diagnosis");
-                
-                // **COMPREHENSIVE_DIAGNOSIS**: Capture complete system state
-                try
-                {
-                    // 1. **DEEP_STACK_TRACE_ANALYSIS**
-                    context.Logger?.Error("🔍 **DEEP_STACK_TRACE**: Full ThreadAbortException details:");
-                    context.Logger?.Error("   📍 **ABORT_SOURCE**: {Source}", threadAbortEx.Source ?? "Unknown");
-                    context.Logger?.Error("   📍 **ABORT_MESSAGE**: {Message}", threadAbortEx.Message);
-                    context.Logger?.Error("   📍 **ABORT_TARGETSITE**: {TargetSite}", threadAbortEx.TargetSite?.ToString() ?? "Unknown");
-                    context.Logger?.Error("   📍 **ABORT_HELPLINK**: {HelpLink}", threadAbortEx.HelpLink ?? "None");
-                    context.Logger?.Error("   📍 **FULL_STACKTRACE**: {StackTrace}", threadAbortEx.StackTrace ?? "No StackTrace Available");
-                    
-                    // 2. **THREAD_STATE_DIAGNOSIS**
-                    var currentThread = System.Threading.Thread.CurrentThread;
-                    context.Logger?.Error("🧵 **THREAD_STATE_ANALYSIS**:");
-                    context.Logger?.Error("   🆔 **THREAD_ID**: {ThreadId}", currentThread.ManagedThreadId);
-                    context.Logger?.Error("   📛 **THREAD_NAME**: {ThreadName}", currentThread.Name ?? "Unnamed");
-                    context.Logger?.Error("   🏃 **THREAD_STATE**: {ThreadState}", currentThread.ThreadState);
-                    context.Logger?.Error("   🔥 **IS_BACKGROUND**: {IsBackground}", currentThread.IsBackground);
-                    context.Logger?.Error("   🎯 **IS_THREADPOOL**: {IsThreadPool}", currentThread.IsThreadPoolThread);
-                    context.Logger?.Error("   ⏰ **ABORT_REQUESTED**: {AbortRequested}", currentThread.ThreadState.HasFlag(System.Threading.ThreadState.AbortRequested));
-                    
-                    // 3. **DETAILED_TASK_ANALYSIS**
-                    context.Logger?.Error("📊 **COMPREHENSIVE_TASK_ANALYSIS**:");
-                    LogTaskDiagnostics(context, "RIP_TASK", ripTask);
-                    LogTaskDiagnostics(context, "SINGLE_COLUMN_TASK", singleColumnTask);  
-                    LogTaskDiagnostics(context, "SPARSE_TEXT_TASK", sparseTextTask);
-                    
-                    // 4. **EXECUTION_CONTEXT_DIAGNOSIS**
-                    context.Logger?.Error("🏗️ **EXECUTION_CONTEXT**:");
-                    context.Logger?.Error("   📁 **FILE_PATH**: {FilePath}", filePath);
-                    context.Logger?.Error("   📄 **FILE_EXISTS**: {FileExists}", System.IO.File.Exists(filePath));
-                    context.Logger?.Error("   📏 **FILE_SIZE**: {FileSize} bytes", System.IO.File.Exists(filePath) ? new System.IO.FileInfo(filePath).Length : -1);
-                    context.Logger?.Error("   🔧 **EXECUTION_MODE**: {ExecutionMode}", UseSequentialOcrExecution ? "SEQUENTIAL" : "PARALLEL");
-                    
-                    // 5. **SYSTEM_RESOURCE_ANALYSIS**
-                    context.Logger?.Error("💾 **SYSTEM_RESOURCE_STATE**:");
-                    context.Logger?.Error("   🧠 **WORKING_SET**: {WorkingSet} MB", System.Environment.WorkingSet / 1024 / 1024);
-                    context.Logger?.Error("   🏭 **PROCESSOR_COUNT**: {ProcessorCount}", System.Environment.ProcessorCount);
-                    context.Logger?.Error("   📊 **THREAD_COUNT**: {ThreadCount}", System.Diagnostics.Process.GetCurrentProcess().Threads.Count);
-                    context.Logger?.Error("   ⏱️ **UPTIME**: {Uptime} ms", System.Environment.TickCount);
-                    
-                    // 6. **TIMING_ANALYSIS**
-                    var elapsedTime = DateTime.UtcNow.Subtract(DateTime.UtcNow.AddMilliseconds(-System.Environment.TickCount));
-                    context.Logger?.Error("⏰ **TIMING_CONTEXT**:");
-                    context.Logger?.Error("   🕐 **ABORT_TIME**: {AbortTime:yyyy-MM-dd HH:mm:ss.fff} UTC", DateTime.UtcNow);
-                    context.Logger?.Error("   ⏱️ **PROCESS_RUNTIME**: {ProcessRuntime} ms", System.Environment.TickCount);
-                    context.Logger?.Error("   🔄 **OCR_PHASE**: AwaitTasksCompletion");
-                    
-                    // 7. **INNER_EXCEPTION_ANALYSIS**
-                    if (threadAbortEx.InnerException != null)
-                    {
-                        context.Logger?.Error("🔗 **INNER_EXCEPTION_ANALYSIS**:");
-                        context.Logger?.Error("   📝 **INNER_TYPE**: {InnerType}", threadAbortEx.InnerException.GetType().FullName);
-                        context.Logger?.Error("   💬 **INNER_MESSAGE**: {InnerMessage}", threadAbortEx.InnerException.Message);
-                        context.Logger?.Error("   📍 **INNER_STACKTRACE**: {InnerStackTrace}", threadAbortEx.InnerException.StackTrace ?? "No Inner StackTrace");
-                    }
-                    
-                }
-                catch (Exception diagEx)
-                {
-                    context.Logger?.Error(diagEx, "❌ **DIAGNOSIS_ERROR**: Exception during ThreadAbortException diagnosis");
-                }
-                finally
-                {
-                    diagnosisStopwatch.Stop();
-                    context.Logger?.Information("🔍 **DIAGNOSIS_COMPLETE**: ThreadAbortException diagnosis completed in {DiagnosisTime}ms", diagnosisStopwatch.ElapsedMilliseconds);
-                }
-                
-                // **CRITICAL**: Reset thread abort to prevent automatic re-throw
-                System.Threading.Thread.ResetAbort();
-                context.Logger?.Information("✅ **THREADABORT_RESET**: Thread abort reset successfully for main OCR coordination");
-                
-                // **RECOVERY_STRATEGY_LOGGING**
-                context.Logger?.Warning("🔄 **RECOVERY_STRATEGY**: Implementing graceful recovery with partial OCR results");
-                context.Logger?.Warning("   📋 **RECOVERY_ACTION**: Continuing execution with available task results");
-                context.Logger?.Warning("   🛡️ **SAFETY_MEASURE**: ThreadAbort has been reset to prevent cascading failures");
-                context.Logger?.Warning("   📊 **EXPECTED_BEHAVIOR**: AppendResults will handle null/failed tasks gracefully");
-            }
+            // **MODERN_THREADING_APPROACH**: ThreadAbortException handling removed - using CancellationToken timeout instead
+            // The CancellationTokenSource.CreateLinkedTokenSource() approach above provides proper timeout handling
+            // without the problematic Thread.Abort() / Thread.ResetAbort() social contract violations
             catch (System.OperationCanceledException timeoutEx)
             {
                 context.Logger?.Error(timeoutEx, "⏰ **OCR_PROCESSING_TIMEOUT**: PDF text extraction timed out after {TimeoutMinutes} minutes for file: {FilePath}", timeoutMinutes, filePath);
@@ -311,43 +231,8 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                 nameof(AwaitTasksCompletion), "Completed", "PDF text extraction task coordination completed (with timeout protection).", $"FilePath: {filePath}", "");
         }
 
-        /// <summary>
-        /// 🔍 **TASK_DIAGNOSTICS_HELPER**: Provides detailed diagnostic information for individual OCR tasks
-        /// Used during ThreadAbortException analysis to understand task states and completion status
-        /// </summary>
-        private void LogTaskDiagnostics(InvoiceProcessingContext context, string taskName, Task<string> task)
-        {
-            try
-            {
-                context.Logger?.Error("   🔍 **{TaskName}_ANALYSIS**:", taskName);
-                context.Logger?.Error("     📊 **STATUS**: {TaskStatus}", task?.Status.ToString() ?? "NULL_TASK");
-                context.Logger?.Error("     🏁 **COMPLETED**: {IsCompleted}", task?.IsCompleted ?? false);
-                context.Logger?.Error("     ❌ **FAULTED**: {IsFaulted}", task?.IsFaulted ?? false);
-                context.Logger?.Error("     🚫 **CANCELED**: {IsCanceled}", task?.IsCanceled ?? false);
-                context.Logger?.Error("     🆔 **TASK_ID**: {TaskId}", task?.Id ?? -1);
-                
-                if (task?.Exception != null)
-                {
-                    context.Logger?.Error("     💥 **TASK_EXCEPTION**: {TaskException}", task.Exception.GetBaseException()?.Message ?? "Unknown Exception");
-                    context.Logger?.Error("     📍 **EXCEPTION_TYPE**: {ExceptionType}", task.Exception.GetBaseException()?.GetType().FullName ?? "Unknown Type");
-                }
-                
-                if (task?.IsCompleted == true && !task.IsFaulted && !task.IsCanceled)
-                {
-                    var resultLength = task.Result?.Length ?? 0;
-                    context.Logger?.Error("     ✅ **RESULT_LENGTH**: {ResultLength} characters", resultLength);
-                    if (resultLength > 0)
-                    {
-                        var preview = task.Result.Length > 100 ? task.Result.Substring(0, 100) + "..." : task.Result;
-                        context.Logger?.Error("     📝 **RESULT_PREVIEW**: {ResultPreview}", preview);
-                    }
-                }
-            }
-            catch (Exception diagEx)
-            {
-                context.Logger?.Error(diagEx, "❌ **TASK_DIAGNOSTIC_ERROR**: Failed to analyze task {TaskName}", taskName);
-            }
-        }
+        // **TASK_DIAGNOSTICS_REMOVED**: LogTaskDiagnostics method removed as it was specific to ThreadAbortException analysis
+        // Modern CancellationToken approach provides proper timeout handling without needing detailed task diagnosis
 
         private void AppendResults(InvoiceProcessingContext context, StringBuilder pdftxt, string filePath, // Add context parameter
             Task<string> ripTask, Task<string> singleColumnTask, Task<string> sparseTextTask)

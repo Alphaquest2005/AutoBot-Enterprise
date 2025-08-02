@@ -2,6 +2,32 @@
 
 > **🚨 CRITICAL MANDATES** - Non-negotiable development standards and protocols
 
+## 🏠 WORKTREE ENVIRONMENT DETECTION
+
+### **🎯 Current Environment Commands**
+```bash
+# Always run this first to identify your current environment
+echo "Current Environment: $(pwd)"
+echo "Current Branch: $(git branch --show-current)"
+echo "Repository Root: $(git rev-parse --show-toplevel)"
+git worktree list
+```
+
+**Available Environments**:
+- **Main Repository**: `AutoBot-Enterprise` (primary development)
+- **Alpha Worktree**: `AutoBot-Enterprise-alpha` (experimental work)
+- **Beta Worktree**: `AutoBot-Enterprise-beta` (baseline comparison)
+
+### **🔄 Environment Navigation**
+```bash
+# Navigate between environments (adjust paths as needed)
+cd "../AutoBot-Enterprise"        # Main environment
+cd "../AutoBot-Enterprise-alpha"  # Alpha environment  
+cd "../AutoBot-Enterprise-beta"   # Beta environment
+```
+
+---
+
 ## 📋 TABLE OF CONTENTS
 
 1. [**🚨 CRITICAL CODE PRESERVATION MANDATE v2.0**](#critical-code-preservation-mandate) - SUPREME DIRECTIVE

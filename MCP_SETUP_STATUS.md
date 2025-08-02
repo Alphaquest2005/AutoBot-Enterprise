@@ -1,5 +1,23 @@
 # 🎯 MCP SQL Server Setup - Status Summary
 
+## 🏠 WORKTREE ENVIRONMENT DETECTION
+
+### **🎯 Current Environment Commands**
+```bash
+# Always run this first to identify your current environment
+echo "Current Environment: $(pwd)"
+echo "Current Branch: $(git branch --show-current)"
+echo "Repository Root: $(git rev-parse --show-toplevel)"
+git worktree list
+```
+
+**Available Environments**:
+- **Main Repository**: `AutoBot-Enterprise` (primary development)
+- **Alpha Worktree**: `AutoBot-Enterprise-alpha` (experimental work)
+- **Beta Worktree**: `AutoBot-Enterprise-beta` (baseline comparison)
+
+---
+
 ## ✅ **Completed Tasks**
 
 ### 1. **MCP Server Installation & Configuration**
@@ -19,9 +37,13 @@
 
 ## 🔄 **Current Status**
 
-### **MCP Servers Ready**: 
-- `/mnt/c/Insight Software/AutoBot-Enterprise/mcp-servers/mssql-mcp-server/`
-- `/mnt/c/Insight Software/AutoBot-Enterprise/mcp-servers/sql-mcp-server/`
+### **MCP Servers Ready** (Location-Agnostic): 
+```bash
+# MCP server locations (works from any worktree)
+REPO_ROOT=$(git rev-parse --show-toplevel)
+echo "MSSQL MCP Server: $REPO_ROOT/mcp-servers/mssql-mcp-server/"
+echo "SQL MCP Server: $REPO_ROOT/mcp-servers/sql-mcp-server/"
+```
 
 ### **Configuration Files**:
 ```bash
@@ -67,8 +89,10 @@ Restart-Service "SQLBrowser"
 # Test from WSL2:
 sqlcmd -S "MINIJOE\SQLDEVELOPER2022" -U sa -P 'pa$$word' -Q "SELECT @@SERVERNAME" -C
 
-# Start MCP server:
-cd "/mnt/c/Insight Software/AutoBot-Enterprise/mcp-servers/mssql-mcp-server"
+# Start MCP server (location-agnostic):
+REPO_ROOT=$(git rev-parse --show-toplevel)
+cd "$REPO_ROOT/mcp-servers/mssql-mcp-server"
+echo "Starting MCP server from: $(pwd)"
 npm start
 ```
 

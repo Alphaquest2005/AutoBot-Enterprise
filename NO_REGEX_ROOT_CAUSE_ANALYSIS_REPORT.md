@@ -1,5 +1,23 @@
 # NO_REGEX Root Cause Analysis Report
 
+## 🏠 WORKTREE ENVIRONMENT DETECTION
+
+### **🎯 Current Environment Commands**
+```bash
+# Always run this first to identify your current environment
+echo "Current Environment: $(pwd)"
+echo "Current Branch: $(git branch --show-current)"
+echo "Repository Root: $(git rev-parse --show-toplevel)"
+git worktree list
+```
+
+**Available Environments**:
+- **Main Repository**: `AutoBot-Enterprise` (primary development)
+- **Alpha Worktree**: `AutoBot-Enterprise-alpha` (experimental work)
+- **Beta Worktree**: `AutoBot-Enterprise-beta` (baseline comparison)
+
+---
+
 **Investigation Date**: July 31, 2025  
 **Issue**: Template patterns showing as "NO_REGEX" instead of actual regex patterns  
 **Status**: ✅ **ROOT CAUSE IDENTIFIED** - Bug in navigation property access  
@@ -92,7 +110,7 @@ Template (wrapper)
 - **No forwarding property**: Line class does NOT have a RegularExpressions property
 
 ### Bug Location Confirmation
-- **File**: `/mnt/c/Insight Software/AutoBot-Enterprise/InvoiceReader/InvoiceReader/PipelineInfrastructure/ReadFormattedTextStep.cs`
+- **File**: `./InvoiceReader/InvoiceReader/PipelineInfrastructure/ReadFormattedTextStep.cs`
 - **Line**: 313
 - **Method**: LogTemplateStructure
 

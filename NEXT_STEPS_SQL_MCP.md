@@ -1,5 +1,23 @@
 # 🔧 Final Steps to Complete MCP SQL Server Setup
 
+## 🏠 WORKTREE ENVIRONMENT DETECTION
+
+### **🎯 Current Environment Commands**
+```bash
+# Always run this first to identify your current environment
+echo "Current Environment: $(pwd)"
+echo "Current Branch: $(git branch --show-current)"
+echo "Repository Root: $(git rev-parse --show-toplevel)"
+git worktree list
+```
+
+**Available Environments**:
+- **Main Repository**: `AutoBot-Enterprise` (primary development)
+- **Alpha Worktree**: `AutoBot-Enterprise-alpha` (experimental work)
+- **Beta Worktree**: `AutoBot-Enterprise-beta` (baseline comparison)
+
+---
+
 ## ✅ **Completed Successfully**
 - Windows Firewall rules configured for WSL2 access
 - SQL Browser service enabled and started
@@ -30,7 +48,10 @@ sqlcmd -S "10.255.255.254\SQLDEVELOPER2022" -U sa -P 'pa$$word' -Q "SELECT @@SER
 ## 🚀 **Start MCP Server Once Connection Works**
 
 ```bash
-cd "/mnt/c/Insight Software/AutoBot-Enterprise/mcp-servers/mssql-mcp-server"
+# Location-agnostic command (works from any worktree)
+REPO_ROOT=$(git rev-parse --show-toplevel)
+cd "$REPO_ROOT/mcp-servers/mssql-mcp-server"
+echo "Starting MCP server from: $(pwd)"
 npm start
 ```
 
@@ -45,7 +66,7 @@ Add to `C:\Users\%USERNAME%\AppData\Roaming\Claude\claude_desktop_config.json`:
       "command": "wsl.exe",
       "args": [
         "bash", "-c", 
-        "cd '/mnt/c/Insight Software/AutoBot-Enterprise/mcp-servers/mssql-mcp-server' && npm start"
+        "cd '$(wsl.exe bash -c 'git rev-parse --show-toplevel')/mcp-servers/mssql-mcp-server' && npm start"
       ]
     }
   }

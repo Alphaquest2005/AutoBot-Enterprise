@@ -33,27 +33,27 @@ This file provides guidance to Gemini when working with code in this repository.
 ### Key Paths
 ```bash
 # Repository root
-/mnt/c/Insight Software/AutoBot-Enterprise/
+./
 
 # Main Application Entry Points
-/mnt/c/Insight Software/AutoBot-Enterprise/AutoBot1/Program.cs               # Console App (✅ Logging Implemented)
-/mnt/c/Insight Software/AutoBot-Enterprise/WaterNut/App.xaml.cs              # WPF App (❌ No Logging)
-/mnt/c/Insight Software/AutoBot-Enterprise/WCFConsoleHost/Program.cs         # WCF Service (⚠️ Basic Serilog)
+./AutoBot1/Program.cs               # Console App (✅ Logging Implemented)
+./WaterNut/App.xaml.cs              # WPF App (❌ No Logging)
+./WCFConsoleHost/Program.cs         # WCF Service (⚠️ Basic Serilog)
 
 # Project Files
-/mnt/c/Insight Software/AutoBot-Enterprise/AutoBot1/AutoBot1.csproj
-/mnt/c/Insight Software/AutoBot-Enterprise/WaterNut/AutoWaterNut.csproj
-/mnt/c/Insight Software/AutoBot-Enterprise/WCFConsoleHost/AutoWaterNutServer.csproj
+./AutoBot1/AutoBot1.csproj
+./WaterNut/AutoWaterNut.csproj
+./WCFConsoleHost/AutoWaterNutServer.csproj
 
 # Amazon test data
-/mnt/c/Insight Software/AutoBot-Enterprise/AutoBotUtilities.Tests/Test Data/Amazon.com - Order 112-9126443-1163432.pdf.txt
+./AutoBotUtilities.Tests/Test Data/Amazon.com - Order 112-9126443-1163432.pdf.txt
 
 # OCR service files
-/mnt/c/Insight Software/AutoBot-Enterprise/InvoiceReader/OCRCorrectionService/
+./InvoiceReader/OCRCorrectionService/
 
 # Logging Infrastructure
-/mnt/c/Insight Software/AutoBot-Enterprise/Core.Common/Core.Common/Extensions/LogLevelOverride.cs
-/mnt/c/Insight Software/AutoBot-Enterprise/Logging-Unification-Implementation-Plan.md
+./Core.Common/Core.Common/Extensions/LogLevelOverride.cs
+./Logging-Unification-Implementation-Plan.md
 ```
 
 ## Logging Mandate & Strategy
@@ -91,4 +91,4 @@ using (LogLevelOverride.Begin(LogEventLevel.Information))
 - ⚠️ **AutoWaterNutServer**: Basic Serilog implementation; needs upgrade.
 - 📋 **Legacy Issues**: 67 rogue static loggers and 444+ inappropriate `.Error()` calls have been identified for refactoring.
 
-**Note**: For comprehensive documentation, see `/mnt/c/Insight Software/AutoBot-Enterprise/Claude OCR Correction Knowledge.md` and `/mnt/c/Insight Software/AutoBot-Enterprise/Logging-Unification-Implementation-Plan.md`.
+**Note**: For comprehensive documentation, see `./Claude OCR Correction Knowledge.md` and `./Logging-Unification-Implementation-Plan.md`.

@@ -1,11 +1,29 @@
 # 🔍 COMPREHENSIVE METHOD-BY-METHOD ANALYSIS PLAN
 ## OCR Template System - Complete Template Specification Mapping
 
+## 🏠 WORKTREE ENVIRONMENT DETECTION
+
+### **🎯 Current Environment Commands**
+```bash
+# Always run this first to identify your current environment
+echo "Current Environment: $(pwd)"
+echo "Current Branch: $(git branch --show-current)"
+echo "Repository Root: $(git rev-parse --show-toplevel)"
+git worktree list
+```
+
+**Available Environments**:
+- **Main Repository**: `AutoBot-Enterprise` (primary development)
+- **Alpha Worktree**: `AutoBot-Enterprise-alpha` (experimental work)
+- **Beta Worktree**: `AutoBot-Enterprise-beta` (baseline comparison)
+
+---
+
 **Document Purpose**: Comprehensive mapping of all public methods in OCRCorrectionService to Template Specifications framework for template creation, validation, and OCR processing success criteria.
 
 **Analysis Date**: July 28, 2025  
 **Template Framework**: Based on Template_Specifications.md v2.0  
-**Scope**: All C# files in `/mnt/c/Insight Software/AutoBot-Enterprise/InvoiceReader/OCRCorrectionService/`
+**Scope**: All C# files in `./InvoiceReader/OCRCorrectionService/` (relative to repository root)
 
 ---
 

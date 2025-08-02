@@ -1,6 +1,24 @@
 # 🎯 TEMPLATE SPECIFICATION INTEGRATION IMPLEMENTATION GUIDE
 **FINAL COMPREHENSIVE VERSION WITH DUAL-LAYER VALIDATION**
 
+## 🏠 WORKTREE ENVIRONMENT DETECTION
+
+### **🎯 Current Environment Commands**
+```bash
+# Always run this first to identify your current environment
+echo "Current Environment: $(pwd)"
+echo "Current Branch: $(git branch --show-current)"
+echo "Repository Root: $(git rev-parse --show-toplevel)"
+git worktree list
+```
+
+**Available Environments**:
+- **Main Repository**: `AutoBot-Enterprise` (primary development)
+- **Alpha Worktree**: `AutoBot-Enterprise-alpha` (experimental work)
+- **Beta Worktree**: `AutoBot-Enterprise-beta` (baseline comparison)
+
+---
+
 ## 📋 **EXECUTIVE SUMMARY**
 
 **Objective**: Implement comprehensive Template Specification validation into success criteria logging for ALL applicable methods in OCRCorrectionService using the ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v4.2 pattern with DUAL-LAYER validation approach.
@@ -569,7 +587,7 @@ _logger.Error((entityTypeFieldDetectionSuccess ? "✅" : "❌") + " **TEMPLATE_S
 
 ### **PRIORITY 1: OCRValidation.cs - 4 Methods Missing Dual-Layer Template Specifications**
 
-**File**: `/mnt/c/Insight Software/AutoBot-Enterprise/InvoiceReader/OCRCorrectionService/OCRValidation.cs`
+**File**: `./InvoiceReader/OCRCorrectionService/OCRValidation.cs`
 
 **Status**: ❌ **ZERO** Template Specification implementations despite having ASSERTIVE_SELF_DOCUMENTING_LOGGING_MANDATE_v4.2
 
