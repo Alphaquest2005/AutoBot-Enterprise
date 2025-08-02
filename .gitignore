@@ -363,3 +363,5 @@ dev-debug.log
 # Task files
 tasks.json
 tasks/ 
+/AAll-EDMX/EF6/AllBusinessMappings1.cs
+/AAll-EDMX/EF6/AllClientEntities1.cs
