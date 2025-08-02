@@ -1,42 +1,16 @@
-# CLAUDE.md - SuperClaude Configuration + Development Notes
+# CLAUDE.md - AutoBot-Enterprise Configuration Guide
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## 🚨 WORKTREE ENVIRONMENT NOTICE
-**Current Path**: `/mnt/c/Insight Software/AutoBot-Enterprise-beta` (debug-beta branch)  
-**Main Branch**: `/mnt/c/Insight Software/AutoBot-Enterprise` (master branch)  
-**Status**: Active development worktree for parallel debugging
+## 🎯 **ENVIRONMENT AUTO-DETECTION**
 
-## Development Notes
-- Always use the logfile - console logs will truncate
-- When debugging after code change, double check if your changes created the problem
-- Run the test and make sure to check the current log file, not the old one
+**Claude Code automatically detects your environment**. This documentation works in:
+- **Main Repository**: `/mnt/c/Insight Software/AutoBot-Enterprise` (master/Autobot-Enterprise.2.0 branches)
+- **Alpha Worktree**: `/mnt/c/Insight Software/AutoBot-Enterprise-alpha` (debug-alpha branch)  
+- **Beta Worktree**: `/mnt/c/Insight Software/AutoBot-Enterprise-beta` (debug-beta branch)
+- **Any Future Worktrees**: Claude Code adapts paths automatically using `<env>` context
 
-## 🗄️ MCP SQL Server Setup (AutoBot-Enterprise Database Access)
-
-### **Quick Start (Working Configuration)**
-```powershell
-# 1. Start MCP Server (Windows PowerShell)
-cd "C:\Insight Software\AutoBot-Enterprise\mcp-servers\mssql-mcp-server"
-npm start
-```
-
-### **Configuration Details**
-- **Database**: `MINIJOE\SQLDEVELOPER2022` / `WebSource-AutoBot`
-- **Credentials**: `sa` / `pa$word` (literal password with single $)
-- **MCP Location**: `C:\Insight Software\AutoBot-Enterprise\mcp-servers\mssql-mcp-server\`
-- **Claude Settings**: Already configured in `/home/joseph/.claude/settings.json`
-
-### **Key Issues Resolved**
-- **Password Escaping**: Use `pa$$word` in .env file (Node.js dotenv interprets as `pa$word`)
-- **Network**: Run MCP server on Windows (bypasses WSL2 networking complexity)
-- **Transport**: Uses stdio transport for Claude Code integration
-
-### **Usage**
-Once MCP server is running, use Claude Code queries like:
-- "Show me tables in WebSource-AutoBot database"
-- "Query the OCR_TemplateTableMapping table"
-- "Execute SELECT * FROM [table_name] LIMIT 10"
+> **Note**: All paths below are relative to repository root. Claude Code will resolve them to your current working directory.
 
 ## Architecture Overview
 
@@ -51,7 +25,7 @@ AutoBot-Enterprise is a comprehensive customs broker automation system built aro
 
 ### Building the Solution
 ```bash
-# Build entire solution (from repository root)
+# Build entire solution (from repository root - Claude Code auto-detects working directory)
 "/mnt/c/Program Files/Microsoft Visual Studio/2022/Enterprise/MSBuild/Current/Bin/MSBuild.exe" "AutoBot-Enterprise.sln" /t:Rebuild /p:Configuration=Debug /p:Platform=x64
 
 # Build specific project (AutoBotUtilities)
@@ -93,7 +67,7 @@ tail -100 "./AutoBotUtilities.Tests/bin/x64/Debug/net48/Logs/AutoBotTests-YYYYMM
 # Search for completion markers
 grep -A5 -B5 "TEST_RESULT\|FINAL_STATUS\|STRATEGY_COMPLETE" LogFile.log
 
-# Verify database results
+# Verify database results (requires MCP server running)
 sqlcmd -Q "SELECT Success FROM OCRCorrectionLearning WHERE CreatedDate >= '2025-06-29'"
 ```
 
@@ -103,6 +77,28 @@ sqlcmd -Q "SELECT Success FROM OCRCorrectionLearning WHERE CreatedDate >= '2025-
 - **ROOT CAUSE**: Console logs truncated, hid the actual failure messages
 
 **Remember: Logs tell stories, but only COMPLETE logs tell the TRUTH.**
+
+## 🗄️ MCP SQL Server Setup (AutoBot-Enterprise Database Access)
+
+### **Quick Start (Working Configuration)**
+```powershell
+# 1. Start MCP Server (Windows PowerShell)
+# Note: MCP server path is fixed regardless of worktree location
+cd "C:\Insight Software\AutoBot-Enterprise\mcp-servers\mssql-mcp-server"
+npm start
+```
+
+### **Configuration Details**
+- **Database**: `MINIJOE\SQLDEVELOPER2022` / `WebSource-AutoBot`
+- **Credentials**: `sa` / `pa$word` (literal password with single $)
+- **MCP Location**: `C:\Insight Software\AutoBot-Enterprise\mcp-servers\mssql-mcp-server\`
+- **Claude Settings**: Already configured in `/home/joseph/.claude/settings.json`
+
+### **Usage**
+Once MCP server is running, use Claude Code queries like:
+- "Show me tables in WebSource-AutoBot database"
+- "Query the OCR_TemplateTableMapping table"
+- "Execute SELECT * FROM [table_name] LIMIT 10"
 
 ## Core Architecture Components
 
@@ -155,21 +151,21 @@ sqlcmd -Q "SELECT Success FROM OCRCorrectionLearning WHERE CreatedDate >= '2025-
 ### **🏗️ SIMPLIFIED ARCHITECTURE OVERVIEW:**
 
 ```
-📁 OCRCorrectionService/
-├── AITemplateService.cs          # SINGLE FILE - ALL FUNCTIONALITY
+📁 OCRCorrectionService/                    # Relative to repository root
+├── AITemplateService.cs                   # SINGLE FILE - ALL FUNCTIONALITY
 ├── 📁 Templates/
-│   ├── 📁 deepseek/              # DeepSeek-optimized prompts
+│   ├── 📁 deepseek/                       # DeepSeek-optimized prompts
 │   │   ├── header-detection.txt
 │   │   └── mango-header.txt
-│   ├── 📁 gemini/                # Gemini-optimized prompts
+│   ├── 📁 gemini/                         # Gemini-optimized prompts
 │   │   ├── header-detection.txt  
 │   │   └── mango-header.txt
-│   └── 📁 default/               # Fallback templates
+│   └── 📁 default/                        # Fallback templates
 │       └── header-detection.txt
 ├── 📁 Config/
-│   ├── ai-providers.json         # AI provider configurations
-│   └── template-config.json      # Template system settings
-└── 📁 Recommendations/           # AI-generated improvements
+│   ├── ai-providers.json                  # AI provider configurations
+│   └── template-config.json               # Template system settings
+└── 📁 Recommendations/                    # AI-generated improvements
     ├── deepseek-suggestions.json
     └── gemini-suggestions.json
 ```
@@ -187,9 +183,9 @@ sqlcmd -Q "SELECT Success FROM OCRCorrectionLearning WHERE CreatedDate >= '2025-
 
 ## OCR Correction Service Architecture - COMPLETE IMPLEMENTATION
 
-### Main Components (All Implemented)
-- **Main Service**: `OCRCorrectionService/OCRCorrectionService.cs`
-- **Pipeline Methods**: `OCRCorrectionService/OCRDatabaseUpdates.cs`
+### Main Components (Environment-Agnostic Paths)
+- **Main Service**: `./OCRCorrectionService/OCRCorrectionService.cs`
+- **Pipeline Methods**: `./OCRCorrectionService/OCRDatabaseUpdates.cs`
   - `GenerateRegexPatternInternal()` - Creates regex patterns using DeepSeek API
   - `ValidatePatternInternal()` - Validates generated patterns  
   - `ApplyToDatabaseInternal()` - Applies corrections to database using strategies
@@ -200,29 +196,29 @@ sqlcmd -Q "SELECT Success FROM OCRCorrectionLearning WHERE CreatedDate >= '2025-
   - `ExecuteFullPipelineInternal()` - Orchestrates complete pipeline
   - `ExecuteBatchPipelineInternal()` - Handles batch processing
 
-- **Error Detection**: `OCRCorrectionService/OCRErrorDetection.cs`
+- **Error Detection**: `./OCRCorrectionService/OCRErrorDetection.cs`
   - `DetectInvoiceErrorsAsync()` - Comprehensive error detection (private)
   - `AnalyzeTextForMissingFields()` - Omission detection using AI
   - `ExtractMonetaryValue()` - Value extraction and validation
   - `ExtractFieldMetadataAsync()` - Field metadata extraction
 
-- **Pipeline Extension Methods**: `OCRCorrectionService/OCRCorrectionPipeline.cs`
+- **Pipeline Extension Methods**: `./OCRCorrectionService/OCRCorrectionPipeline.cs`
   - Functional extension methods that call internal implementations
   - Clean API: `correction.GenerateRegexPattern(service, lineContext)`
   - All extension methods delegate to internal methods for testability
   - Complete pipeline orchestration support
 
-- **Database Strategies**: `OCRCorrectionService/OCRDatabaseStrategies.cs`
+- **Database Strategies**: `./OCRCorrectionService/OCRDatabaseStrategies.cs` 
   - `OmissionUpdateStrategy` - Handles missing field corrections
   - `FieldFormatUpdateStrategy` - Handles format corrections  
   - `DatabaseUpdateStrategyFactory` - Selects appropriate strategy
 
-- **Field Mapping & Validation**: `OCRCorrectionService/OCRFieldMapping.cs`
+- **Field Mapping & Validation**: `./OCRCorrectionService/OCRFieldMapping.cs`
   - `IsFieldSupported()` - Validates supported fields (public)
   - `GetFieldValidationInfo()` - Returns field validation rules (public)
   - Caribbean customs business rule implementation
 
-- **DeepSeek Integration**: `OCRCorrectionService/OCRDeepSeekIntegration.cs`
+- **DeepSeek Integration**: `./OCRCorrectionService/OCRDeepSeekIntegration.cs`
   - AI-powered error detection and pattern generation
   - 95%+ confidence regex pattern creation
   - Full API integration with retry logic
@@ -375,34 +371,33 @@ LogFilterState.DetailTargetMinimumLevel = LogEventLevel.Verbose;
 ## Important File Locations
 
 ### Core Business Logic
-- `AutoBot/Utils.cs` - Main business orchestrator
-- `AutoBot/PDFUtils.cs` - Document processing engine
-- `AutoBot/ImportUtils.cs` - File processing workflows
+- `./AutoBot/Utils.cs` - Main business orchestrator
+- `./AutoBot/PDFUtils.cs` - Document processing engine
+- `./AutoBot/ImportUtils.cs` - File processing workflows
 
 ### Configuration
-- `CoreEntities/CoreEntities.edmx` - Main data model
-- `AutoBot/App.config` - Application configuration
+- `./CoreEntities/CoreEntities.edmx` - Main data model
+- `./AutoBot/App.config` - Application configuration
 - Database: ApplicationSettings table for runtime config
 
 ### Tests
-- `AutoBotUtilities.Tests/` - All test files
-- `AutoBotUtilities.Tests/Test Data/` - Sample documents for testing
+- `./AutoBotUtilities.Tests/` - All test files
+- `./AutoBotUtilities.Tests/Test Data/` - Sample documents for testing
 
 ### Documentation
 - SQL files in root directory contain database queries and maintenance scripts
 - Markdown files contain architectural documentation and workflow analysis
 
-### OCR Correction Service Files (Beta Worktree Paths)
+### OCR Correction Service Files
 ```bash
-# Note: OCR service files may not exist in beta worktree - check main branch if needed
-# Main service files (check availability)
+# All paths relative to repository root - Claude Code resolves automatically
 ./OCRCorrectionService/OCRCorrectionService.cs
 ./OCRCorrectionService/OCRErrorDetection.cs
 ./OCRCorrectionService/OCRPromptCreation.cs
 ./OCRCorrectionService/OCRDeepSeekIntegration.cs
 ./OCRCorrectionService/OCRCaribbeanCustomsProcessor.cs
 
-# DeepSeek API (if available)
+# DeepSeek API
 ./WaterNut.Business.Services/Utils/DeepSeek/DeepSeekInvoiceApi.cs
 ```
 
@@ -453,7 +448,6 @@ catch (System.Threading.ThreadAbortException threadAbortEx)
 - Build commands require full paths due to WSL2 environment
 - Test execution requires x64 platform configuration
 - The system is designed for high-volume automated processing with minimal manual intervention
-- **WORKTREE CONSIDERATION**: This is the beta worktree - some files may only exist in the main branch at `/mnt/c/Insight Software/AutoBot-Enterprise`
 
 ## 🚀 QUICK REFERENCE FOR CLAUDE
 
@@ -480,14 +474,14 @@ grep -A5 -B5 "TEST_RESULT\|FINAL_STATUS\|STRATEGY_COMPLETE" LogFile.log
 
 ### **📁 CRITICAL FILE PATHS**
 
-**Repository Root**: `/mnt/c/Insight Software/AutoBot-Enterprise-beta/` (CURRENT WORKTREE)
+**Repository Root**: Auto-detected by Claude Code from `<env>` context
 
 **Key Test Files**:
 ```bash
 # Test configuration
 ./AutoBotUtilities.Tests/appsettings.json
 
-# Test data (if available in beta worktree)
+# Test data 
 ./AutoBotUtilities.Tests/Test Data/
 ```
 
@@ -497,7 +491,7 @@ grep -A5 -B5 "TEST_RESULT\|FINAL_STATUS\|STRATEGY_COMPLETE" LogFile.log
 2. **NEVER DEGRADE CODE** - Fix compilation by correcting syntax, not removing functionality  
 3. **RESPECT ESTABLISHED PATTERNS** - Research existing code before creating new solutions
 4. **COMPREHENSIVE LOGGING** - Every method includes business success criteria validation
-5. **WORKTREE AWARENESS** - Understand you're in beta worktree, main branch files may differ
+5. **ENVIRONMENT AWARENESS** - Let Claude Code auto-detect paths using `<env>` context
 
 ### **🎯 SUCCESS CRITERIA FRAMEWORK**
 
@@ -513,4 +507,4 @@ Every method must validate these 8 dimensions:
 
 ---
 
-*This comprehensive CLAUDE.md combines all historical content with current codebase analysis, optimized for Claude Code effectiveness in the AutoBot-Enterprise beta worktree environment.*
+*This environment-agnostic CLAUDE.md works seamlessly across all repository locations - main branch, worktrees, and future environments. Claude Code automatically adapts paths using its built-in environment awareness.*
