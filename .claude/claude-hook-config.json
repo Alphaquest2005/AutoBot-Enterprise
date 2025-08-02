@@ -1,0 +1,9 @@
+{
+  "enabled": true,
+  "auto_commit": true,
+  "auto_continue": true,
+  "update_knowledge_base": true,
+  "max_iterations": 10,
+  "current_iteration": 10,
+  "pause_between_actions": 2
+}
