@@ -317,8 +317,24 @@ namespace pdf_ocr
                             }
                         }, cancellationTokenSource.Token);
                         
-                        // Wait for completion or timeout
-                        var completed = task.Wait(timeoutMs);
+                        // Wait for completion or timeout with ThreadAbortException protection
+                        bool completed = false;
+                        try
+                        {
+                            completed = task.Wait(timeoutMs);
+                        }
+                        catch (System.Threading.ThreadAbortException threadAbortEx)
+                        {
+                            _logger.Error(threadAbortEx, "🚨 **THREADABORT_DURING_WAIT**: ThreadAbortException caught during task.Wait() in PdfToPngWithGhostscriptPngDevice");
+                            
+                            // **CRITICAL**: Reset thread abort to prevent automatic re-throw
+                            System.Threading.Thread.ResetAbort();
+                            _logger.Information("✅ **THREADABORT_RESET**: Thread abort reset successfully in PdfOcr");
+                            
+                            // Treat as timeout and continue with graceful degradation
+                            completed = false;
+                            _logger.Warning("🔄 **RECOVERY_STRATEGY**: Treating ThreadAbortException as timeout - continuing with fallback PNG creation");
+                        }
                         var elapsedMs = (DateTime.UtcNow - startTime).TotalMilliseconds;
                         
                         if (!completed)
