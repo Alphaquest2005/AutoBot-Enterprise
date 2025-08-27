@@ -7,14 +7,14 @@ using System.Collections.Generic; // Added for IEnumerable
 
 namespace WaterNut.DataSpace
 {
-    public partial class Invoice
+    public partial class Template
     {
         // Logger instance is defined in the main Template.cs partial class file.
         private static readonly TimeSpan RegexTimeout = TimeSpan.FromSeconds(5); // Define a timeout
 
         public string Format(string pdftxt)
         {
-            int? invoiceId = this.OcrInvoices?.Id;
+            int? invoiceId = this.OcrTemplates?.Id;
             _logger.Debug("Entering Format method for InvoiceId: {InvoiceId}. Input text length: {Length}", invoiceId,
                 pdftxt?.Length ?? 0);
 
@@ -22,7 +22,7 @@ namespace WaterNut.DataSpace
             // Use ?. operator for safe navigation
             // Corrected type guess based on namespace and common patterns
             // Corrected type guess again
-            IEnumerable<InvoiceRegEx> regexCollection = this.OcrInvoices?.RegEx;
+            IEnumerable<TemplateRegEx> regexCollection = this.OcrTemplates?.RegEx;
             if (regexCollection == null)
             {
                 _logger.Warning(

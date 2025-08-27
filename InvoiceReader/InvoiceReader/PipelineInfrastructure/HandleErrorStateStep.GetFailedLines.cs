@@ -9,9 +9,9 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
     public partial class HandleErrorStateStep
     {
-        private static List<Line> GetFailedLines(ILogger logger, Invoice template) // Add logger parameter
+        private static List<Line> GetFailedLines(ILogger logger, Template template) // Add logger parameter
         {
-            int? templateId = template?.OcrInvoices?.Id;
+            int? templateId = template?.OcrTemplates?.Id;
             logger?.Verbose("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
                 nameof(GetFailedLines), "Processing", "Getting initially failed lines (FailedFields or Missing Required Values).", $"TemplateId: {templateId}", "");
             // Null check

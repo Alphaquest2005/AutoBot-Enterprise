@@ -24,7 +24,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                 {
                     // Safely get the first invoice name
                     firstInvoiceName = failedlst.FirstOrDefault()?
-                        .OCR_Lines?.Parts?.Invoices?.Name ?? string.Empty;
+                        .OCR_Lines?.Parts?.Templates?.Name ?? string.Empty;
                     if (!string.IsNullOrEmpty(firstInvoiceName))
                     {
                         _utilsLogger.Verbose("Extracted first invoice name: {InvoiceName} for File: {FileName}",

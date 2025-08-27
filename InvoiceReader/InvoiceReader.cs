@@ -531,9 +531,9 @@ namespace InvoiceReader
              return null; // Indicate failure
          }
      }
-        public static bool IsInvoiceDocument(Invoices invoice, string fileText, string fileName, ILogger logger)
+        public static bool IsInvoiceDocument(Templates ocrTemplate, string fileText, string fileName, ILogger logger)
         {
-            return GetPossibleInvoicesStep.IsInvoiceDocument(new Invoice(invoice, logger), fileText, fileName, logger);
+            return GetPossibleInvoicesStep.IsInvoiceDocument(new Template(ocrTemplate, logger), fileText, fileName, logger);
         }
 
         private static void LogStartPDFImport(int fileCount, FileTypes fileType, ILogger logger)

@@ -1,0 +1,28 @@
+{
+  "DefaultProvider": "deepseek",
+  "EnableRecommendations": true,
+  "ValidationEnabled": true,
+  "FallbackToHardcoded": true,
+  "SupplierMappings": {
+    "MANGO": {
+      "PreferredProvider": "deepseek",
+      "SpecialTemplates": [
+        "mango-header",
+        "mango-product"
+      ]
+    },
+    "AMAZON": {
+      "PreferredProvider": "gemini",
+      "SpecialTemplates": [
+        "amazon-header",
+        "amazon-product"
+      ]
+    },
+    "WALMART": {
+      "PreferredProvider": "deepseek",
+      "SpecialTemplates": [
+        "walmart-header"
+      ]
+    }
+  }
+}

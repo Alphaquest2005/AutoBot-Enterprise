@@ -21,7 +21,7 @@ This document provides a comprehensive implementation plan for unifying logging 
 ### Entry Points Implemented
 
 #### 1. **AutoBot1\Program.cs** ✅ **COMPLETED**
-**Location**: `/mnt/c/Insight Software/AutoBot-Enterprise/AutoBot1/Program.cs`
+**Location**: `./AutoBot1/Program.cs`
 **Current Status**: ✅ **FULLY IMPLEMENTED** - Reference implementation with centralized logging pattern
 **Logger Setup**:
 ```csharp
@@ -46,7 +46,7 @@ Log.Logger = _centralizedLogger;
 - Logger passed to: `ExecuteDBSessionActions(ctx, appSetting, _centralizedLogger)`
 
 #### 2. **WaterNut\AutoWaterNut** ✅ **COMPLETED**
-**Location**: `/mnt/c/Insight Software/AutoBot-Enterprise/WaterNut/App.xaml.cs`
+**Location**: `./WaterNut/App.xaml.cs`
 **Project**: `AutoWaterNut.csproj`
 **Current Status**: ✅ **LOGGING UNIFIED** - Fixed ImportUtils constructor calls to use logger injection
 **Application Type**: WPF Desktop Application
@@ -58,7 +58,7 @@ new AutoBotUtilities.ImportUtils(Serilog.Log.Logger).SavePDF(fileName, fileType,
 **Dependencies**: Connects to AutoWaterNutServer.exe automatically
 
 #### 3. **AutoWaterNutServer** ✅ **COMPLETED**
-**Location**: `/mnt/c/Insight Software/AutoBot-Enterprise/WCFConsoleHost/Program.cs`
+**Location**: `./WCFConsoleHost/Program.cs`
 **Project**: `AutoWaterNutServer.csproj`
 **Current Status**: ✅ **SERILOG IMPLEMENTED** - Console + File logging (kept existing pattern)
 **Application Type**: WCF Service Host (Console Application)

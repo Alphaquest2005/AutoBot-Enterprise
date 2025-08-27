@@ -473,6 +473,5 @@
       "Bash(\"/mnt/c/Program Files/Microsoft Visual Studio/2022/Enterprise/Common7/IDE/CommonExtensions/Microsoft/TestWindow/vstest.console.exe\" \"./AutoBotUtilities.Tests/bin/x64/Debug/net48/AutoBotUtilities.Tests.dll\" /TestCaseFilter:\"FullyQualifiedName=AutoBotUtilities.Tests.PDFImportTests.CanImportMango03152025TotalAmount_AfterLearning\" \"/Logger:console;verbosity=detailed\" /TestAdapterPath:\"./AutoBotUtilities.Tests/bin/x64/Debug/net48\")"
     ],
     "deny": []
-  },
-  "temperature": 0.3
+  }
 }

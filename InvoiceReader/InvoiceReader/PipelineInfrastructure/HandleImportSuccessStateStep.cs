@@ -49,8 +49,8 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
             // Iterate over MatchedTemplates instead of all Templates
             foreach (var template in context.MatchedTemplates)
             {
-                 int? templateId = template?.OcrInvoices?.Id; // Safe access
-                 string templateName = template?.OcrInvoices?.Name ?? "Unknown";
+                 int? templateId = template?.OcrTemplates?.Id; // Safe access
+                 string templateName = template?.OcrTemplates?.Name ?? "Unknown";
                  context.Logger?.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
                      nameof(Execute), "TemplateProcessing", "Processing matched template.", $"FilePath: {filePath}, TemplateId: {templateId}, TemplateName: '{templateName}'", "");
                  context.Logger?.Verbose("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
@@ -169,11 +169,11 @@ context.Logger?.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMes
             return overallStepSuccess;
         }
 
-        private static bool IsRequiredDataMissing(ILogger logger, Invoice Invoice) // Add logger parameter
+        private static bool IsRequiredDataMissing(ILogger logger, Template template) // Add logger parameter
         {
              logger?.Error("🔍 **VALIDATION_START**: Starting comprehensive validation check for OCR template");
-             logger?.Error("   - **TEMPLATE_ID**: {TemplateId}", Invoice?.OcrInvoices?.Id ?? 0);
-             logger?.Error("   - **TEMPLATE_NAME**: {TemplateName}", Invoice?.OcrInvoices?.Name ?? "NULL");
+             logger?.Error("   - **TEMPLATE_ID**: {TemplateId}", template?.OcrTemplates?.Id ?? 0);
+             logger?.Error("   - **TEMPLATE_NAME**: {TemplateName}", template?.OcrTemplates?.Name ?? "NULL");
              logger?.Error("   - **VALIDATION_PURPOSE**: Ensure all required data is present for HandleImportSuccessStateStep processing");
 
              // Check each property and log which one is missing if any
@@ -181,7 +181,7 @@ context.Logger?.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMes
 
              // **VALIDATION 1: FileType Check**
              logger?.Error("🔎 **VALIDATION_1_FILE_TYPE**: Checking FileType presence and configuration");
-             if (Invoice?.FileType == null) 
+             if (template?.FileType == null) 
              { 
                  logger?.Error("❌ **VALIDATION_FAILED**: FileType is null");
                  logger?.Error("   - **FAILURE_IMPACT**: Cannot determine entity type (ShipmentInvoice vs SimplifiedDeclaration)");
@@ -190,13 +190,13 @@ context.Logger?.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMes
                  return true; 
              }
              logger?.Error("✅ **VALIDATION_1_PASSED**: FileType is present");
-             logger?.Error("   - **FILE_TYPE_ID**: {FileTypeId}", Invoice.FileType.Id);
-             logger?.Error("   - **FILE_TYPE_DESCRIPTION**: {FileTypeDescription}", Invoice.FileType.Description ?? "NULL");
-             logger?.Error("   - **ENTRY_TYPE**: {EntryType}", Invoice.FileType.FileImporterInfos?.EntryType ?? "NULL");
+             logger?.Error("   - **FILE_TYPE_ID**: {FileTypeId}", template.FileType.Id);
+             logger?.Error("   - **FILE_TYPE_DESCRIPTION**: {FileTypeDescription}", template.FileType.Description ?? "NULL");
+             logger?.Error("   - **ENTRY_TYPE**: {EntryType}", template.FileType.FileImporterInfos?.EntryType ?? "NULL");
 
              // **VALIDATION 2: DocSet Check**
              logger?.Error("🔎 **VALIDATION_2_DOCSET**: Checking DocSet presence and population");
-             if (Invoice?.DocSet == null) 
+             if (template?.DocSet == null) 
              {
                  logger?.Error("❌ **VALIDATION_FAILED**: DocSet is null - CRITICAL ERROR");
                  logger?.Error("   - **FAILURE_IMPACT**: Cannot create DataFile object without DocSet");
@@ -206,12 +206,12 @@ context.Logger?.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMes
                  return true;
              }
              logger?.Error("✅ **VALIDATION_2_PASSED**: DocSet is present");
-             logger?.Error("   - **DOCSET_COUNT**: {DocSetCount}", Invoice.DocSet.Count);
-             logger?.Error("   - **DOCSET_ITEMS**: {DocSetItems}", string.Join(", ", Invoice.DocSet.Select((d, i) => $"[{i}]: {d.GetType().Name}")));
+             logger?.Error("   - **DOCSET_COUNT**: {DocSetCount}", template.DocSet.Count);
+             logger?.Error("   - **DOCSET_ITEMS**: {DocSetItems}", string.Join(", ", template.DocSet.Select((d, i) => $"[{i}]: {d.GetType().Name}")));
 
              // **VALIDATION 3: OcrInvoices Check**
              logger?.Error("🔎 **VALIDATION_3_OCR_INVOICES**: Checking OcrInvoices structure");
-             if (Invoice?.OcrInvoices == null) 
+             if (template?.OcrTemplates == null) 
              { 
                  logger?.Error("❌ **VALIDATION_FAILED**: Template.OcrInvoices is null");
                  logger?.Error("   - **FAILURE_IMPACT**: Cannot resolve FileType in downstream processing");
@@ -220,13 +220,13 @@ context.Logger?.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMes
                  return true; 
              }
              logger?.Error("✅ **VALIDATION_3_PASSED**: OcrInvoices is present");
-             logger?.Error("   - **OCR_INVOICES_ID**: {OcrInvoicesId}", Invoice.OcrInvoices.Id);
-             logger?.Error("   - **OCR_INVOICES_NAME**: {OcrInvoicesName}", Invoice.OcrInvoices.Name ?? "NULL");
-             logger?.Error("   - **FILE_TYPE_ID**: {FileTypeId}", Invoice.OcrInvoices.FileTypeId);
+             logger?.Error("   - **OCR_INVOICES_ID**: {OcrInvoicesId}", template.OcrTemplates.Id);
+             logger?.Error("   - **OCR_INVOICES_NAME**: {OcrInvoicesName}", template.OcrTemplates.Name ?? "NULL");
+             logger?.Error("   - **FILE_TYPE_ID**: {FileTypeId}", template.OcrTemplates.FileTypeId);
 
              // **VALIDATION 4: CsvLines Check**
              logger?.Error("🔎 **VALIDATION_4_CSV_LINES**: Checking CsvLines data structure");
-             if (Invoice?.CsvLines == null) 
+             if (template?.CsvLines == null) 
              {
                  logger?.Error("❌ **VALIDATION_FAILED**: CsvLines is null");
                  logger?.Error("   - **FAILURE_IMPACT**: No data to process in DataFileProcessor");
@@ -236,7 +236,7 @@ context.Logger?.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMes
              }
 
              // Enhanced CsvLines validation with detailed analysis
-             var csvLinesCount = Invoice.CsvLines.Count;
+             var csvLinesCount = template.CsvLines.Count;
              logger?.Error("   - **CSV_LINES_COUNT**: {CsvLinesCount}", csvLinesCount);
              
              if (csvLinesCount == 0)
@@ -251,14 +251,14 @@ context.Logger?.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMes
              // Check if CsvLines contains valid dictionaries
              try
              {
-                 var validDictionaries = Invoice.CsvLines.SelectMany<dynamic, IDictionary<string, object>>(x => x).Where(x => x != null).ToList();
+                 var validDictionaries = template.CsvLines.SelectMany<dynamic, IDictionary<string, object>>(x => x).Where(x => x != null).ToList();
                  logger?.Error("   - **VALID_DICTIONARIES_COUNT**: {ValidDictionariesCount}", validDictionaries.Count);
                  
                  if (!validDictionaries.Any())
                  {
                      logger?.Error("❌ **VALIDATION_FAILED**: CsvLines contains no valid dictionary objects");
                      logger?.Error("   - **FAILURE_IMPACT**: No processable invoice data found");
-                     logger?.Error("   - **CSV_LINES_STRUCTURE**: {CsvLinesStructure}", string.Join(", ", Invoice.CsvLines.Select((item, index) => $"[{index}]: {item?.GetType().Name ?? "NULL"}")));
+                     logger?.Error("   - **CSV_LINES_STRUCTURE**: {CsvLinesStructure}", string.Join(", ", template.CsvLines.Select((item, index) => $"[{index}]: {item?.GetType().Name ?? "NULL"}")));
                      logger?.Error("   - **DIAGNOSTIC_GUIDANCE**: Check OCR correction service data structure output");
                      return true;
                  }
@@ -283,7 +283,7 @@ context.Logger?.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMes
 
              // **VALIDATION 5: FilePath Check**
              logger?.Error("🔎 **VALIDATION_5_FILE_PATH**: Checking FilePath assignment");
-             if (string.IsNullOrEmpty(Invoice?.FilePath)) 
+             if (string.IsNullOrEmpty(template?.FilePath)) 
              { 
                  logger?.Error("❌ **VALIDATION_FAILED**: FilePath is null or empty");
                  logger?.Error("   - **FAILURE_IMPACT**: Cannot identify source file for processing");
@@ -292,11 +292,11 @@ context.Logger?.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMes
                  return true; 
              }
              logger?.Error("✅ **VALIDATION_5_PASSED**: FilePath is present");
-             logger?.Error("   - **FILE_PATH**: {FilePath}", Invoice.FilePath);
+             logger?.Error("   - **FILE_PATH**: {FilePath}", template.FilePath);
 
              // **VALIDATION 6: EmailId Check**
              logger?.Error("🔎 **VALIDATION_6_EMAIL_ID**: Checking EmailId assignment");
-             if (string.IsNullOrEmpty(Invoice?.EmailId)) 
+             if (string.IsNullOrEmpty(template?.EmailId)) 
              { 
                  logger?.Error("❌ **VALIDATION_FAILED**: EmailId is null or empty");
                  logger?.Error("   - **FAILURE_IMPACT**: Cannot associate invoice with email context");
@@ -305,20 +305,20 @@ context.Logger?.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMes
                  return true; 
              }
              logger?.Error("✅ **VALIDATION_6_PASSED**: EmailId is present");
-             logger?.Error("   - **EMAIL_ID**: {EmailId}", Invoice.EmailId);
+             logger?.Error("   - **EMAIL_ID**: {EmailId}", template.EmailId);
 
              logger?.Error("🎯 **VALIDATION_COMPLETE**: All validations passed - template ready for HandleImportSuccessStateStep processing");
              return false; // All required data is present
         }
 
-        public static FileTypes ResolveFileType(ILogger logger, Invoice template) // Add logger parameter
+        public static FileTypes ResolveFileType(ILogger logger, Template template) // Add logger parameter
         {
              logger?.Debug("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
                  nameof(ResolveFileType), "Resolution", "Entering ResolveFileType.", "", "");
              // Context and Template null checks happen in caller
-             int? templateId = template?.OcrInvoices?.Id; // Null check done by caller
+             int? templateId = template?.OcrTemplates?.Id; // Null check done by caller
              int originalFileTypeId = template.FileType.Id; // Null check done by caller
-             int templateFileTypeId = template.OcrInvoices.FileTypeId; // Null check done by caller
+             int templateFileTypeId = template.OcrTemplates.FileTypeId; // Null check done by caller
 
              logger?.Debug("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
                  nameof(ResolveFileType), "Resolution", "Resolving FileType.", $"OriginalContextFileTypeId: {originalFileTypeId}, TemplateFileTypeId: {templateFileTypeId}", "");
@@ -389,7 +389,7 @@ context.Logger?.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMes
              return processResult; // Indicate success based on the result of DataFileProcessor().Process
          }
 
-         private static DataFile CreateDataFile(ILogger logger, Invoice template, FileTypes fileType) // Add logger parameter
+         private static DataFile CreateDataFile(ILogger logger, Template template, FileTypes fileType) // Add logger parameter
          {
               string filePath = template?.FilePath ?? "Unknown";
               logger?.Debug("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
@@ -400,7 +400,7 @@ context.Logger?.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMes
               {
                   // DEBUG: Add detailed logging for DocSet state
                   logger?.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
-                      nameof(CreateDataFile), "Creation", "DocSet validation.", $"DocSetIsNull: {template?.DocSet == null}, DocSetCount: {template?.DocSet?.Count ?? 0}, TemplateId: {template?.OcrInvoices?.Id}", "");
+                      nameof(CreateDataFile), "Creation", "DocSet validation.", $"DocSetIsNull: {template?.DocSet == null}, DocSetCount: {template?.DocSet?.Count ?? 0}, TemplateId: {template?.OcrTemplates?.Id}", "");
 
                   // Ensure DocSet is not null before accessing its properties if needed by DataFile constructor
                   if (template?.DocSet == null || !template.DocSet.Any()) {
@@ -450,7 +450,7 @@ context.Logger?.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMes
 
                   dataFile = new DataFile(fileType, template.DocSet, template.OverWriteExisting,
                                                     template.EmailId,
-                                                    template.FilePath, template.CsvLines, (template.OcrInvoices, lineValues));
+                                                    template.FilePath, template.CsvLines, (template.OcrTemplates, lineValues));
                    logger?.Verbose("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
                        nameof(CreateDataFile), "Creation", "DataFile object created successfully.", $"FilePath: {filePath}", "");
               }

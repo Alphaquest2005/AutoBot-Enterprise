@@ -171,21 +171,6 @@ namespace OCR.Business.Entities
         }
         Nullable<double> _confidence;
         [DataMember]
-        public string InvoiceType 
-        {
-            get
-            {
-                return _invoicetype;
-            }
-            set
-            {
-                _invoicetype = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        string _invoicetype;
-        [DataMember]
         public string FilePath 
         {
             get
@@ -350,6 +335,51 @@ namespace OCR.Business.Entities
             }
         }
         Nullable<int> _regexid;
+        [DataMember]
+        public string SuggestedRegex 
+        {
+            get
+            {
+                return _suggestedregex;
+            }
+            set
+            {
+                _suggestedregex = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _suggestedregex;
+        [DataMember]
+        public string SuggestedRegex_Indexed 
+        {
+            get
+            {
+                return _suggestedregex_indexed;
+            }
+            set
+            {
+                _suggestedregex_indexed = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _suggestedregex_indexed;
+        [DataMember]
+        public string DocumentType 
+        {
+            get
+            {
+                return _documenttype;
+            }
+            set
+            {
+                _documenttype = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _documenttype;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

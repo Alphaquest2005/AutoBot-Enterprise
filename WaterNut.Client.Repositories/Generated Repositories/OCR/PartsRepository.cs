@@ -203,7 +203,7 @@ namespace OCR.Client.Repositories
                             return new Parts(res)
                     {
                      // End = new System.Collections.ObjectModel.ObservableCollection<End>(res.End.Select(y => new End(y))),    
-                  // Invoices = (res.Invoices != null?new Invoices(res.Invoices): null),    
+                  // Templates = (res.Templates != null?new Templates(res.Templates): null),    
                   // PartTypes = (res.PartTypes != null?new PartTypes(res.PartTypes): null),    
                      // Start = new System.Collections.ObjectModel.ObservableCollection<Start>(res.Start.Select(y => new Start(y))),    
                      // Lines = new System.Collections.ObjectModel.ObservableCollection<Lines>(res.Lines.Select(y => new Lines(y))),    

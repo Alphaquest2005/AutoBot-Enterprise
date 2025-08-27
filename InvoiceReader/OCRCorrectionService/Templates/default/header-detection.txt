@@ -1,0 +1,80 @@
+OBJECT-ORIENTED INVOICE ANALYSIS (V14.0 - Universal Framework):
+
+**CONTEXT:**
+You are analyzing a structured business document with defined object schemas. Apply systematic analysis to identify missing or incorrectly formatted field values.
+
+**1. EXTRACTED FIELDS:**
+{{invoiceJson}}
+
+**2. CONTEXT & COMPONENTS:**
+{{annotatedContext}}
+
+**3. BALANCE CHECK:**
+{{balanceCheckContext}}
+
+**4. COMPLETE OCR TEXT:**
+{{fileText}}
+
+**🎯 V14.0 MANDATORY COMPLETION REQUIREMENTS:**
+
+**🚨 CRITICAL**: FOR EVERY ERROR YOU REPORT, YOU MUST PROVIDE ALL OF THE FOLLOWING:
+
+1. ✅ **field**: The exact field name (NEVER null)
+2. ✅ **correct_value**: The actual value from the OCR text (NEVER null)  
+3. ✅ **error_type**: "omission" or "format_correction" or "multi_field_omission" (NEVER null)
+4. ✅ **line_number**: The actual line number where the value appears (NEVER 0 or null)
+5. ✅ **line_text**: The complete text of that line from the OCR (NEVER null)
+6. ✅ **suggested_regex**: A working regex pattern that captures the value (NEVER null)
+7. ✅ **reasoning**: Explain why this value was missed (NEVER null)
+8. ✅ **group_id**: Unique identifier for transformation group (e.g., "invoice_total_1", "currency_transform_1") (NEVER null)
+9. ✅ **sequence_order**: Order within the group, starting from 1 (NEVER null or 0)
+10. ✅ **transformation_input**: Input source - "ocr_text" for first step, "previous_output" for subsequent steps (NEVER null)
+
+**❌ ABSOLUTELY FORBIDDEN**: 
+   - "Reasoning": null
+   - "LineNumber": 0
+   - "LineText": null
+   - "SuggestedRegex": null
+
+**🚨 CRITICAL REGEX REQUIREMENTS FOR PRODUCTION:**
+⚠️ **MANDATORY**: ALL regex patterns MUST use named capture groups: (?<FieldName>pattern)
+⚠️ **FORBIDDEN**: Never use numbered capture groups: (pattern) - these will fail in production
+
+**🚨 CRITICAL TRANSFORMATION GROUP STANDARDS:**
+
+**SINGLE ERROR EXAMPLE**: For standalone fields (like InvoiceTotal):
+   - `field` = "InvoiceTotal", `correct_value` = "123.45", `error_type` = "omission"
+   - `group_id` = "invoice_total_1", `sequence_order` = 1, `transformation_input` = "ocr_text"
+
+**MULTI-STEP TRANSFORMATION CHAIN**: For currency fields requiring transformation:
+   **Action 1 - Omission Error**: 
+   - `field` = "Currency", `correct_value` = "US$", `error_type` = "omission"
+   - `group_id` = "currency_transform_1", `sequence_order` = 1, `transformation_input` = "ocr_text"
+   **Action 2 - Format Correction**: 
+   - `field` = "Currency", `correct_value` = "USD", `error_type` = "format_correction"  
+   - `group_id` = "currency_transform_1", `sequence_order` = 2, `transformation_input` = "previous_output"
+
+**UNIVERSAL PRINCIPLE**: EVERY error is a grouped error - single errors are just groups with one item. This creates unified processing where all errors flow through the same transformation pipeline.
+
+**ANALYSIS APPROACH:**
+1. **Field Verification**: Compare each extracted field against OCR text
+2. **Balance Analysis**: Identify missing components using mathematical verification
+3. **Pattern Recognition**: Construct reliable extraction patterns
+4. **Error Classification**: Categorize each issue appropriately
+
+If you find no new omissions or corrections, return an empty errors array with detailed explanation.
+
+**🚨 CRITICAL TOKEN MANAGEMENT (Universal API Constraint):**
+- **Maximum Response Size**: Structure your response to fit within token limits (typically 8,000-8,192 tokens)
+- **Token Efficiency**: Prioritize the most critical errors if response becomes lengthy
+- **Response Strategy**: Provide complete error objects for priority items, then conclude if space limits reached
+- **Graceful Termination**: If nearing limits, end with: "Additional errors detected but response truncated due to token constraints"
+
+**MANDATORY RESPONSE FORMAT:**
+- **If errors found**: { "errors": [error objects] }
+- **If NO errors found**: { "errors": [], "explanation": "Detailed explanation of why no corrections are needed" }
+
+**OPTIMIZATION NOTES:**
+- Balance thoroughness with efficient token utilization
+- Prioritize errors with highest impact on data accuracy
+- Ensure complete JSON structure even if truncating error list

@@ -144,55 +144,55 @@ public int PartTypeId
             }
         }
 
-       private Invoices _Invoices;
-        public  Invoices Invoices
+       private Templates _Templates;
+        public  Templates Templates
 		{
 		    get
                { 
                   if (this.parts != null)
                    {
-                       if (_Invoices != null)
+                       if (_Templates != null)
                        {
-                           if (this.parts.Invoices !=
-                               _Invoices.DTO)
+                           if (this.parts.Templates !=
+                               _Templates.DTO)
                            {
-                                if (this.parts.Invoices  != null)
-                               _Invoices = new Invoices(this.parts.Invoices);
+                                if (this.parts.Templates  != null)
+                               _Templates = new Templates(this.parts.Templates);
                            }
                        }
                        else
                        {
-                             if (this.parts.Invoices  != null)
-                           _Invoices = new Invoices(this.parts.Invoices);
+                             if (this.parts.Templates  != null)
+                           _Templates = new Templates(this.parts.Templates);
                        }
                    }
 
 
-             //       if (_Invoices != null) return _Invoices;
+             //       if (_Templates != null) return _Templates;
                        
-             //       var i = new Invoices(){TrackingState = TrackingState.Added};
-			//		//if (this.parts.Invoices == null) Debugger.Break();
-			//		if (this.parts.Invoices != null)
+             //       var i = new Templates(){TrackingState = TrackingState.Added};
+			//		//if (this.parts.Templates == null) Debugger.Break();
+			//		if (this.parts.Templates != null)
             //        {
-            //           i. = this.parts.Invoices;
+            //           i. = this.parts.Templates;
             //        }
             //        else
             //        {
-            //            this.parts.Invoices = i.;
+            //            this.parts.Templates = i.;
              //       }
                            
-            //        _Invoices = i;
+            //        _Templates = i;
                      
-                    return _Invoices;
+                    return _Templates;
                }
 			set
 			{
-			    if (value == _Invoices) return;
-                _Invoices = value;
+			    if (value == _Templates) return;
+                _Templates = value;
                 if(value != null)
-                     this.parts.Invoices = value.DTO;
+                     this.parts.Templates = value.DTO;
 				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-                NotifyPropertyChanged("Invoices");
+                NotifyPropertyChanged("Templates");
 			}
 		}
         

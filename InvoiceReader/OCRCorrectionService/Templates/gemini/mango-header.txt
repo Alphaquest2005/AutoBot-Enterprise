@@ -1,0 +1,76 @@
+MANGO SUPPLIER COMPREHENSIVE ANALYSIS (V14.0 - Gemini MANGO-Specialized Framework):
+
+**COMPREHENSIVE MANGO CONTEXT:**
+You are performing holistic analysis of a MANGO fashion retailer invoice using comprehensive contextual understanding optimized for European supplier document patterns. Apply multi-dimensional MANGO-specific intelligence combined with comprehensive contextual reasoning.
+
+**MANGO SUPPLIER COMPREHENSIVE INTELLIGENCE:**
+- **Business Context**: {{supplierName}} - Premium fashion retailer with European operations
+- **Currency Context**: EUR formatting with regional variations (comma/decimal patterns)
+- **Cultural Context**: Spanish/English multilingual invoice elements
+- **Industry Context**: Fashion retail with seasonal product patterns
+- **Document Context**: European business document formatting conventions
+
+**1. COMPREHENSIVE MANGO INVOICE FIELDS:**
+{{invoiceJson}}
+
+**2. MANGO-SPECIFIC CONTEXTUAL RELATIONSHIPS:**
+{{annotatedContext}}
+
+**3. COMPREHENSIVE MANGO BALANCE VERIFICATION:**
+{{balanceCheckContext}}
+
+**4. COMPLETE MANGO OCR TEXT (Multi-Format Analysis):**
+{{fileText}}
+
+**🥭 MANGO-SPECIFIC GEMINI V14.0 COMPREHENSIVE REQUIREMENTS:**
+
+**CRITICAL MANGO CONTEXTUAL MAPPING:**
+- **"TOTAL AMOUNT"** (English) / **"IMPORTE TOTAL"** (Spanish) → InvoiceTotal
+- **"Tax"** / **"IVA"** / **"Impuestos"** → TotalOtherCost  
+- **"Subtotal"** / **"Importe"** / **"Subtotal sin IVA"** → SubTotal
+- **Date Context**: Multiple European formats and language variations
+- **Invoice Context**: MANGO corporate number formatting patterns
+
+**COMPREHENSIVE MANGO ANALYSIS FRAMEWORK**: FOR EVERY ERROR, PROVIDE COMPLETE CONTEXTUAL COMPONENTS:
+
+1. ✅ **field**: Exact field name within MANGO invoice contextual schema (NEVER null)
+2. ✅ **correct_value**: Actual value discovered through comprehensive MANGO OCR analysis (NEVER null)  
+3. ✅ **error_type**: "omission" or "format_correction" or "multi_field_omission" (NEVER null)
+4. ✅ **line_number**: Precise line number through comprehensive text analysis (NEVER 0 or null)
+5. ✅ **line_text**: Complete contextual line text from MANGO invoice (NEVER null)
+6. ✅ **suggested_regex**: MANGO-optimized regex with comprehensive pattern matching (NEVER null)
+7. ✅ **reasoning**: Comprehensive contextual explanation for MANGO-specific patterns (NEVER null)
+
+**🚨 COMPREHENSIVE MANGO REGEX PATTERNS:**
+⚠️ **MANGO TOTAL (Multi-Language)**: `(?:TOTAL\\s+AMOUNT|IMPORTE\\s+TOTAL)[:\\s]*€?\\s*(?<InvoiceTotal>[\\d,]+\\.?\\d*)`
+⚠️ **MANGO INVOICE (Contextual)**: `(?:Invoice\\s+(?:No|Number)[:\\s]*)?MANGO[\\s-]*(?<InvoiceNo>[A-Z0-9]{6,12})`
+⚠️ **MANGO DATE (Comprehensive)**: `(?<InvoiceDate>\\d{1,2}[\\/-]\\d{1,2}[\\/-]\\d{4})|(?<InvoiceDate>\\w+\\s+\\d{1,2},?\\s+\\d{4})|(?<InvoiceDate>\\d{1,2}\\s+de\\s+\\w+\\s+de\\s+\\d{4})`
+⚠️ **MANGO CURRENCY (Contextual)**: `€\\s*(?<Amount>[\\d,]+\\.?\\d*)|(?<Amount>[\\d,]+\\.?\\d*)\\s*€|(?<Amount>[\\d,]+\\.?\\d*)\\s*EUR`
+
+**COMPREHENSIVE MANGO OCR ANALYSIS:**
+Current OCR Sections: {{ocrSections}}
+- **Single Column Context**: Standard MANGO invoice layout with aligned EUR amounts and clear section separation
+- **Ripped Text Context**: MANGO invoice with OCR spacing artifacts - apply contextual reconstruction
+- **SparseText Context**: Character-separated format requiring comprehensive pattern synthesis
+
+**COMPREHENSIVE MANGO REASONING APPROACH:**
+1. **Contextual MANGO Intelligence**: Apply comprehensive understanding of MANGO business patterns
+2. **Multi-Cultural Analysis**: Handle Spanish/English mixed content with contextual awareness
+3. **European Format Synthesis**: Comprehensively analyze European business document conventions
+4. **Fashion Retail Context**: Apply industry-specific understanding of MANGO operations
+
+**GEMINI MANGO OPTIMIZATION DIMENSIONS:**
+- **Semantic Understanding**: Comprehensive grasp of MANGO business terminology
+- **Cultural Contextualization**: Multi-language and regional format awareness  
+- **Pattern Synthesis**: Comprehensive combination of format variations
+- **Contextual Validation**: Holistic verification against MANGO business logic
+
+**MANDATORY RESPONSE FORMAT:**
+- **If comprehensive MANGO analysis finds errors**: { "errors": [complete error objects with MANGO-specific contextual reasoning] }
+- **If comprehensive MANGO verification finds NO errors**: { "errors": [], "explanation": "Comprehensive contextual explanation specific to MANGO invoice structure and European business document validation" }
+
+**GEMINI MANGO OPTIMIZATION NOTES:**
+- Apply comprehensive contextual understanding to MANGO-specific field relationships
+- Use multi-dimensional cultural and business context for pattern recognition
+- Provide detailed contextual explanations demonstrating holistic MANGO invoice understanding
+- Ensure comprehensive consistency with European fashion retail business practices

@@ -88,6 +88,11 @@ namespace WaterNut.DataSpace
         // Multi-field extraction support
         public List<string> CapturedFields { get; set; } = new List<string>();
         public List<FieldCorrection> FieldCorrections { get; set; } = new List<FieldCorrection>();
+        
+        // Transformation chain support for grouped/linked errors
+        public string GroupId { get; set; }  // Links related errors together
+        public int SequenceOrder { get; set; } // Order within the group (1, 2, 3...)
+        public string TransformationInput { get; set; } // "ocr_text" or "previous_output" or specific field name
 
         public string Pattern
         {
@@ -371,6 +376,7 @@ namespace WaterNut.DataSpace
         public DateTime LastUpdated { get; set; }
         public int UpdateCount { get; set; }
         public string CreatedBy { get; set; }
+        public string InvoiceType { get; set; } // Added for learning system
 
         public string Pattern
         {
@@ -391,6 +397,80 @@ namespace WaterNut.DataSpace
                 _replacement = value;
             }
         }
+    }
+
+    /// <summary>
+    /// Learning analytics data model for OCR correction system insights
+    /// Provides comprehensive statistics on OCR accuracy and improvement trends
+    /// </summary>
+    public class LearningAnalytics
+    {
+        public int PeriodDays { get; set; }
+        public int TotalRecords { get; set; }
+        public int SuccessfulRecords { get; set; }
+        public int FailedRecords { get; set; }
+        public double AverageConfidence { get; set; }
+        public Dictionary<string, int> MostCommonFields { get; set; } = new Dictionary<string, int>();
+        public Dictionary<string, int> CorrectionTypes { get; set; } = new Dictionary<string, int>();
+        public Dictionary<string, int> InvoiceTypes { get; set; } = new Dictionary<string, int>();
+        public List<TrendPoint> SuccessTrend { get; set; } = new List<TrendPoint>();
+        public List<TrendPoint> ConfidenceTrend { get; set; } = new List<TrendPoint>();
+        
+        /// <summary>
+        /// Success rate as percentage (0-100)
+        /// </summary>
+        public double SuccessRate => TotalRecords > 0 ? (double)SuccessfulRecords / TotalRecords * 100 : 0;
+        
+        /// <summary>
+        /// Failure rate as percentage (0-100)
+        /// </summary>
+        public double FailureRate => TotalRecords > 0 ? (double)FailedRecords / TotalRecords * 100 : 0;
+    }
+
+    /// <summary>
+    /// Represents a data point in trend analysis for learning analytics
+    /// Used for tracking improvements over time
+    /// </summary>
+    public class TrendPoint
+    {
+        public DateTime Date { get; set; }
+        public double Value { get; set; }
+        public int Count { get; set; }
+        public string Label { get; set; }
+    }
+
+    #endregion
+
+    #region Learning System Support Models
+
+    /// <summary>
+    /// Field validation information for request validation
+    /// Used by OCR correction service to validate incoming requests
+    /// </summary>
+    public class FieldValidationInfo
+    {
+        public bool IsValid { get; set; }
+        public string ErrorMessage { get; set; }
+        public string FieldName { get; set; }
+        public string DatabaseFieldName { get; set; }
+        public string EntityType { get; set; }
+        public bool IsRequired { get; set; }
+    }
+
+    /// <summary>
+    /// Database field mapping information
+    /// Maps DeepSeek field names to database schema
+    /// </summary>
+    public class DatabaseFieldMapping
+    {
+        public string DeepSeekFieldName { get; set; }
+        public string DatabaseFieldName { get; set; }
+        public string DisplayName { get; set; }
+        public string EntityType { get; set; }
+        public string DataType { get; set; }
+        public bool IsRequired { get; set; }
+        public string TableName { get; set; }
+        public string ColumnName { get; set; }
     }
 
     #endregion

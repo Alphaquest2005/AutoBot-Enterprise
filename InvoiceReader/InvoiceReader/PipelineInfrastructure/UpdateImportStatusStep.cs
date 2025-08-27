@@ -51,8 +51,8 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
             foreach (var template in context.MatchedTemplates)
             {
-                 int? templateId = template?.OcrInvoices?.Id; // Safe access
-                 string templateName = template?.OcrInvoices?.Name ?? "Unknown";
+                 int? templateId = template?.OcrTemplates?.Id; // Safe access
+                 string templateName = template?.OcrTemplates?.Name ?? "Unknown";
                  context.Logger?.Debug("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
                      nameof(Execute), "TemplateProcessing", "Processing template for status update.", $"FilePath: {filePath}, TemplateId: {templateId}, TemplateName: '{templateName}'", "");
 

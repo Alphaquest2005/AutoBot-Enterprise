@@ -25,10 +25,28 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                     context.Logger?.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "PdfOcr().Ocr with SparseText", "SYNC_EXPECTED"); // Use logger from context
                     // Assuming PdfOcr().Ocr might throw exceptions
                     var ocrStopwatch = Stopwatch.StartNew();
-                    txt += new PdfOcr(context.Logger).Ocr(filePath, PageSegMode.SparseText); // Pass logger
+                    
+                    // **THREADABORT_EXCEPTION_FIX**: Wrap PdfOcr call with ThreadAbortException handling
+                    try
+                    {
+                        txt += new PdfOcr(context.Logger).Ocr(filePath, PageSegMode.SparseText); // Pass logger
+                        context.Logger?.Information("✅ **SPARSETEXT_OCR_SUCCESS**: Sparse text OCR completed successfully");
+                    }
+                    catch (System.Threading.ThreadAbortException threadAbortEx)
+                    {
+                        context.Logger?.Warning(threadAbortEx, "🚨 **SPARSETEXT_THREADABORT_CAUGHT**: ThreadAbortException during Sparse Text OCR - using fallback text");
+                        txt += "------------------------------------------SparseText (ThreadAbort Recovery)-------------------------\r\n";
+                        txt += "** OCR processing was interrupted - partial results may be available **\r\n";
+                        
+                        // **CRITICAL**: Reset thread abort to prevent automatic re-throw
+                        System.Threading.Thread.ResetAbort();
+                        context.Logger?.Information("✅ **THREADABORT_RESET**: Thread abort reset successfully for Sparse Text OCR");
+                        // Don't re-throw - allow processing to continue with partial results
+                    }
+                    
                     ocrStopwatch.Stop();
                     context.Logger?.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance}). Result Length: {Length}",
-                        "PdfOcr().Ocr with SparseText", ocrStopwatch.ElapsedMilliseconds, "Sync call returned.", txt.Length); // Use logger from context
+                        "PdfOcr().Ocr with SparseText", ocrStopwatch.ElapsedMilliseconds, "Sync call returned with ThreadAbort protection.", txt.Length); // Use logger from context
  
                     methodStopwatch.Stop(); // Stop stopwatch on success
                     context.Logger?.Information("ACTION_END_SUCCESS: {ActionName}. Outcome: {ActionOutcome}. Total observed duration: {TotalObservedDurationMs}ms.",

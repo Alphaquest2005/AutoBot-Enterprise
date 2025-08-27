@@ -60,8 +60,8 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
             foreach (var template in context.MatchedTemplates)
             {
-                 int? templateId = template?.OcrInvoices?.Id; // Safe access
-                 string templateName = template?.OcrInvoices?.Name ?? "Unknown";
+                 int? templateId = template?.OcrTemplates?.Id; // Safe access
+                 string templateName = template?.OcrTemplates?.Name ?? "Unknown";
                  context.Logger?.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
                      nameof(Execute), "TemplateProcessing", "Processing template for error handling.", $"FilePath: {filePath}, TemplateId: {templateId}, TemplateName: '{templateName}'", "");
                  context.Logger?.Verbose("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
@@ -138,7 +138,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
         }
 
         // Corrected signature: Takes InvoiceProcessingContext and the specific Template template
-        private async Task<bool> ProcessTemplate(ILogger logger, InvoiceProcessingContext context, Invoice template, string filePath, int? templateId) // Add logger parameter
+        private async Task<bool> ProcessTemplate(ILogger logger, InvoiceProcessingContext context, Template template, string filePath, int? templateId) // Add logger parameter
         {
             logger?.Debug("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
                 nameof(ProcessTemplate), "Processing", "Entering ProcessTemplate.", $"FilePath: {filePath}, TemplateId: {templateId}", "");
@@ -171,7 +171,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
         }
 
         // Corrected signature: Takes Template template
-        private List<Line> GetFailedLinesWithLogging(ILogger logger, Invoice template, string filePath, int? templateId) // Add logger parameter
+        private List<Line> GetFailedLinesWithLogging(ILogger logger, Template template, string filePath, int? templateId) // Add logger parameter
         {
             logger?.Debug("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
                 nameof(GetFailedLinesWithLogging), "Processing", "Getting failed lines.", $"FilePath: {filePath}, TemplateId: {templateId}", "");
@@ -182,7 +182,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
         }
 
         // Corrected signature: Takes Template template
-        private void AddExistingFailedLinesWithLogging(ILogger logger, Invoice template, List<Line> failedLines, string filePath, int? templateId) // Add logger parameter
+        private void AddExistingFailedLinesWithLogging(ILogger logger, Template template, List<Line> failedLines, string filePath, int? templateId) // Add logger parameter
         {
             logger?.Debug("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
                 nameof(AddExistingFailedLinesWithLogging), "Processing", "Adding existing failed lines from template parts.", $"FilePath: {filePath}, TemplateId: {templateId}", "");
@@ -192,7 +192,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
         }
 
         // Corrected signature: Takes Template template
-        private List<Line> GetDistinctRequiredLinesWithLogging(ILogger logger, Invoice template, string filePath, int? templateId) // Add logger parameter
+        private List<Line> GetDistinctRequiredLinesWithLogging(ILogger logger, Template template, string filePath, int? templateId) // Add logger parameter
         {
             logger?.Debug("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
                 nameof(GetDistinctRequiredLinesWithLogging), "Processing", "Getting distinct required lines.", $"FilePath: {filePath}, TemplateId: {templateId}", "");
@@ -203,7 +203,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
         }
 
         // Corrected signature: Takes InvoiceProcessingContext and Template template
-        private async Task<bool> HandleErrorState(ILogger logger, InvoiceProcessingContext context, Invoice template, List<Line> failedLines, string filePath, int? templateId) // Add logger parameter
+        private async Task<bool> HandleErrorState(ILogger logger, InvoiceProcessingContext context, Template template, List<Line> failedLines, string filePath, int? templateId) // Add logger parameter
         {
             logger?.Debug("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
                 nameof(HandleErrorState), "Processing", "Checking if current state is a valid error state for email notification.", $"FilePath: {filePath}, TemplateId: {templateId}", "");

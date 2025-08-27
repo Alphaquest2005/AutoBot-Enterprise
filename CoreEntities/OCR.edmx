@@ -31,6 +31,45 @@
           <Property Name="LineId" Type="int" Nullable="false" />
           <Property Name="Resolved" Type="bit" Nullable="false" />
         </EntityType>
+        <EntityType Name="OCR_KeywordDetectionLog">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="DocumentPath" Type="nvarchar" MaxLength="500" />
+          <Property Name="DocumentContent" Type="nvarchar(max)" />
+          <Property Name="DetectedMappingId" Type="int" />
+          <Property Name="KeywordMatches" Type="nvarchar(max)" />
+          <Property Name="MatchScore" Type="decimal" Precision="5" Scale="4" />
+          <Property Name="ProcessingTimeMs" Type="int" />
+          <Property Name="Success" Type="bit" Nullable="false" />
+          <Property Name="ErrorMessage" Type="nvarchar(max)" />
+          <Property Name="CreatedDate" Type="datetime2" Precision="7" Nullable="false" />
+        </EntityType>
+        <EntityType Name="OCR_TemplateTableMapping">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="DocumentType" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="TargetTable" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="ParentId" Type="int" />
+          <Property Name="Keywords" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="RequiredFields" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="TemplatePrefix" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="Priority" Type="int" Nullable="false" />
+          <Property Name="IsActive" Type="bit" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="255" />
+          <Property Name="ParentTemplateTableId" Type="int" />
+          <Property Name="OptionalFields" Type="nvarchar" MaxLength="500" />
+          <Property Name="MatchThreshold" Type="decimal" Precision="5" Scale="4" Nullable="false" />
+          <Property Name="IsSystemEntity" Type="bit" Nullable="false" />
+          <Property Name="CreatedDate" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="LastUpdated" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="CreatedBy" Type="nvarchar" MaxLength="100" />
+          <Property Name="ProcessingNotes" Type="nvarchar(max)" />
+          <Property Name="FileTypeId" Type="int" />
+        </EntityType>
         <EntityType Name="OCR-ChildPart">
           <Key>
             <PropertyRef Name="Id" />
@@ -53,7 +92,7 @@
           <Property Name="CorrectionType" Type="nvarchar" MaxLength="100" />
           <Property Name="DeepSeekReasoning" Type="nvarchar(max)" />
           <Property Name="Confidence" Type="float" />
-          <Property Name="InvoiceType" Type="nvarchar" MaxLength="100" />
+          <Property Name="DocumentType" Type="nvarchar" MaxLength="100" />
           <Property Name="FilePath" Type="nvarchar" MaxLength="500" />
           <Property Name="Success" Type="bit" Nullable="false" />
           <Property Name="ErrorMessage" Type="nvarchar(max)" />
@@ -65,6 +104,8 @@
           <Property Name="LineId" Type="int" />
           <Property Name="PartId" Type="int" />
           <Property Name="RegexId" Type="int" />
+          <Property Name="SuggestedRegex" Type="nvarchar(max)" />
+          <Property Name="SuggestedRegex_Indexed" Type="nvarchar" MaxLength="450" StoreGeneratedPattern="Computed" />
         </EntityType>
         <EntityType Name="OCR-End">
           <Key>
@@ -116,33 +157,6 @@
           </Key>
           <Property Name="Id" Type="int" Nullable="false" />
           <Property Name="Value" Type="nvarchar(max)" />
-        </EntityType>
-        <EntityType Name="OCR-InvoiceIdentificatonRegEx">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="InvoiceId" Type="int" Nullable="false" />
-          <Property Name="RegExId" Type="int" Nullable="false" />
-        </EntityType>
-        <EntityType Name="OCR-InvoiceRegEx">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="InvoiceId" Type="int" Nullable="false" />
-          <Property Name="RegExId" Type="int" Nullable="false" />
-          <Property Name="ReplacementRegExId" Type="int" Nullable="false" />
-        </EntityType>
-        <EntityType Name="OCR-Invoices">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="FileTypeId" Type="int" Nullable="false" />
-          <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
-          <Property Name="IsActive" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="OCR-Lines">
           <Key>
@@ -199,6 +213,33 @@
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="PartId" Type="int" Nullable="false" />
           <Property Name="RegExId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="OCR-TemplateIdentificatonRegEx">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TemplateId" Type="int" Nullable="false" />
+          <Property Name="RegExId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="OCR-TemplateRegEx">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TemplateId" Type="int" Nullable="false" />
+          <Property Name="RegExId" Type="int" Nullable="false" />
+          <Property Name="ReplacementRegExId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="OCR-Templates">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="FileTypeId" Type="int" Nullable="false" />
+          <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
+          <Property Name="IsActive" Type="bit" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.OCR-PartLineFields' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -295,6 +336,30 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.vw_OCRCorrectionAnalysis'
             </Principal>
             <Dependent Role="OCR_FailedLines">
               <PropertyRef Name="LineId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OCR_KeywordDetectionLog_Mapping">
+          <End Role="OCR_TemplateTableMapping" Type="Self.OCR_TemplateTableMapping" Multiplicity="0..1" />
+          <End Role="OCR_KeywordDetectionLog" Type="Self.OCR_KeywordDetectionLog" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="OCR_TemplateTableMapping">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="OCR_KeywordDetectionLog">
+              <PropertyRef Name="DetectedMappingId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OCR_TemplateTableMapping_Parent">
+          <End Role="OCR_TemplateTableMapping" Type="Self.OCR_TemplateTableMapping" Multiplicity="0..1" />
+          <End Role="OCR_TemplateTableMapping1" Type="Self.OCR_TemplateTableMapping" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="OCR_TemplateTableMapping">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="OCR_TemplateTableMapping1">
+              <PropertyRef Name="ParentId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -431,65 +496,65 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.vw_OCRCorrectionAnalysis'
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_OCR-InvoiceIdentificatonRegEx_OCR-Invoices">
-          <End Role="OCR-Invoices" Type="Self.OCR-Invoices" Multiplicity="1">
+          <End Role="OCR-Templates" Type="Self.OCR-Templates" Multiplicity="1">
             <OnDelete Action="Cascade" />
           </End>
-          <End Role="OCR-InvoiceIdentificatonRegEx" Type="Self.OCR-InvoiceIdentificatonRegEx" Multiplicity="*" />
+          <End Role="OCR-TemplateIdentificatonRegEx" Type="Self.OCR-TemplateIdentificatonRegEx" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="OCR-Invoices">
+            <Principal Role="OCR-Templates">
               <PropertyRef Name="Id" />
             </Principal>
-            <Dependent Role="OCR-InvoiceIdentificatonRegEx">
-              <PropertyRef Name="InvoiceId" />
+            <Dependent Role="OCR-TemplateIdentificatonRegEx">
+              <PropertyRef Name="TemplateId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_OCR-InvoiceIdentificatonRegEx_OCR-RegularExpressions">
           <End Role="OCR-RegularExpressions" Type="Self.OCR-RegularExpressions" Multiplicity="1" />
-          <End Role="OCR-InvoiceIdentificatonRegEx" Type="Self.OCR-InvoiceIdentificatonRegEx" Multiplicity="*" />
+          <End Role="OCR-TemplateIdentificatonRegEx" Type="Self.OCR-TemplateIdentificatonRegEx" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="OCR-RegularExpressions">
               <PropertyRef Name="Id" />
             </Principal>
-            <Dependent Role="OCR-InvoiceIdentificatonRegEx">
+            <Dependent Role="OCR-TemplateIdentificatonRegEx">
               <PropertyRef Name="RegExId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_OCR-InvoiceRegEx_OCR-Invoices">
-          <End Role="OCR-Invoices" Type="Self.OCR-Invoices" Multiplicity="1">
+          <End Role="OCR-Templates" Type="Self.OCR-Templates" Multiplicity="1">
             <OnDelete Action="Cascade" />
           </End>
-          <End Role="OCR-InvoiceRegEx" Type="Self.OCR-InvoiceRegEx" Multiplicity="*" />
+          <End Role="OCR-TemplateRegEx" Type="Self.OCR-TemplateRegEx" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="OCR-Invoices">
+            <Principal Role="OCR-Templates">
               <PropertyRef Name="Id" />
             </Principal>
-            <Dependent Role="OCR-InvoiceRegEx">
-              <PropertyRef Name="InvoiceId" />
+            <Dependent Role="OCR-TemplateRegEx">
+              <PropertyRef Name="TemplateId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_OCR-InvoiceRegEx_OCR-RegularExpressions">
           <End Role="OCR-RegularExpressions" Type="Self.OCR-RegularExpressions" Multiplicity="1" />
-          <End Role="OCR-InvoiceRegEx" Type="Self.OCR-InvoiceRegEx" Multiplicity="*" />
+          <End Role="OCR-TemplateRegEx" Type="Self.OCR-TemplateRegEx" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="OCR-RegularExpressions">
               <PropertyRef Name="Id" />
             </Principal>
-            <Dependent Role="OCR-InvoiceRegEx">
+            <Dependent Role="OCR-TemplateRegEx">
               <PropertyRef Name="RegExId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_OCR-InvoiceRegEx_OCR-RegularExpressions1">
           <End Role="OCR-RegularExpressions" Type="Self.OCR-RegularExpressions" Multiplicity="1" />
-          <End Role="OCR-InvoiceRegEx" Type="Self.OCR-InvoiceRegEx" Multiplicity="*" />
+          <End Role="OCR-TemplateRegEx" Type="Self.OCR-TemplateRegEx" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="OCR-RegularExpressions">
               <PropertyRef Name="Id" />
             </Principal>
-            <Dependent Role="OCR-InvoiceRegEx">
+            <Dependent Role="OCR-TemplateRegEx">
               <PropertyRef Name="ReplacementRegExId" />
             </Dependent>
           </ReferentialConstraint>
@@ -535,12 +600,12 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.vw_OCRCorrectionAnalysis'
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_OCR-Parts_OCR-Invoices">
-          <End Role="OCR-Invoices" Type="Self.OCR-Invoices" Multiplicity="1">
+          <End Role="OCR-Templates" Type="Self.OCR-Templates" Multiplicity="1">
             <OnDelete Action="Cascade" />
           </End>
           <End Role="OCR-Parts" Type="Self.OCR-Parts" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="OCR-Invoices">
+            <Principal Role="OCR-Templates">
               <PropertyRef Name="Id" />
             </Principal>
             <Dependent Role="OCR-Parts">
@@ -608,6 +673,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.vw_OCRCorrectionAnalysis'
           <EntitySet Name="ImportErrors" EntityType="Self.ImportErrors" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="OCR_FailedFields" EntityType="Self.OCR_FailedFields" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="OCR_FailedLines" EntityType="Self.OCR_FailedLines" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="OCR_KeywordDetectionLog" EntityType="Self.OCR_KeywordDetectionLog" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="OCR_TemplateTableMapping" EntityType="Self.OCR_TemplateTableMapping" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="OCR-ChildPart" EntityType="Self.OCR-ChildPart" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="OCRCorrectionLearning" EntityType="Self.OCRCorrectionLearning" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="OCR-End" EntityType="Self.OCR-End" Schema="dbo" store:Type="Tables" />
@@ -615,15 +682,15 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.vw_OCRCorrectionAnalysis'
           <EntitySet Name="OCR-FieldMappings" EntityType="Self.OCR-FieldMappings" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="OCR-Fields" EntityType="Self.OCR-Fields" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="OCR-FieldValue" EntityType="Self.OCR-FieldValue" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="OCR-InvoiceIdentificatonRegEx" EntityType="Self.OCR-InvoiceIdentificatonRegEx" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="OCR-InvoiceRegEx" EntityType="Self.OCR-InvoiceRegEx" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="OCR-Invoices" EntityType="Self.OCR-Invoices" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="OCR-Lines" EntityType="Self.OCR-Lines" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="OCR-Parts" EntityType="Self.OCR-Parts" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="OCR-PartTypes" EntityType="Self.OCR-PartTypes" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="OCR-RecuringPart" EntityType="Self.OCR-RecuringPart" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="OCR-RegularExpressions" EntityType="Self.OCR-RegularExpressions" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="OCR-Start" EntityType="Self.OCR-Start" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="OCR-TemplateIdentificatonRegEx" EntityType="Self.OCR-TemplateIdentificatonRegEx" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="OCR-TemplateRegEx" EntityType="Self.OCR-TemplateRegEx" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="OCR-Templates" EntityType="Self.OCR-Templates" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="OCR-PartLineFields" EntityType="Self.OCR-PartLineFields" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
 [OCR-PartLineFields].[Id] AS [Id], 
@@ -672,6 +739,14 @@ FROM [dbo].[vw_OCRCorrectionAnalysis] AS [vw_OCRCorrectionAnalysis]</DefiningQue
             <End Role="OCR-Lines" EntitySet="OCR-Lines" />
             <End Role="OCR_FailedLines" EntitySet="OCR_FailedLines" />
           </AssociationSet>
+          <AssociationSet Name="FK_OCR_KeywordDetectionLog_Mapping" Association="Self.FK_OCR_KeywordDetectionLog_Mapping">
+            <End Role="OCR_TemplateTableMapping" EntitySet="OCR_TemplateTableMapping" />
+            <End Role="OCR_KeywordDetectionLog" EntitySet="OCR_KeywordDetectionLog" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OCR_TemplateTableMapping_Parent" Association="Self.FK_OCR_TemplateTableMapping_Parent">
+            <End Role="OCR_TemplateTableMapping" EntitySet="OCR_TemplateTableMapping" />
+            <End Role="OCR_TemplateTableMapping1" EntitySet="OCR_TemplateTableMapping" />
+          </AssociationSet>
           <AssociationSet Name="FK_OCR-ChildPart_OCR-Parts" Association="Self.FK_OCR-ChildPart_OCR-Parts">
             <End Role="OCR-Parts" EntitySet="OCR-Parts" />
             <End Role="OCR-ChildPart" EntitySet="OCR-ChildPart" />
@@ -713,24 +788,24 @@ FROM [dbo].[vw_OCRCorrectionAnalysis] AS [vw_OCRCorrectionAnalysis]</DefiningQue
             <End Role="OCR-FieldValue" EntitySet="OCR-FieldValue" />
           </AssociationSet>
           <AssociationSet Name="FK_OCR-InvoiceIdentificatonRegEx_OCR-Invoices" Association="Self.FK_OCR-InvoiceIdentificatonRegEx_OCR-Invoices">
-            <End Role="OCR-Invoices" EntitySet="OCR-Invoices" />
-            <End Role="OCR-InvoiceIdentificatonRegEx" EntitySet="OCR-InvoiceIdentificatonRegEx" />
+            <End Role="OCR-Templates" EntitySet="OCR-Templates" />
+            <End Role="OCR-TemplateIdentificatonRegEx" EntitySet="OCR-TemplateIdentificatonRegEx" />
           </AssociationSet>
           <AssociationSet Name="FK_OCR-InvoiceIdentificatonRegEx_OCR-RegularExpressions" Association="Self.FK_OCR-InvoiceIdentificatonRegEx_OCR-RegularExpressions">
             <End Role="OCR-RegularExpressions" EntitySet="OCR-RegularExpressions" />
-            <End Role="OCR-InvoiceIdentificatonRegEx" EntitySet="OCR-InvoiceIdentificatonRegEx" />
+            <End Role="OCR-TemplateIdentificatonRegEx" EntitySet="OCR-TemplateIdentificatonRegEx" />
           </AssociationSet>
           <AssociationSet Name="FK_OCR-InvoiceRegEx_OCR-Invoices" Association="Self.FK_OCR-InvoiceRegEx_OCR-Invoices">
-            <End Role="OCR-Invoices" EntitySet="OCR-Invoices" />
-            <End Role="OCR-InvoiceRegEx" EntitySet="OCR-InvoiceRegEx" />
+            <End Role="OCR-Templates" EntitySet="OCR-Templates" />
+            <End Role="OCR-TemplateRegEx" EntitySet="OCR-TemplateRegEx" />
           </AssociationSet>
           <AssociationSet Name="FK_OCR-InvoiceRegEx_OCR-RegularExpressions" Association="Self.FK_OCR-InvoiceRegEx_OCR-RegularExpressions">
             <End Role="OCR-RegularExpressions" EntitySet="OCR-RegularExpressions" />
-            <End Role="OCR-InvoiceRegEx" EntitySet="OCR-InvoiceRegEx" />
+            <End Role="OCR-TemplateRegEx" EntitySet="OCR-TemplateRegEx" />
           </AssociationSet>
           <AssociationSet Name="FK_OCR-InvoiceRegEx_OCR-RegularExpressions1" Association="Self.FK_OCR-InvoiceRegEx_OCR-RegularExpressions1">
             <End Role="OCR-RegularExpressions" EntitySet="OCR-RegularExpressions" />
-            <End Role="OCR-InvoiceRegEx" EntitySet="OCR-InvoiceRegEx" />
+            <End Role="OCR-TemplateRegEx" EntitySet="OCR-TemplateRegEx" />
           </AssociationSet>
           <AssociationSet Name="FK_OCR-Lines_OCR-Lines" Association="Self.FK_OCR-Lines_OCR-Lines">
             <End Role="OCR-Lines" EntitySet="OCR-Lines" />
@@ -745,7 +820,7 @@ FROM [dbo].[vw_OCRCorrectionAnalysis] AS [vw_OCRCorrectionAnalysis]</DefiningQue
             <End Role="OCR-Lines" EntitySet="OCR-Lines" />
           </AssociationSet>
           <AssociationSet Name="FK_OCR-Parts_OCR-Invoices" Association="Self.FK_OCR-Parts_OCR-Invoices">
-            <End Role="OCR-Invoices" EntitySet="OCR-Invoices" />
+            <End Role="OCR-Templates" EntitySet="OCR-Templates" />
             <End Role="OCR-Parts" EntitySet="OCR-Parts" />
           </AssociationSet>
           <AssociationSet Name="FK_OCR-Parts_OCR-PartTypes" Association="Self.FK_OCR-Parts_OCR-PartTypes">
@@ -771,7 +846,7 @@ FROM [dbo].[vw_OCRCorrectionAnalysis] AS [vw_OCRCorrectionAnalysis]</DefiningQue
       <Schema Namespace="WaterNutDBModel" Alias="Self" p1:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:p1="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityContainer Name="OCR" p1:LazyLoadingEnabled="true">
           <EntitySet Name="End" EntityType="WaterNutDBModel.End" />
-          <EntitySet Name="Invoices" EntityType="WaterNutDBModel.Invoices" />
+          <EntitySet Name="Templates" EntityType="WaterNutDBModel.Templates" />
           <EntitySet Name="Parts" EntityType="WaterNutDBModel.Parts" />
           <EntitySet Name="PartTypes" EntityType="WaterNutDBModel.PartTypes" />
           <EntitySet Name="RegularExpressions" EntityType="WaterNutDBModel.RegularExpressions" />
@@ -781,7 +856,7 @@ FROM [dbo].[vw_OCRCorrectionAnalysis] AS [vw_OCRCorrectionAnalysis]</DefiningQue
             <End Role="OCR_End" EntitySet="End" />
           </AssociationSet>
           <AssociationSet Name="FK_OCR_Parts_OCR_Invoices" Association="WaterNutDBModel.FK_OCR_Parts_OCR_Invoices">
-            <End Role="OCR_Invoices" EntitySet="Invoices" />
+            <End Role="OCR_Invoices" EntitySet="Templates" />
             <End Role="OCR_Parts" EntitySet="Parts" />
           </AssociationSet>
           <AssociationSet Name="FK_OCR_Parts_OCR_PartTypes" Association="WaterNutDBModel.FK_OCR_Parts_OCR_PartTypes">
@@ -824,9 +899,9 @@ FROM [dbo].[vw_OCRCorrectionAnalysis] AS [vw_OCRCorrectionAnalysis]</DefiningQue
             <End Role="RegularExpressions" EntitySet="RegularExpressions" />
             <End Role="Start" EntitySet="Start" />
           </AssociationSet>
-          <EntitySet Name="OCR_InvoiceRegEx" EntityType="WaterNutDBModel.InvoiceRegEx" />
+          <EntitySet Name="OCR_InvoiceRegEx" EntityType="WaterNutDBModel.TemplateRegEx" />
           <AssociationSet Name="FK_OCR_InvoiceRegEx_OCR_Invoices" Association="WaterNutDBModel.FK_OCR_InvoiceRegEx_OCR_Invoices">
-            <End Role="Invoices" EntitySet="Invoices" />
+            <End Role="Invoices" EntitySet="Templates" />
             <End Role="OCR_InvoiceRegEx" EntitySet="OCR_InvoiceRegEx" />
           </AssociationSet>
           <AssociationSet Name="FK_OCR_InvoiceRegEx_OCR_RegularExpressions" Association="WaterNutDBModel.FK_OCR_InvoiceRegEx_OCR_RegularExpressions">
@@ -846,14 +921,14 @@ FROM [dbo].[vw_OCRCorrectionAnalysis] AS [vw_OCRCorrectionAnalysis]</DefiningQue
             <End Role="RegularExpressions" EntitySet="RegularExpressions" />
             <End Role="OCR_FieldFormatRegEx" EntitySet="OCR_FieldFormatRegEx" />
           </AssociationSet>
-          <EntitySet Name="InvoiceIdentificatonRegEx" EntityType="WaterNutDBModel.InvoiceIdentificatonRegEx" />
-          <AssociationSet Name="FK_OCR_InvoiceIdentificatonRegEx_OCR_Invoices" Association="WaterNutDBModel.FK_OCR_InvoiceIdentificatonRegEx_OCR_Invoices">
-            <End Role="Invoices" EntitySet="Invoices" />
-            <End Role="OCR_InvoiceIdentificatonRegEx" EntitySet="InvoiceIdentificatonRegEx" />
+          <EntitySet Name="TemplatesIdentificatonRegEx" EntityType="WaterNutDBModel.TemplateIdentificatonRegEx" />
+          <AssociationSet Name="FK_OCR_TemplateIdentificatonRegEx_OCR_Invoices" Association="WaterNutDBModel.FK_OCR_TemplateIdentificatonRegEx_OCR_Invoices">
+            <End Role="Invoices" EntitySet="Templates" />
+            <End Role="OCR_TemplateIdentificatonRegEx" EntitySet="TemplatesIdentificatonRegEx" />
           </AssociationSet>
-          <AssociationSet Name="FK_OCR_InvoiceIdentificatonRegEx_OCR_RegularExpressions" Association="WaterNutDBModel.FK_OCR_InvoiceIdentificatonRegEx_OCR_RegularExpressions">
+          <AssociationSet Name="FK_OCR_TemplateIdentificatonRegEx_OCR_RegularExpressions" Association="WaterNutDBModel.FK_OCR_TemplateIdentificatonRegEx_OCR_RegularExpressions">
             <End Role="RegularExpressions" EntitySet="RegularExpressions" />
-            <End Role="OCR_InvoiceIdentificatonRegEx" EntitySet="InvoiceIdentificatonRegEx" />
+            <End Role="OCR_TemplateIdentificatonRegEx" EntitySet="TemplatesIdentificatonRegEx" />
           </AssociationSet>
           <AssociationSet Name="FK_OCR_Lines_OCR_Lines" Association="WaterNutDBModel.FK_OCR_Lines_OCR_Lines">
             <End Role="Lines" EntitySet="Lines" />
@@ -899,6 +974,16 @@ FROM [dbo].[vw_OCRCorrectionAnalysis] AS [vw_OCRCorrectionAnalysis]</DefiningQue
           </AssociationSet>
           <EntitySet Name="OCRCorrectionLearning" EntityType="WaterNutDBModel.OCRCorrectionLearning" />
           <EntitySet Name="vw_OCRCorrectionAnalysis" EntityType="WaterNutDBModel.vw_OCRCorrectionAnalysis" />
+          <EntitySet Name="OCR_KeywordDetectionLog" EntityType="WaterNutDBModel.OCR_KeywordDetectionLog" />
+          <EntitySet Name="OCR_TemplateTableMapping" EntityType="WaterNutDBModel.OCR_TemplateTableMapping" />
+          <AssociationSet Name="FK_OCR_KeywordDetectionLog_Mapping" Association="WaterNutDBModel.FK_OCR_KeywordDetectionLog_Mapping">
+            <End Role="OCR_TemplateTableMapping" EntitySet="OCR_TemplateTableMapping" />
+            <End Role="OCR_KeywordDetectionLog" EntitySet="OCR_KeywordDetectionLog" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OCR_TemplateTableMapping_Parent" Association="WaterNutDBModel.FK_OCR_TemplateTableMapping_Parent">
+            <End Role="OCR_TemplateTableMapping" EntitySet="OCR_TemplateTableMapping" />
+            <End Role="OCR_TemplateTableMapping1" EntitySet="OCR_TemplateTableMapping" />
+          </AssociationSet>
           </EntityContainer>
         <EntityType Name="End">
           <Key>
@@ -910,7 +995,7 @@ FROM [dbo].[vw_OCRCorrectionAnalysis] AS [vw_OCRCorrectionAnalysis]</DefiningQue
           <Property Name="RegExId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="RegularExpressions" Relationship="WaterNutDBModel.FK_OCR_End_OCR_RegularExpressions" FromRole="End" ToRole="RegularExpressions" />
         </EntityType>
-        <EntityType Name="Invoices">
+        <EntityType Name="Templates">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
@@ -921,7 +1006,7 @@ FROM [dbo].[vw_OCRCorrectionAnalysis] AS [vw_OCRCorrectionAnalysis]</DefiningQue
           <NavigationProperty Name="RegEx" Relationship="WaterNutDBModel.FK_OCR_InvoiceRegEx_OCR_Invoices" FromRole="Invoices" ToRole="OCR_InvoiceRegEx" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
           <Property Name="IsActive" Type="Boolean" Nullable="false" />
-          <NavigationProperty Name="InvoiceIdentificatonRegEx" Relationship="WaterNutDBModel.FK_OCR_InvoiceIdentificatonRegEx_OCR_Invoices" FromRole="Invoices" ToRole="OCR_InvoiceIdentificatonRegEx" />
+          <NavigationProperty Name="TemplateIdentificatonRegEx" Relationship="WaterNutDBModel.FK_OCR_TemplateIdentificatonRegEx_OCR_Invoices" FromRole="Invoices" ToRole="OCR_TemplateIdentificatonRegEx" />
         </EntityType>
         <EntityType Name="Parts">
           <Key>
@@ -931,7 +1016,7 @@ FROM [dbo].[vw_OCRCorrectionAnalysis] AS [vw_OCRCorrectionAnalysis]</DefiningQue
           <Property Name="TemplateId" Type="Int32" Nullable="false" />
           <Property Name="PartTypeId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="End" Relationship="WaterNutDBModel.FK_OCR_End_OCR_Parts" FromRole="OCR_Parts" ToRole="OCR_End" />
-          <NavigationProperty Name="Invoices" Relationship="WaterNutDBModel.FK_OCR_Parts_OCR_Invoices" FromRole="OCR_Parts" ToRole="OCR_Invoices" />
+          <NavigationProperty Name="Templates" Relationship="WaterNutDBModel.FK_OCR_Parts_OCR_Invoices" FromRole="OCR_Parts" ToRole="OCR_Invoices" />
           <NavigationProperty Name="PartTypes" Relationship="WaterNutDBModel.FK_OCR_Parts_OCR_PartTypes" FromRole="OCR_Parts" ToRole="OCR_PartTypes" />
           <NavigationProperty Name="Start" Relationship="WaterNutDBModel.FK_OCR_Start_OCR_Parts" FromRole="OCR_Parts" ToRole="OCR_Start" />
           <NavigationProperty Name="Lines" Relationship="WaterNutDBModel.FK_OCR_Lines_OCR_Parts" FromRole="Parts" ToRole="OCR_Lines" />
@@ -956,17 +1041,17 @@ FROM [dbo].[vw_OCRCorrectionAnalysis] AS [vw_OCRCorrectionAnalysis]</DefiningQue
           <NavigationProperty Name="End" Relationship="WaterNutDBModel.FK_OCR_End_OCR_RegularExpressions" FromRole="RegularExpressions" ToRole="End" />
           <NavigationProperty Name="Lines" Relationship="WaterNutDBModel.FK_OCR_Lines_OCR_RegularExpressions" FromRole="RegularExpressions" ToRole="Lines" />
           <NavigationProperty Name="Start" Relationship="WaterNutDBModel.FK_OCR_Start_OCR_RegularExpressions" FromRole="RegularExpressions" ToRole="Start" />
-          <NavigationProperty Name="InvoiceRegEx" Relationship="WaterNutDBModel.FK_OCR_InvoiceRegEx_OCR_RegularExpressions" FromRole="RegularExpressions" ToRole="OCR_InvoiceRegEx" />
-          <NavigationProperty Name="InvoiceRepRegEx" Relationship="WaterNutDBModel.FK_OCR_InvoiceRegEx_OCR_RegularExpressions1" FromRole="RegularExpressions" ToRole="OCR_InvoiceRegEx" />
+          <NavigationProperty Name="TemplateRegEx" Relationship="WaterNutDBModel.FK_OCR_InvoiceRegEx_OCR_RegularExpressions" FromRole="RegularExpressions" ToRole="OCR_InvoiceRegEx" />
+          <NavigationProperty Name="TemplateRepRegEx" Relationship="WaterNutDBModel.FK_OCR_InvoiceRegEx_OCR_RegularExpressions1" FromRole="RegularExpressions" ToRole="OCR_InvoiceRegEx" />
           <NavigationProperty Name="FieldFormatRegEx" Relationship="WaterNutDBModel.FK_OCR_FieldFormatRegEx_OCR_RegularExpressions" FromRole="RegularExpressions" ToRole="OCR_FieldFormatRegEx" />
           <NavigationProperty Name="FieldFormatRepRegEx" Relationship="WaterNutDBModel.FK_OCR_FieldFormatRegEx_OCR_RegularExpressions1" FromRole="RegularExpressions" ToRole="OCR_FieldFormatRegEx" />
           <Property Name="MultiLine" Type="Boolean" />
-          <NavigationProperty Name="InvoiceIdentificatonRegEx" Relationship="WaterNutDBModel.FK_OCR_InvoiceIdentificatonRegEx_OCR_RegularExpressions" FromRole="RegularExpressions" ToRole="OCR_InvoiceIdentificatonRegEx" />
+          <NavigationProperty Name="TemplateIdentificatonRegEx" Relationship="WaterNutDBModel.FK_OCR_TemplateIdentificatonRegEx_OCR_RegularExpressions" FromRole="RegularExpressions" ToRole="OCR_TemplateIdentificatonRegEx" />
           <Property Name="MaxLines" Type="Int32" />
           <Property Name="CreatedDate" Type="DateTime" Precision="7" Nullable="false" />
           <Property Name="LastUpdated" Type="DateTime" Precision="7" Nullable="false" />
           <Property Name="Description" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-        </EntityType>
+          </EntityType>
         <EntityType Name="Start">
           <Key>
             <PropertyRef Name="Id" />
@@ -992,7 +1077,7 @@ FROM [dbo].[vw_OCRCorrectionAnalysis] AS [vw_OCRCorrectionAnalysis]</DefiningQue
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_OCR_Parts_OCR_Invoices">
-          <End Type="WaterNutDBModel.Invoices" Role="OCR_Invoices" Multiplicity="1">
+          <End Type="WaterNutDBModel.Templates" Role="OCR_Invoices" Multiplicity="1">
             <OnDelete Action="Cascade" />
           </End>
           <End Type="WaterNutDBModel.Parts" Role="OCR_Parts" Multiplicity="*" />
@@ -1171,35 +1256,35 @@ FROM [dbo].[vw_OCRCorrectionAnalysis] AS [vw_OCRCorrectionAnalysis]</DefiningQue
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="InvoiceRegEx">
+        <EntityType Name="TemplateRegEx">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="InvoiceId" Type="Int32" Nullable="false" />
+          <Property Name="TemplateId" Type="Int32" Nullable="false" />
           <Property Name="RegExId" Type="Int32" Nullable="false" />
           <Property Name="ReplacementRegExId" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="OCR_Invoices" Relationship="WaterNutDBModel.FK_OCR_InvoiceRegEx_OCR_Invoices" FromRole="OCR_InvoiceRegEx" ToRole="Invoices" />
+          <NavigationProperty Name="OCR_Templates" Relationship="WaterNutDBModel.FK_OCR_InvoiceRegEx_OCR_Invoices" FromRole="OCR_InvoiceRegEx" ToRole="Invoices" />
           <NavigationProperty Name="RegEx" Relationship="WaterNutDBModel.FK_OCR_InvoiceRegEx_OCR_RegularExpressions" FromRole="OCR_InvoiceRegEx" ToRole="RegularExpressions" />
           <NavigationProperty Name="ReplacementRegEx" Relationship="WaterNutDBModel.FK_OCR_InvoiceRegEx_OCR_RegularExpressions1" FromRole="OCR_InvoiceRegEx" ToRole="RegularExpressions" />
         </EntityType>
         <Association Name="FK_OCR_InvoiceRegEx_OCR_Invoices">
-          <End Type="WaterNutDBModel.Invoices" Role="Invoices" Multiplicity="1">
+          <End Type="WaterNutDBModel.Templates" Role="Invoices" Multiplicity="1">
             <OnDelete Action="Cascade" />
           </End>
-          <End Type="WaterNutDBModel.InvoiceRegEx" Role="OCR_InvoiceRegEx" Multiplicity="*" />
+          <End Type="WaterNutDBModel.TemplateRegEx" Role="OCR_InvoiceRegEx" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Invoices">
               <PropertyRef Name="Id" />
             </Principal>
             <Dependent Role="OCR_InvoiceRegEx">
-              <PropertyRef Name="InvoiceId" />
+              <PropertyRef Name="TemplateId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_OCR_InvoiceRegEx_OCR_RegularExpressions">
           <End Type="WaterNutDBModel.RegularExpressions" Role="RegularExpressions" Multiplicity="1" />
-          <End Type="WaterNutDBModel.InvoiceRegEx" Role="OCR_InvoiceRegEx" Multiplicity="*" />
+          <End Type="WaterNutDBModel.TemplateRegEx" Role="OCR_InvoiceRegEx" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="RegularExpressions">
               <PropertyRef Name="Id" />
@@ -1211,7 +1296,7 @@ FROM [dbo].[vw_OCRCorrectionAnalysis] AS [vw_OCRCorrectionAnalysis]</DefiningQue
         </Association>
         <Association Name="FK_OCR_InvoiceRegEx_OCR_RegularExpressions1">
           <End Type="WaterNutDBModel.RegularExpressions" Role="RegularExpressions" Multiplicity="1" />
-          <End Type="WaterNutDBModel.InvoiceRegEx" Role="OCR_InvoiceRegEx" Multiplicity="*" />
+          <End Type="WaterNutDBModel.TemplateRegEx" Role="OCR_InvoiceRegEx" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="RegularExpressions">
               <PropertyRef Name="Id" />
@@ -1257,38 +1342,38 @@ FROM [dbo].[vw_OCRCorrectionAnalysis] AS [vw_OCRCorrectionAnalysis]</DefiningQue
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="InvoiceIdentificatonRegEx">
+        <EntityType Name="TemplateIdentificatonRegEx">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="InvoiceId" Type="Int32" Nullable="false" />
+          <Property Name="TemplateId" Type="Int32" Nullable="false" />
           <Property Name="RegExId" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="OCR_Invoices" Relationship="WaterNutDBModel.FK_OCR_InvoiceIdentificatonRegEx_OCR_Invoices" FromRole="OCR_InvoiceIdentificatonRegEx" ToRole="Invoices" />
-          <NavigationProperty Name="OCR_RegularExpressions" Relationship="WaterNutDBModel.FK_OCR_InvoiceIdentificatonRegEx_OCR_RegularExpressions" FromRole="OCR_InvoiceIdentificatonRegEx" ToRole="RegularExpressions" />
+          <NavigationProperty Name="OCR_Templates" Relationship="WaterNutDBModel.FK_OCR_TemplateIdentificatonRegEx_OCR_Invoices" FromRole="OCR_TemplateIdentificatonRegEx" ToRole="Invoices" />
+          <NavigationProperty Name="OCR_RegularExpressions" Relationship="WaterNutDBModel.FK_OCR_TemplateIdentificatonRegEx_OCR_RegularExpressions" FromRole="OCR_TemplateIdentificatonRegEx" ToRole="RegularExpressions" />
         </EntityType>
-        <Association Name="FK_OCR_InvoiceIdentificatonRegEx_OCR_Invoices">
-          <End Type="WaterNutDBModel.Invoices" Role="Invoices" Multiplicity="1">
+        <Association Name="FK_OCR_TemplateIdentificatonRegEx_OCR_Invoices">
+          <End Type="WaterNutDBModel.Templates" Role="Invoices" Multiplicity="1">
             <OnDelete Action="Cascade" />
           </End>
-          <End Type="WaterNutDBModel.InvoiceIdentificatonRegEx" Role="OCR_InvoiceIdentificatonRegEx" Multiplicity="*" />
+          <End Type="WaterNutDBModel.TemplateIdentificatonRegEx" Role="OCR_TemplateIdentificatonRegEx" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Invoices">
               <PropertyRef Name="Id" />
             </Principal>
-            <Dependent Role="OCR_InvoiceIdentificatonRegEx">
-              <PropertyRef Name="InvoiceId" />
+            <Dependent Role="OCR_TemplateIdentificatonRegEx">
+              <PropertyRef Name="TemplateId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_OCR_InvoiceIdentificatonRegEx_OCR_RegularExpressions">
+        <Association Name="FK_OCR_TemplateIdentificatonRegEx_OCR_RegularExpressions">
           <End Type="WaterNutDBModel.RegularExpressions" Role="RegularExpressions" Multiplicity="1" />
-          <End Type="WaterNutDBModel.InvoiceIdentificatonRegEx" Role="OCR_InvoiceIdentificatonRegEx" Multiplicity="*" />
+          <End Type="WaterNutDBModel.TemplateIdentificatonRegEx" Role="OCR_TemplateIdentificatonRegEx" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="RegularExpressions">
               <PropertyRef Name="Id" />
             </Principal>
-            <Dependent Role="OCR_InvoiceIdentificatonRegEx">
+            <Dependent Role="OCR_TemplateIdentificatonRegEx">
               <PropertyRef Name="RegExId" />
             </Dependent>
           </ReferentialConstraint>
@@ -1514,7 +1599,6 @@ FROM [dbo].[vw_OCRCorrectionAnalysis] AS [vw_OCRCorrectionAnalysis]</DefiningQue
           <Property Name="CorrectionType" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="DeepSeekReasoning" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Confidence" Type="Double" />
-          <Property Name="InvoiceType" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="FilePath" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="Success" Type="Boolean" Nullable="false" />
           <Property Name="ErrorMessage" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
@@ -1526,6 +1610,9 @@ FROM [dbo].[vw_OCRCorrectionAnalysis] AS [vw_OCRCorrectionAnalysis]</DefiningQue
           <Property Name="LineId" Type="Int32" />
           <Property Name="PartId" Type="Int32" />
           <Property Name="RegexId" Type="Int32" />
+          <Property Name="SuggestedRegex" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="SuggestedRegex_Indexed" Type="String" MaxLength="450" FixedLength="false" Unicode="true" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="DocumentType" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="vw_OCRCorrectionAnalysis">
           <Key>
@@ -1541,6 +1628,73 @@ FROM [dbo].[vw_OCRCorrectionAnalysis] AS [vw_OCRCorrectionAnalysis]</DefiningQue
           <Property Name="FirstCorrection" Type="DateTime" Precision="7" />
           <Property Name="LastCorrection" Type="DateTime" Precision="7" />
         </EntityType>
+        <EntityType Name="OCR_KeywordDetectionLog">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="DocumentPath" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="DocumentContent" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="DetectedMappingId" Type="Int32" />
+          <Property Name="KeywordMatches" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="MatchScore" Type="Decimal" Precision="5" Scale="4" />
+          <Property Name="ProcessingTimeMs" Type="Int32" />
+          <Property Name="Success" Type="Boolean" Nullable="false" />
+          <Property Name="ErrorMessage" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="7" />
+          <NavigationProperty Name="OCR_TemplateTableMapping" Relationship="WaterNutDBModel.FK_OCR_KeywordDetectionLog_Mapping" FromRole="OCR_KeywordDetectionLog" ToRole="OCR_TemplateTableMapping" />
+        </EntityType>
+        <EntityType Name="OCR_TemplateTableMapping">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="DocumentType" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="TargetTable" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="ParentId" Type="Int32" />
+          <Property Name="Keywords" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="RequiredFields" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="TemplatePrefix" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="Priority" Type="Int32" Nullable="false" />
+          <Property Name="IsActive" Type="Boolean" Nullable="false" />
+          <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ParentTemplateTableId" Type="Int32" />
+          <Property Name="OptionalFields" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="MatchThreshold" Type="Decimal" Nullable="false" Precision="5" Scale="4" />
+          <Property Name="IsSystemEntity" Type="Boolean" Nullable="false" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="LastUpdated" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="CreatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="ProcessingNotes" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="OCR_KeywordDetectionLog" Relationship="WaterNutDBModel.FK_OCR_KeywordDetectionLog_Mapping" FromRole="OCR_TemplateTableMapping" ToRole="OCR_KeywordDetectionLog" />
+          <NavigationProperty Name="OCR_TemplateTableMapping1" Relationship="WaterNutDBModel.FK_OCR_TemplateTableMapping_Parent" FromRole="OCR_TemplateTableMapping" ToRole="OCR_TemplateTableMapping1" />
+          <NavigationProperty Name="OCR_TemplateTableMapping2" Relationship="WaterNutDBModel.FK_OCR_TemplateTableMapping_Parent" FromRole="OCR_TemplateTableMapping1" ToRole="OCR_TemplateTableMapping" />
+          <Property Name="FileTypeId" Type="Int32" />
+        </EntityType>
+        <Association Name="FK_OCR_KeywordDetectionLog_Mapping">
+          <End Type="WaterNutDBModel.OCR_TemplateTableMapping" Role="OCR_TemplateTableMapping" Multiplicity="0..1" />
+          <End Type="WaterNutDBModel.OCR_KeywordDetectionLog" Role="OCR_KeywordDetectionLog" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="OCR_TemplateTableMapping">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="OCR_KeywordDetectionLog">
+              <PropertyRef Name="DetectedMappingId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OCR_TemplateTableMapping_Parent">
+          <End Type="WaterNutDBModel.OCR_TemplateTableMapping" Role="OCR_TemplateTableMapping" Multiplicity="0..1" />
+          <End Type="WaterNutDBModel.OCR_TemplateTableMapping" Role="OCR_TemplateTableMapping1" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="OCR_TemplateTableMapping">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="OCR_TemplateTableMapping1">
+              <PropertyRef Name="ParentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1552,17 +1706,6 @@ FROM [dbo].[vw_OCRCorrectionAnalysis] AS [vw_OCRCorrectionAnalysis]</DefiningQue
               <MappingFragment StoreEntitySet="OCR-End">
                 <ScalarProperty Name="RegExId" ColumnName="RegExId" />
                 <ScalarProperty Name="PartId" ColumnName="PartId" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Invoices">
-            <EntityTypeMapping TypeName="WaterNutDBModel.Invoices">
-              <MappingFragment StoreEntitySet="OCR-Invoices">
-                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
-                <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
-                <ScalarProperty Name="FileTypeId" ColumnName="FileTypeId" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -1646,31 +1789,12 @@ FROM [dbo].[vw_OCRCorrectionAnalysis] AS [vw_OCRCorrectionAnalysis]</DefiningQue
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="OCR_InvoiceRegEx">
-            <EntityTypeMapping TypeName="WaterNutDBModel.InvoiceRegEx">
-              <MappingFragment StoreEntitySet="OCR-InvoiceRegEx">
-                <ScalarProperty Name="ReplacementRegExId" ColumnName="ReplacementRegExId" />
-                <ScalarProperty Name="RegExId" ColumnName="RegExId" />
-                <ScalarProperty Name="InvoiceId" ColumnName="InvoiceId" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="OCR_FieldFormatRegEx">
             <EntityTypeMapping TypeName="WaterNutDBModel.FieldFormatRegEx">
               <MappingFragment StoreEntitySet="OCR-FieldFormatRegEx">
                 <ScalarProperty Name="ReplacementRegExId" ColumnName="ReplacementRegExId" />
                 <ScalarProperty Name="RegExId" ColumnName="RegExId" />
                 <ScalarProperty Name="FieldId" ColumnName="FieldId" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="InvoiceIdentificatonRegEx">
-            <EntityTypeMapping TypeName="WaterNutDBModel.InvoiceIdentificatonRegEx">
-              <MappingFragment StoreEntitySet="OCR-InvoiceIdentificatonRegEx">
-                <ScalarProperty Name="RegExId" ColumnName="RegExId" />
-                <ScalarProperty Name="InvoiceId" ColumnName="InvoiceId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -1757,6 +1881,9 @@ FROM [dbo].[vw_OCRCorrectionAnalysis] AS [vw_OCRCorrectionAnalysis]</DefiningQue
           <EntitySetMapping Name="OCRCorrectionLearning">
             <EntityTypeMapping TypeName="WaterNutDBModel.OCRCorrectionLearning">
               <MappingFragment StoreEntitySet="OCRCorrectionLearning">
+                <ScalarProperty Name="DocumentType" ColumnName="DocumentType" />
+                <ScalarProperty Name="SuggestedRegex_Indexed" ColumnName="SuggestedRegex_Indexed" />
+                <ScalarProperty Name="SuggestedRegex" ColumnName="SuggestedRegex" />
                 <ScalarProperty Name="RegexId" ColumnName="RegexId" />
                 <ScalarProperty Name="PartId" ColumnName="PartId" />
                 <ScalarProperty Name="LineId" ColumnName="LineId" />
@@ -1768,7 +1895,6 @@ FROM [dbo].[vw_OCRCorrectionAnalysis] AS [vw_OCRCorrectionAnalysis]</DefiningQue
                 <ScalarProperty Name="ErrorMessage" ColumnName="ErrorMessage" />
                 <ScalarProperty Name="Success" ColumnName="Success" />
                 <ScalarProperty Name="FilePath" ColumnName="FilePath" />
-                <ScalarProperty Name="InvoiceType" ColumnName="InvoiceType" />
                 <ScalarProperty Name="Confidence" ColumnName="Confidence" />
                 <ScalarProperty Name="DeepSeekReasoning" ColumnName="DeepSeekReasoning" />
                 <ScalarProperty Name="CorrectionType" ColumnName="CorrectionType" />
@@ -1794,6 +1920,77 @@ FROM [dbo].[vw_OCRCorrectionAnalysis] AS [vw_OCRCorrectionAnalysis]</DefiningQue
                 <ScalarProperty Name="TotalCorrections" ColumnName="TotalCorrections" />
                 <ScalarProperty Name="CorrectionType" ColumnName="CorrectionType" />
                 <ScalarProperty Name="FieldName" ColumnName="FieldName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="OCR_KeywordDetectionLog">
+            <EntityTypeMapping TypeName="WaterNutDBModel.OCR_KeywordDetectionLog">
+              <MappingFragment StoreEntitySet="OCR_KeywordDetectionLog">
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="ErrorMessage" ColumnName="ErrorMessage" />
+                <ScalarProperty Name="Success" ColumnName="Success" />
+                <ScalarProperty Name="ProcessingTimeMs" ColumnName="ProcessingTimeMs" />
+                <ScalarProperty Name="MatchScore" ColumnName="MatchScore" />
+                <ScalarProperty Name="KeywordMatches" ColumnName="KeywordMatches" />
+                <ScalarProperty Name="DetectedMappingId" ColumnName="DetectedMappingId" />
+                <ScalarProperty Name="DocumentContent" ColumnName="DocumentContent" />
+                <ScalarProperty Name="DocumentPath" ColumnName="DocumentPath" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="OCR_TemplateTableMapping">
+            <EntityTypeMapping TypeName="WaterNutDBModel.OCR_TemplateTableMapping">
+              <MappingFragment StoreEntitySet="OCR_TemplateTableMapping">
+                <ScalarProperty Name="FileTypeId" ColumnName="FileTypeId" />
+                <ScalarProperty Name="ProcessingNotes" ColumnName="ProcessingNotes" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="LastUpdated" ColumnName="LastUpdated" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="IsSystemEntity" ColumnName="IsSystemEntity" />
+                <ScalarProperty Name="MatchThreshold" ColumnName="MatchThreshold" />
+                <ScalarProperty Name="OptionalFields" ColumnName="OptionalFields" />
+                <ScalarProperty Name="ParentTemplateTableId" ColumnName="ParentTemplateTableId" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="Priority" ColumnName="Priority" />
+                <ScalarProperty Name="TemplatePrefix" ColumnName="TemplatePrefix" />
+                <ScalarProperty Name="RequiredFields" ColumnName="RequiredFields" />
+                <ScalarProperty Name="Keywords" ColumnName="Keywords" />
+                <ScalarProperty Name="ParentId" ColumnName="ParentId" />
+                <ScalarProperty Name="TargetTable" ColumnName="TargetTable" />
+                <ScalarProperty Name="DocumentType" ColumnName="DocumentType" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Templates">
+            <EntityTypeMapping TypeName="IsTypeOf(WaterNutDBModel.Templates)">
+              <MappingFragment StoreEntitySet="OCR-Templates">
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
+                <ScalarProperty Name="FileTypeId" ColumnName="FileTypeId" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="OCR_InvoiceRegEx">
+            <EntityTypeMapping TypeName="IsTypeOf(WaterNutDBModel.TemplateRegEx)">
+              <MappingFragment StoreEntitySet="OCR-TemplateRegEx">
+                <ScalarProperty Name="TemplateId" ColumnName="TemplateId" />
+                <ScalarProperty Name="ReplacementRegExId" ColumnName="ReplacementRegExId" />
+                <ScalarProperty Name="RegExId" ColumnName="RegExId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TemplatesIdentificatonRegEx">
+            <EntityTypeMapping TypeName="IsTypeOf(WaterNutDBModel.TemplateIdentificatonRegEx)">
+              <MappingFragment StoreEntitySet="OCR-TemplateIdentificatonRegEx">
+                <ScalarProperty Name="TemplateId" ColumnName="TemplateId" />
+                <ScalarProperty Name="RegExId" ColumnName="RegExId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

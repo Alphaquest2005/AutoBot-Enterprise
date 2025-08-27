@@ -316,53 +316,53 @@ public string Description
             }
         }
 
-        ObservableCollection<InvoiceRegEx> _InvoiceRegEx = null;
-        public  ObservableCollection<InvoiceRegEx> InvoiceRegEx
+        ObservableCollection<TemplateRegEx> _TemplateRegEx = null;
+        public  ObservableCollection<TemplateRegEx> TemplateRegEx
 		{
             
 		    get 
 				{ 
-					if(_InvoiceRegEx != null) return _InvoiceRegEx;
-					//if (this.regularexpressions.InvoiceRegEx == null) Debugger.Break();
-					if(this.regularexpressions.InvoiceRegEx != null)
+					if(_TemplateRegEx != null) return _TemplateRegEx;
+					//if (this.regularexpressions.TemplateRegEx == null) Debugger.Break();
+					if(this.regularexpressions.TemplateRegEx != null)
 					{
-						_InvoiceRegEx = new ObservableCollection<InvoiceRegEx>(this.regularexpressions.InvoiceRegEx.Select(x => new InvoiceRegEx(x)));
+						_TemplateRegEx = new ObservableCollection<TemplateRegEx>(this.regularexpressions.TemplateRegEx.Select(x => new TemplateRegEx(x)));
 					}
 					
-						_InvoiceRegEx.CollectionChanged += InvoiceRegEx_CollectionChanged; 
+						_TemplateRegEx.CollectionChanged += TemplateRegEx_CollectionChanged; 
 					
-					return _InvoiceRegEx; 
+					return _TemplateRegEx; 
 				}
 			set
 			{
-			    if (Equals(value, _InvoiceRegEx)) return;
+			    if (Equals(value, _TemplateRegEx)) return;
 				if (value != null)
-					this.regularexpressions.InvoiceRegEx = new ChangeTrackingCollection<DTO.InvoiceRegEx>(value.Select(x => x.DTO).ToList());
-                _InvoiceRegEx = value;
+					this.regularexpressions.TemplateRegEx = new ChangeTrackingCollection<DTO.TemplateRegEx>(value.Select(x => x.DTO).ToList());
+                _TemplateRegEx = value;
 				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				if (_InvoiceRegEx != null)
-				_InvoiceRegEx.CollectionChanged += InvoiceRegEx_CollectionChanged;               
-				NotifyPropertyChanged("InvoiceRegEx");
+				if (_TemplateRegEx != null)
+				_TemplateRegEx.CollectionChanged += TemplateRegEx_CollectionChanged;               
+				NotifyPropertyChanged("TemplateRegEx");
 			}
 		}
         
-        void InvoiceRegEx_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        void TemplateRegEx_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
-                    foreach (InvoiceRegEx itm in e.NewItems)
+                    foreach (TemplateRegEx itm in e.NewItems)
                     {
                         if (itm != null)
-                        regularexpressions.InvoiceRegEx.Add(itm.DTO);
+                        regularexpressions.TemplateRegEx.Add(itm.DTO);
                     }
                     if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
                     break;
                 case NotifyCollectionChangedAction.Remove:
-                    foreach (InvoiceRegEx itm in e.OldItems)
+                    foreach (TemplateRegEx itm in e.OldItems)
                     {
                         if (itm != null)
-                        regularexpressions.InvoiceRegEx.Remove(itm.DTO);
+                        regularexpressions.TemplateRegEx.Remove(itm.DTO);
                     }
 					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
                     break;
@@ -370,53 +370,53 @@ public string Description
             }
         }
 
-        ObservableCollection<InvoiceRegEx> _InvoiceRepRegEx = null;
-        public  ObservableCollection<InvoiceRegEx> InvoiceRepRegEx
+        ObservableCollection<TemplateRegEx> _TemplateRepRegEx = null;
+        public  ObservableCollection<TemplateRegEx> TemplateRepRegEx
 		{
             
 		    get 
 				{ 
-					if(_InvoiceRepRegEx != null) return _InvoiceRepRegEx;
-					//if (this.regularexpressions.InvoiceRepRegEx == null) Debugger.Break();
-					if(this.regularexpressions.InvoiceRepRegEx != null)
+					if(_TemplateRepRegEx != null) return _TemplateRepRegEx;
+					//if (this.regularexpressions.TemplateRepRegEx == null) Debugger.Break();
+					if(this.regularexpressions.TemplateRepRegEx != null)
 					{
-						_InvoiceRepRegEx = new ObservableCollection<InvoiceRegEx>(this.regularexpressions.InvoiceRepRegEx.Select(x => new InvoiceRegEx(x)));
+						_TemplateRepRegEx = new ObservableCollection<TemplateRegEx>(this.regularexpressions.TemplateRepRegEx.Select(x => new TemplateRegEx(x)));
 					}
 					
-						_InvoiceRepRegEx.CollectionChanged += InvoiceRepRegEx_CollectionChanged; 
+						_TemplateRepRegEx.CollectionChanged += TemplateRepRegEx_CollectionChanged; 
 					
-					return _InvoiceRepRegEx; 
+					return _TemplateRepRegEx; 
 				}
 			set
 			{
-			    if (Equals(value, _InvoiceRepRegEx)) return;
+			    if (Equals(value, _TemplateRepRegEx)) return;
 				if (value != null)
-					this.regularexpressions.InvoiceRepRegEx = new ChangeTrackingCollection<DTO.InvoiceRegEx>(value.Select(x => x.DTO).ToList());
-                _InvoiceRepRegEx = value;
+					this.regularexpressions.TemplateRepRegEx = new ChangeTrackingCollection<DTO.TemplateRegEx>(value.Select(x => x.DTO).ToList());
+                _TemplateRepRegEx = value;
 				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				if (_InvoiceRepRegEx != null)
-				_InvoiceRepRegEx.CollectionChanged += InvoiceRepRegEx_CollectionChanged;               
-				NotifyPropertyChanged("InvoiceRepRegEx");
+				if (_TemplateRepRegEx != null)
+				_TemplateRepRegEx.CollectionChanged += TemplateRepRegEx_CollectionChanged;               
+				NotifyPropertyChanged("TemplateRepRegEx");
 			}
 		}
         
-        void InvoiceRepRegEx_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        void TemplateRepRegEx_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
-                    foreach (InvoiceRegEx itm in e.NewItems)
+                    foreach (TemplateRegEx itm in e.NewItems)
                     {
                         if (itm != null)
-                        regularexpressions.InvoiceRepRegEx.Add(itm.DTO);
+                        regularexpressions.TemplateRepRegEx.Add(itm.DTO);
                     }
                     if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
                     break;
                 case NotifyCollectionChangedAction.Remove:
-                    foreach (InvoiceRegEx itm in e.OldItems)
+                    foreach (TemplateRegEx itm in e.OldItems)
                     {
                         if (itm != null)
-                        regularexpressions.InvoiceRepRegEx.Remove(itm.DTO);
+                        regularexpressions.TemplateRepRegEx.Remove(itm.DTO);
                     }
 					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
                     break;
@@ -532,53 +532,53 @@ public string Description
             }
         }
 
-        ObservableCollection<InvoiceIdentificatonRegEx> _InvoiceIdentificatonRegEx = null;
-        public  ObservableCollection<InvoiceIdentificatonRegEx> InvoiceIdentificatonRegEx
+        ObservableCollection<TemplateIdentificatonRegEx> _TemplateIdentificatonRegEx = null;
+        public  ObservableCollection<TemplateIdentificatonRegEx> TemplateIdentificatonRegEx
 		{
             
 		    get 
 				{ 
-					if(_InvoiceIdentificatonRegEx != null) return _InvoiceIdentificatonRegEx;
-					//if (this.regularexpressions.InvoiceIdentificatonRegEx == null) Debugger.Break();
-					if(this.regularexpressions.InvoiceIdentificatonRegEx != null)
+					if(_TemplateIdentificatonRegEx != null) return _TemplateIdentificatonRegEx;
+					//if (this.regularexpressions.TemplateIdentificatonRegEx == null) Debugger.Break();
+					if(this.regularexpressions.TemplateIdentificatonRegEx != null)
 					{
-						_InvoiceIdentificatonRegEx = new ObservableCollection<InvoiceIdentificatonRegEx>(this.regularexpressions.InvoiceIdentificatonRegEx.Select(x => new InvoiceIdentificatonRegEx(x)));
+						_TemplateIdentificatonRegEx = new ObservableCollection<TemplateIdentificatonRegEx>(this.regularexpressions.TemplateIdentificatonRegEx.Select(x => new TemplateIdentificatonRegEx(x)));
 					}
 					
-						_InvoiceIdentificatonRegEx.CollectionChanged += InvoiceIdentificatonRegEx_CollectionChanged; 
+						_TemplateIdentificatonRegEx.CollectionChanged += TemplateIdentificatonRegEx_CollectionChanged; 
 					
-					return _InvoiceIdentificatonRegEx; 
+					return _TemplateIdentificatonRegEx; 
 				}
 			set
 			{
-			    if (Equals(value, _InvoiceIdentificatonRegEx)) return;
+			    if (Equals(value, _TemplateIdentificatonRegEx)) return;
 				if (value != null)
-					this.regularexpressions.InvoiceIdentificatonRegEx = new ChangeTrackingCollection<DTO.InvoiceIdentificatonRegEx>(value.Select(x => x.DTO).ToList());
-                _InvoiceIdentificatonRegEx = value;
+					this.regularexpressions.TemplateIdentificatonRegEx = new ChangeTrackingCollection<DTO.TemplateIdentificatonRegEx>(value.Select(x => x.DTO).ToList());
+                _TemplateIdentificatonRegEx = value;
 				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				if (_InvoiceIdentificatonRegEx != null)
-				_InvoiceIdentificatonRegEx.CollectionChanged += InvoiceIdentificatonRegEx_CollectionChanged;               
-				NotifyPropertyChanged("InvoiceIdentificatonRegEx");
+				if (_TemplateIdentificatonRegEx != null)
+				_TemplateIdentificatonRegEx.CollectionChanged += TemplateIdentificatonRegEx_CollectionChanged;               
+				NotifyPropertyChanged("TemplateIdentificatonRegEx");
 			}
 		}
         
-        void InvoiceIdentificatonRegEx_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        void TemplateIdentificatonRegEx_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
-                    foreach (InvoiceIdentificatonRegEx itm in e.NewItems)
+                    foreach (TemplateIdentificatonRegEx itm in e.NewItems)
                     {
                         if (itm != null)
-                        regularexpressions.InvoiceIdentificatonRegEx.Add(itm.DTO);
+                        regularexpressions.TemplateIdentificatonRegEx.Add(itm.DTO);
                     }
                     if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
                     break;
                 case NotifyCollectionChangedAction.Remove:
-                    foreach (InvoiceIdentificatonRegEx itm in e.OldItems)
+                    foreach (TemplateIdentificatonRegEx itm in e.OldItems)
                     {
                         if (itm != null)
-                        regularexpressions.InvoiceIdentificatonRegEx.Remove(itm.DTO);
+                        regularexpressions.TemplateIdentificatonRegEx.Remove(itm.DTO);
                     }
 					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
                     break;

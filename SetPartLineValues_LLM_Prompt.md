@@ -1,5 +1,23 @@
 # Comprehensive Prompt for Creating Enhanced SetPartLineValues Function
 
+## 🏠 WORKTREE ENVIRONMENT DETECTION
+
+### **🎯 Current Environment Commands**
+```bash
+# Always run this first to identify your current environment
+echo "Current Environment: $(pwd)"
+echo "Current Branch: $(git branch --show-current)"
+echo "Repository Root: $(git rev-parse --show-toplevel)"
+git worktree list
+```
+
+**Available Environments**:
+- **Main Repository**: `AutoBot-Enterprise` (primary development)
+- **Alpha Worktree**: `AutoBot-Enterprise-alpha` (experimental work)
+- **Beta Worktree**: `AutoBot-Enterprise-beta` (baseline comparison)
+
+---
+
 ## Context and Problem Statement
 
 You are working on the AutoBot-Enterprise codebase, a .NET Framework 4.8 application that processes customs documents. The core issue is with the `SetPartLineValues` method in the `Invoice` class, which extracts data from OCR-processed PDF invoices. 
@@ -12,7 +30,7 @@ You are working on the AutoBot-Enterprise codebase, a .NET Framework 4.8 applica
 - **Namespace**: `WaterNut.DataSpace`
 - **Main Class**: `Invoice` (partial class)
 - **Method Signature**: `private List<IDictionary<string, object>> SetPartLineValues(Part part, string filterInstance = null)`
-- **Location**: `/mnt/c/Insight Software/AutoBot-Enterprise/InvoiceReader/Invoice/SetPartLineValues.cs`
+- **Location**: `./InvoiceReader/Invoice/SetPartLineValues.cs`
 
 ### Data Structures:
 

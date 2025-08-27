@@ -8,7 +8,7 @@ using OCR.Business.Entities; // Added for Part, Line
 
 namespace WaterNut.DataSpace
 {
-    public partial class Invoice
+    public partial class Template
     {
         // Logger instance is defined in the main Template.cs partial class file.
         // Assuming 'table' is a static or instance member accessible here, e.g.:

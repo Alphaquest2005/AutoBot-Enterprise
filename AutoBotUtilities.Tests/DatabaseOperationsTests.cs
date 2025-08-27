@@ -76,7 +76,7 @@ namespace AutoBotUtilities.Tests
             using (var context = new OCRContext())
             {
                 // Get Amazon template (InvoiceId 5)
-                var amazonTemplate = await context.Invoices
+                var amazonTemplate = await context.Templates
                                          .Where(i => i.Id == 5)
                                          .FirstOrDefaultAsync().ConfigureAwait(false);
 
@@ -160,7 +160,7 @@ namespace AutoBotUtilities.Tests
                 _logger.Information("🎁 **GIFT_CARD_PATTERNS**: {Count} Gift Card/TotalInsurance patterns", giftCardCount);
 
                 // Templates
-                var templateCount = await context.Invoices.CountAsync().ConfigureAwait(false);
+                var templateCount = await context.Templates.CountAsync().ConfigureAwait(false);
                 _logger.Information("📋 **TEMPLATES**: {Count} invoice templates", templateCount);
 
                 // Lines and Parts

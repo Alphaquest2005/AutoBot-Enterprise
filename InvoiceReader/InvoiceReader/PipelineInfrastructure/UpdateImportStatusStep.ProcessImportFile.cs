@@ -19,8 +19,8 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
             foreach (var template in context.MatchedTemplates)
             {
-                int templateId = template.OcrInvoices.Id; // Already checked not null
-                string templateName = template.OcrInvoices.Name ?? "UnknownName";
+                int templateId = template.OcrTemplates.Id; // Already checked not null
+                string templateName = template.OcrTemplates.Name ?? "UnknownName";
                 string fileDescription = "Unknown Description"; // Default
 
                 logger?.Debug("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
@@ -29,7 +29,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                 try
                 {
                     // Safely get FileType description
-                    int fileTypeId = template.OcrInvoices.FileTypeId;
+                    int fileTypeId = template.OcrTemplates.FileTypeId;
                     logger?.Verbose("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
                         nameof(ProcessImportFile), "FileTypeDescription", "Attempting to get FileType description.", $"FileTypeId: {fileTypeId}", "");
                     
@@ -58,7 +58,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                 catch (Exception ex)
                 {
                     logger?.Error(ex, "METHOD_EXIT_FAILURE: {MethodName}. IntentionAtFailure: {MethodIntention}. Execution time: {ExecutionDurationMs}ms. Error: {ErrorMessage}",
-                        nameof(ProcessImportFile), "Get FileType description", 0, $"Error getting FileType description from FileTypeManager for FileTypeId: {template.OcrInvoices.FileTypeId}. Error: {ex.Message}");
+                        nameof(ProcessImportFile), "Get FileType description", 0, $"Error getting FileType description from FileTypeManager for FileTypeId: {template.OcrTemplates.FileTypeId}. Error: {ex.Message}");
                     // Continue with default description
                 }
 

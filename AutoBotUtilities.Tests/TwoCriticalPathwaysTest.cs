@@ -42,10 +42,10 @@ namespace AutoBotUtilities.Tests
                     // Load Amazon template (ID 5) from database
                     using (var ocrContext = new OCRContext())
                     {
-                        var amazonTemplate = ocrContext.Invoices.FirstOrDefault(x => x.Id == 5);
+                        var amazonTemplate = ocrContext.Templates.FirstOrDefault(x => x.Id == 5);
                         Assert.That(amazonTemplate, Is.Not.Null, "Amazon template (ID 5) should exist in database");
 
-                        var template = new Invoice(amazonTemplate, _logger);
+                        var template = new Template(amazonTemplate, _logger);
                         _logger.Information("✅ **PATHWAY_1_TEMPLATE_LOADED**: Amazon template loaded with {PartCount} parts and {LineCount} lines", 
                             template.Parts?.Count ?? 0, template.Lines?.Count ?? 0);
 
@@ -150,10 +150,10 @@ Grand Total: $166.30";
                     // Load Amazon template (ID 5) from database
                     using (var ocrContext = new OCRContext())
                     {
-                        var amazonTemplate = ocrContext.Invoices.FirstOrDefault(x => x.Id == 5);
+                        var amazonTemplate = ocrContext.Templates.FirstOrDefault(x => x.Id == 5);
                         Assert.That(amazonTemplate, Is.Not.Null, "Amazon template (ID 5) should exist in database");
 
-                        var template = new Invoice(amazonTemplate, _logger);
+                        var template = new Template(amazonTemplate, _logger);
                         _logger.Information("✅ **PATHWAY_2_TEMPLATE_LOADED**: Amazon template loaded with {PartCount} parts and {LineCount} lines", 
                             template.Parts?.Count ?? 0, template.Lines?.Count ?? 0);
 
@@ -306,7 +306,7 @@ Grand Total: $166.30";
 
         #region Enhanced Logging Helper Methods
 
-        private void LogTemplateLineValuesStateDetailed(Invoice template, string stateName, ILogger log)
+        private void LogTemplateLineValuesStateDetailed(Template template, string stateName, ILogger log)
         {
             if (template?.Lines == null)
             {
@@ -364,7 +364,7 @@ Grand Total: $166.30";
                 stateName, template.Lines.Count, linesWithValues, totalValueEntries);
         }
 
-        private DetailedLineValuesState CaptureDetailedLineValuesState(Invoice template, string stateName)
+        private DetailedLineValuesState CaptureDetailedLineValuesState(Template template, string stateName)
         {
             var state = new DetailedLineValuesState
             {

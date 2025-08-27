@@ -27,8 +27,8 @@ namespace AutoBotUtilities.Tests
         {
             _logger.Information("🔍 **DIRECT_DATABASE_VERIFICATION**: Checking actual database connection and Gift Card field mappings");
 
-            using (LogLevelOverride.Begin(LogEventLevel.Verbose))
-            {
+            // using (LogLevelOverride.Begin(LogEventLevel.Verbose)) // COMMENTED OUT: Preventing singleton conflicts
+            // {
                 using (var context = new OCRContext())
                 {
                     // Test database connectivity
@@ -115,7 +115,7 @@ namespace AutoBotUtilities.Tests
                         Assert.Fail($"Database connection failed: {ex.Message}");
                     }
                 }
-            }
+            // }
         }
     }
 }

@@ -86,7 +86,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                     {
                         _logger.Error("   - **MATCHED_TEMPLATES_COUNT**: {Count}", invoiceCtx.MatchedTemplates?.Count() ?? 0);
                         _logger.Error("   - **MATCHED_TEMPLATES**: {Templates}", 
-                            string.Join(", ", invoiceCtx.MatchedTemplates?.Select(t => $"{t.OcrInvoices?.Name}({t.FileType?.FileImporterInfos?.EntryType})") ?? new string[0]));
+                            string.Join(", ", invoiceCtx.MatchedTemplates?.Select(t => $"{t.OcrTemplates?.Name}({t.FileType?.FileImporterInfos?.EntryType})") ?? new string[0]));
                     }
                 }
 

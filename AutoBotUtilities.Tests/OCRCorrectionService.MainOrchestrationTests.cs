@@ -12,7 +12,6 @@ using System.Data.Entity;
 
 namespace AutoBotUtilities.Tests.Production
 {
-    using Invoices = OCR.Business.Entities.Invoices;
     using OCRCorrectionService = WaterNut.DataSpace.OCRCorrectionService;
 
     [TestFixture]
@@ -263,16 +262,16 @@ namespace AutoBotUtilities.Tests.Production
             var part = await ctx.Parts.FirstOrDefaultAsync(p => p.PartTypeId == partType.Id).ConfigureAwait(false); // Parts doesn't have Name property
             if (part == null)
             {
-                var testInvoiceTemplate = await ctx.Invoices.FirstOrDefaultAsync(i => i.Name.Contains("OrchTestTemplate")).ConfigureAwait(false) ?? await ctx.Invoices.FirstOrDefaultAsync().ConfigureAwait(false);
+                var testInvoiceTemplate = await ctx.Templates.FirstOrDefaultAsync(i => i.Name.Contains("OrchTestTemplate")).ConfigureAwait(false) ?? await ctx.Templates.FirstOrDefaultAsync().ConfigureAwait(false);
                 int invoiceIdToUse = testInvoiceTemplate?.Id ?? 0;
                 if (invoiceIdToUse == 0)
                 {
-                    var tempOcrInv = new Invoices { Name = $"OrchTestTemplate_{_testRunId}", TrackingState = TrackableEntities.TrackingState.Added };
-                    ctx.Invoices.Add(tempOcrInv);
+                    var tempOcrInv = new Templates { Name = $"OrchTestTemplate_{_testRunId}", TrackingState = TrackableEntities.TrackingState.Added };
+                    ctx.Templates.Add(tempOcrInv);
                     await ctx.SaveChangesAsync().ConfigureAwait(false);
                     invoiceIdToUse = tempOcrInv.Id;
                 }
-                part = new Parts { PartTypes = partType, PartTypeId = partType.Id, Invoices = testInvoiceTemplate, TrackingState = TrackableEntities.TrackingState.Added };
+                part = new Parts { PartTypes = partType, PartTypeId = partType.Id, Templates = testInvoiceTemplate, TrackingState = TrackableEntities.TrackingState.Added };
                 ctx.Parts.Add(part);
                 await ctx.SaveChangesAsync().ConfigureAwait(false);
             }

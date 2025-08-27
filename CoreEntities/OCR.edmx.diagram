@@ -6,10 +6,10 @@
     <edmx:Diagrams>
       <Diagram DiagramId="854f53cbf00c44538b256d1947980b44" Name="Data" ZoomLevel="74">
         <EntityTypeShape EntityType="WaterNutDBModel.End" Width="3.375" PointX="10.5" PointY="3.75" />
-        <EntityTypeShape EntityType="WaterNutDBModel.Invoices" Width="1.5" PointX="0.75" PointY="9.5" />
+        <EntityTypeShape EntityType="WaterNutDBModel.Templates" Width="1.5" PointX="0.75" PointY="9.5" />
         <EntityTypeShape EntityType="WaterNutDBModel.Parts" Width="1.5" PointX="3" PointY="7.75" />
         <EntityTypeShape EntityType="WaterNutDBModel.PartTypes" Width="1.5" PointX="0.5" PointY="7.375" />
-        <EntityTypeShape EntityType="WaterNutDBModel.RegularExpressions" Width="2.875" PointX="0.75" PointY="4" />
+        <EntityTypeShape EntityType="WaterNutDBModel.RegularExpressions" Width="2.875" PointX="0.5" PointY="2.125" />
         <EntityTypeShape EntityType="WaterNutDBModel.Start" Width="1.5" PointX="9.875" PointY="0.875" />
         <AssociationConnector Association="WaterNutDBModel.FK_OCR_End_OCR_Parts" />
         <AssociationConnector Association="WaterNutDBModel.FK_OCR_Parts_OCR_Invoices" />
@@ -26,16 +26,16 @@
         <AssociationConnector Association="WaterNutDBModel.FK_OCR_End_OCR_RegularExpressions" />
         <AssociationConnector Association="WaterNutDBModel.FK_OCR_Lines_OCR_RegularExpressions" />
         <AssociationConnector Association="WaterNutDBModel.FK_OCR_Start_OCR_RegularExpressions" />
-        <EntityTypeShape EntityType="WaterNutDBModel.InvoiceRegEx" Width="4.125" PointX="8.375" PointY="11" />
+        <EntityTypeShape EntityType="WaterNutDBModel.TemplateRegEx" Width="4.125" PointX="8.375" PointY="11" />
         <AssociationConnector Association="WaterNutDBModel.FK_OCR_InvoiceRegEx_OCR_Invoices" />
         <AssociationConnector Association="WaterNutDBModel.FK_OCR_InvoiceRegEx_OCR_RegularExpressions" />
         <AssociationConnector Association="WaterNutDBModel.FK_OCR_InvoiceRegEx_OCR_RegularExpressions1" />
         <EntityTypeShape EntityType="WaterNutDBModel.FieldFormatRegEx" Width="2.75" PointX="12.75" PointY="7.125" />
         <AssociationConnector Association="WaterNutDBModel.FK_OCR_FieldFormatRegEx_OCR_RegularExpressions" />
         <AssociationConnector Association="WaterNutDBModel.FK_OCR_FieldFormatRegEx_OCR_RegularExpressions1" />
-        <EntityTypeShape EntityType="WaterNutDBModel.InvoiceIdentificatonRegEx" Width="1.5" PointX="4.375" PointY="4.125" />
-        <AssociationConnector Association="WaterNutDBModel.FK_OCR_InvoiceIdentificatonRegEx_OCR_Invoices" />
-        <AssociationConnector Association="WaterNutDBModel.FK_OCR_InvoiceIdentificatonRegEx_OCR_RegularExpressions" />
+        <EntityTypeShape EntityType="WaterNutDBModel.TemplateIdentificatonRegEx" Width="1.5" PointX="4.375" PointY="4.375" />
+        <AssociationConnector Association="WaterNutDBModel.FK_OCR_TemplateIdentificatonRegEx_OCR_Invoices" />
+        <AssociationConnector Association="WaterNutDBModel.FK_OCR_TemplateIdentificatonRegEx_OCR_RegularExpressions" />
         <AssociationConnector Association="WaterNutDBModel.FK_OCR_Lines_OCR_Lines" />
         <EntityTypeShape EntityType="WaterNutDBModel.ImportErrors" Width="1.5" PointX="16.875" PointY="14.75" />
         <EntityTypeShape EntityType="WaterNutDBModel.OCR_FailedFields" Width="1.5" PointX="15" PointY="11.625" />
@@ -53,7 +53,11 @@
         <AssociationConnector Association="WaterNutDBModel.FK_OCR_FieldValue_OCR_Fields" />
         <EntityTypeShape EntityType="WaterNutDBModel.OCRCorrectionLearning" Width="2.125" PointX="11.375" PointY="14.75" />
         <EntityTypeShape EntityType="WaterNutDBModel.vw_OCRCorrectionAnalysis" Width="1.5" PointX="0.75" PointY="13.75" />
-      </Diagram>
+        <EntityTypeShape EntityType="WaterNutDBModel.OCR_KeywordDetectionLog" Width="1.5" PointX="3" PointY="19" />
+        <EntityTypeShape EntityType="WaterNutDBModel.OCR_TemplateTableMapping" Width="1.5" PointX="0.75" PointY="18.125" />
+        <AssociationConnector Association="WaterNutDBModel.FK_OCR_KeywordDetectionLog_Mapping" />
+        <AssociationConnector Association="WaterNutDBModel.FK_OCR_TemplateTableMapping_Parent" />
+        </Diagram>
       <Diagram DiagramId="2a65efe28dcf4398b5a10bc2fc674aa6" Name="Query" >
       </Diagram>
     </edmx:Diagrams>

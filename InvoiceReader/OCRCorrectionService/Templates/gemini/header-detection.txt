@@ -1,0 +1,92 @@
+COMPREHENSIVE OBJECT-ORIENTED INVOICE ANALYSIS (V14.0 - Gemini Contextual Framework):
+
+**COMPREHENSIVE ANALYTICAL CONTEXT:**
+You are performing holistic analysis of a structured business document using comprehensive understanding and contextual reasoning. Apply multi-dimensional contextual thinking to identify omissions and format inconsistencies across the entire document structure.
+
+**1. EXTRACTED FIELDS (Comprehensive View):**
+{{invoiceJson}}
+
+**2. CONTEXTUAL ANNOTATIONS AND RELATIONSHIPS:**
+{{annotatedContext}}
+
+**3. COMPREHENSIVE BALANCE VERIFICATION:**
+{{balanceCheckContext}}
+
+**4. COMPLETE OCR TEXT FOR CONTEXTUAL ANALYSIS:**
+{{fileText}}
+
+**🎯 GEMINI V14.0 COMPREHENSIVE COMPLETION REQUIREMENTS:**
+
+**CRITICAL CONTEXTUAL FRAMEWORK**: FOR EVERY ERROR YOU REPORT, YOU MUST PROVIDE ALL CONTEXTUAL COMPONENTS:
+
+1. ✅ **field**: The exact field name within the comprehensive business object schema (NEVER null)
+2. ✅ **correct_value**: The actual value discovered through contextual analysis of OCR text (NEVER null)  
+3. ✅ **error_type**: Comprehensive classification as "omission" or "format_correction" or "multi_field_omission" (NEVER null)
+4. ✅ **line_number**: The precise line number where contextual analysis located the value (NEVER 0 or null)
+5. ✅ **line_text**: The complete contextual line text from the OCR (NEVER null)
+6. ✅ **suggested_regex**: A comprehensively designed regex pattern that captures the value (NEVER null)
+7. ✅ **reasoning**: Comprehensive contextual explanation of why this value was missed (NEVER null)
+8. ✅ **group_id**: Unique identifier for transformation group (e.g., "invoice_total_1", "currency_transform_1") (NEVER null)
+9. ✅ **sequence_order**: Order within the group, starting from 1 (NEVER null or 0)
+10. ✅ **transformation_input**: Input source - "ocr_text" for first step, "previous_output" for subsequent steps (NEVER null)
+
+**❌ ABSOLUTELY FORBIDDEN CONTEXTUAL VIOLATIONS**:
+   - "Reasoning": null
+   - "LineNumber": 0  
+   - "LineText": null
+   - "SuggestedRegex": null
+
+**🚨 CRITICAL REGEX CONSTRUCTION FOR COMPREHENSIVE PATTERN MATCHING:**
+⚠️ **MANDATORY CONTEXTUAL PATTERN**: ALL regex patterns MUST use named capture groups: (?<FieldName>pattern)
+⚠️ **FORBIDDEN INCOMPLETE PATTERN**: Never use numbered capture groups: (pattern) - these lack contextual specificity
+
+**🚨 CRITICAL TRANSFORMATION GROUP STANDARDS:**
+
+**SINGLE ERROR EXAMPLE**: For standalone fields (like InvoiceTotal):
+   - `field` = "InvoiceTotal", `correct_value` = "123.45", `error_type` = "omission"
+   - `group_id` = "invoice_total_1", `sequence_order` = 1, `transformation_input` = "ocr_text"
+
+**MULTI-STEP TRANSFORMATION CHAIN**: For currency fields requiring transformation:
+   **Action 1 - Omission Error**: 
+   - `field` = "Currency", `correct_value` = "US$", `error_type` = "omission"
+   - `group_id` = "currency_transform_1", `sequence_order` = 1, `transformation_input` = "ocr_text"
+   **Action 2 - Format Correction**: 
+   - `field` = "Currency", `correct_value` = "USD", `error_type` = "format_correction"  
+   - `group_id` = "currency_transform_1", `sequence_order` = 2, `transformation_input` = "previous_output"
+
+**UNIVERSAL PRINCIPLE**: EVERY error is a grouped error - single errors are just groups with one item. This creates unified processing where all errors flow through the same transformation pipeline.
+
+**COMPREHENSIVE REASONING APPROACH:**
+1. **Holistic Document Understanding**: Analyze the entire document structure and relationships between fields
+2. **Contextual Pattern Recognition**: Use comprehensive understanding of invoice formats and business contexts
+3. **Multi-Dimensional Analysis**: Consider document layout, formatting patterns, and semantic relationships
+4. **Comprehensive Error Classification**: Categorize issues using holistic understanding of document intent
+
+**CONTEXTUAL ANALYSIS DIMENSIONS:**
+- **Semantic Context**: Understanding the business meaning and relationships between fields
+- **Layout Context**: Analyzing document structure and spatial relationships
+- **Format Context**: Recognizing formatting patterns and conventions
+- **Domain Context**: Applying knowledge of invoice structures and business processes
+
+**GEMINI COMPREHENSIVE OPTIMIZATION TECHNIQUES:**
+- **Multi-Perspective Analysis**: Examine each field from multiple contextual angles
+- **Relationship Mapping**: Understand how fields relate to each other contextually
+- **Pattern Synthesis**: Combine multiple patterns to create comprehensive extraction rules
+- **Contextual Validation**: Verify findings against comprehensive business logic
+
+**MANDATORY RESPONSE FORMAT:**
+- **If comprehensive analysis finds errors**: { "errors": [complete error objects with comprehensive contextual reasoning] }
+- **If holistic verification finds NO errors**: { "errors": [], "explanation": "Comprehensive contextual explanation of why no corrections are needed across all analysis dimensions" }
+
+**🚨 CRITICAL TOKEN MANAGEMENT (Gemini API Limit: 8,192 tokens):**
+- **Maximum Response Size**: Your comprehensive response must fit within 8,192 tokens
+- **Token Efficiency**: If approaching token limits, prioritize errors with highest contextual impact
+- **Response Strategy**: For extensive error sets, provide complete comprehensive analysis for priority items, then conclude gracefully
+- **Graceful Termination**: If nearing token limit, end with: "Additional contextual errors identified but response truncated due to token constraints"
+
+**GEMINI OPTIMIZATION NOTES:**
+- Apply comprehensive contextual understanding to each field analysis
+- Use multi-dimensional pattern recognition for robust regex construction  
+- Provide detailed contextual explanations that demonstrate comprehensive understanding
+- Ensure holistic consistency across all document elements and relationships
+- Balance comprehensive analysis with efficient token utilization for maximum contextual value

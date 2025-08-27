@@ -194,8 +194,8 @@ namespace AutoBotUtilities.Tests
                 var amazonFields = ctx.Fields
                     .Include(f => f.Lines)
                     .Include(f => f.Lines.Parts)
-                    .Include(f => f.Lines.Parts.Invoices)
-                    .Where(f => f.Lines.Parts.Invoices.Id == 5) // Amazon template
+                    .Include(f => f.Lines.Parts.Templates)
+                    .Where(f => f.Lines.Parts.Templates.Id == 5) // Amazon template
                     .GroupBy(f => f.LineId)
                     .Where(g => g.Count() > 1) // Only lines with multiple fields
                     .ToList();

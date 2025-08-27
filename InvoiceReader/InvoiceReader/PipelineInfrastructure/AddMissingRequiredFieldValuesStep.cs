@@ -50,8 +50,8 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
             foreach (var template in context.MatchedTemplates)
             {
-                 int? templateId = template?.OcrInvoices?.Id; // Safe access
-                 string templateName = template?.OcrInvoices?.Name ?? "Unknown";
+                 int? templateId = template?.OcrTemplates?.Id; // Safe access
+                 string templateName = template?.OcrTemplates?.Name ?? "Unknown";
                  context.Logger?.Debug("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
                      nameof(Execute), "TemplateProcessing", "Processing template.", $"FilePath: {filePath}, TemplateId: {templateId}, TemplateName: '{templateName}'", "");
 
@@ -130,7 +130,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
 
 
-        private void AddRequiredFieldValuesToDocuments(ILogger logger, Invoice template, // Add logger parameter
+        private void AddRequiredFieldValuesToDocuments(ILogger logger, Template template, // Add logger parameter
             List<Fields> requiredFieldsList)
         {
              // Use FilePath as the identifier
@@ -142,7 +142,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
             // Added check for template null
             if (template == null || template.CsvLines == null || !template.CsvLines.Any() || !(template.CsvLines.First() is List<IDictionary<string, object>> firstDocList))
             {
-                 int? templateId = template?.OcrInvoices?.Id; // Safe access
+                 int? templateId = template?.OcrTemplates?.Id; // Safe access
                  // Use FilePath as the identifier
                 logger?.Warning("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
                     nameof(AddRequiredFieldValuesToDocuments), "Validation", "CsvLines is null, empty, or not in the expected format.", $"TemplateId:{templateId}, File: {template?.FilePath ?? "Unknown"}", "Expected List<IDictionary<string, object>> format.");
@@ -180,7 +180,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                  nameof(AddRequiredFieldValuesToDocuments), "Completion", "Finished adding required field values to documents.", $"FilePath: {template?.FilePath ?? "Unknown"}", "");
         }
 
-       private List<Fields> GetRequiredFieldsWithValues(InvoiceProcessingContext context, Invoice template) // Add logger parameter
+       private List<Fields> GetRequiredFieldsWithValues(InvoiceProcessingContext context, Template template) // Add logger parameter
        {
             // Use FilePath as the identifier
            context.Logger?.Verbose("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",

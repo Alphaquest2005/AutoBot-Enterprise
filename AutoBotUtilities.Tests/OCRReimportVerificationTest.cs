@@ -40,10 +40,10 @@ namespace AutoBotUtilities.Tests
                     // Load Amazon template (ID 5) from database
                     using (var ocrContext = new OCRContext())
                     {
-                        var amazonTemplate = ocrContext.Invoices.FirstOrDefault(x => x.Id == 5);
+                        var amazonTemplate = ocrContext.Templates.FirstOrDefault(x => x.Id == 5);
                         Assert.That(amazonTemplate, Is.Not.Null, "Amazon template (ID 5) should exist in database");
 
-                        var template = new Invoice(amazonTemplate, _logger);
+                        var template = new Template(amazonTemplate, _logger);
                         _logger.Information("✅ **TEMPLATE_LOADED**: Amazon template loaded with {PartCount} parts", template.Parts?.Count ?? 0);
 
                         // Load sample text (Amazon invoice text)
@@ -117,10 +117,10 @@ Grand Total: $166.30";
                     // Load Amazon template (ID 5) from database
                     using (var ocrContext = new OCRContext())
                     {
-                        var amazonTemplate = ocrContext.Invoices.FirstOrDefault(x => x.Id == 5);
+                        var amazonTemplate = ocrContext.Templates.FirstOrDefault(x => x.Id == 5);
                         Assert.That(amazonTemplate, Is.Not.Null, "Amazon template (ID 5) should exist in database");
 
-                        var template = new Invoice(amazonTemplate, _logger);
+                        var template = new Template(amazonTemplate, _logger);
 
                         // Load sample text
                         var sampleText = @"Item(s) Subtotal: $161.95
@@ -250,7 +250,7 @@ Grand Total: $166.30";
             }
         }
 
-        private LineValuesState CaptureLineValuesState(Invoice template, string stateName)
+        private LineValuesState CaptureLineValuesState(Template template, string stateName)
         {
             var state = new LineValuesState
             {

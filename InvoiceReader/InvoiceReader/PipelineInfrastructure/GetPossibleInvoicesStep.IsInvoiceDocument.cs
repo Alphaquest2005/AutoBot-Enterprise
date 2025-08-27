@@ -10,11 +10,11 @@ namespace WaterNut.DataSpace.PipelineInfrastructure{
 
     public partial class GetPossibleInvoicesStep
 {
-    public static bool IsInvoiceDocument(Invoice invoice, string fileText, string filePath, ILogger logger) // Add logger parameter
+    public static bool IsInvoiceDocument(Template template, string fileText, string filePath, ILogger logger) // Add logger parameter
     {
         var methodStopwatch = Stopwatch.StartNew(); // Start stopwatch for method execution
         // Template null check happens in caller's Where clause
-        int invoiceId = invoice.OcrInvoices?.Id ?? -1; // Handle null OcrInvoices defensively
+        int invoiceId = template.OcrTemplates?.Id ?? -1; // Handle null OcrInvoices defensively
         logger?.Debug("METHOD_ENTRY: {MethodName}. Intention: {MethodIntention}. InitialState: [{InitialStateContext}]",
             nameof(IsInvoiceDocument), "Check if document matches a specific invoice template", $"InvoiceId: {invoiceId}, FilePath: {filePath}");
 
@@ -23,8 +23,8 @@ namespace WaterNut.DataSpace.PipelineInfrastructure{
 
         try
         {
-            // Check if InvoiceIdentificatonRegEx collection exists and has items
-            if (invoice.OcrInvoices?.InvoiceIdentificatonRegEx == null || !invoice.OcrInvoices.InvoiceIdentificatonRegEx.Any())
+            // Check if TemplateIdentificatonRegEx collection exists and has items
+            if (template.OcrTemplates?.TemplateIdentificatonRegEx == null || !template.OcrTemplates.TemplateIdentificatonRegEx.Any())
             {
                 logger?.Warning("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}] Cannot determine if it's an invoice document based on regex.",
                     nameof(IsInvoiceDocument), "Validation", "No Template Identification Regex patterns found.", $"InvoiceId: {invoiceId}");
@@ -39,7 +39,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure{
 
             bool isMatch = false;
             // Iterate through regex patterns, ensuring inner objects aren't null
-            foreach (var regexInfo in invoice.OcrInvoices.InvoiceIdentificatonRegEx.Where(r => r?.OCR_RegularExpressions != null))
+            foreach (var regexInfo in template.OcrTemplates.TemplateIdentificatonRegEx.Where(r => r?.OCR_RegularExpressions != null))
             {
                 string pattern = regexInfo.OCR_RegularExpressions.RegEx;
                 int regexId = regexInfo.OCR_RegularExpressions.Id;
@@ -74,7 +74,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure{
                     logger?.Debug("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})",
                         $"CanPartStart for Invoice {invoiceId}", "SYNC_EXPECTED");
                     var canPartStartStopwatch = Stopwatch.StartNew();
-                    var res = invoice.Parts.All(x => CanPartStart(fileText, x, logger) && x.ChildParts.All(z => CanPartStart(fileText, z, logger))); // Pass logger
+                    var res = template.Parts.All(x => CanPartStart(fileText, x, logger) && x.ChildParts.All(z => CanPartStart(fileText, z, logger))); // Pass logger
                     canPartStartStopwatch.Stop();
                     logger?.Debug("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
                         $"CanPartStart for Invoice {invoiceId}", canPartStartStopwatch.ElapsedMilliseconds, "Sync call returned");

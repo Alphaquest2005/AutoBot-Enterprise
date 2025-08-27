@@ -48,8 +48,8 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
             foreach (var template in context.MatchedTemplates)
             {
-                 int? templateId = template?.OcrInvoices?.Id; // Safe access
-                 string templateName = template?.OcrInvoices?.Name ?? "Unknown";
+                 int? templateId = template?.OcrTemplates?.Id; // Safe access
+                 string templateName = template?.OcrTemplates?.Name ?? "Unknown";
                  context.Logger?.Debug("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
                      nameof(Execute), "TemplateProcessing", "Processing template.", $"FilePath: {filePath}, TemplateId: {templateId}, TemplateName: '{templateName}'", "");
 
@@ -71,7 +71,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                          nameof(Execute), "ConditionCheck", "Checking condition to add Name/SupplierCode.", $"FilePath: {filePath}, TemplateId: {templateId}", "");
                      bool conditionMet = template.CsvLines.Count == 1 &&
                                          template.Lines != null &&
-                                         template.OcrInvoices != null &&
+                                         template.OcrTemplates != null &&
                                          !template.Lines.All(x =>
                                              x?.OCR_Lines != null &&
                                              "Name, SupplierCode".Contains(x.OCR_Lines.Name));
@@ -99,16 +99,16 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                                  if (!doc.ContainsKey("SupplierCode"))
                                  {
                                      context.Logger?.Verbose("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
-                                         nameof(Execute), "AddingSupplierCode", "Adding SupplierCode to document.", $"SupplierCode: '{template.OcrInvoices.Name}', FilePath: {filePath}, TemplateId: {templateId}", "");
-                                     doc.Add("SupplierCode", template.OcrInvoices.Name);
+                                         nameof(Execute), "AddingSupplierCode", "Adding SupplierCode to document.", $"SupplierCode: '{template.OcrTemplates.Name}', FilePath: {filePath}, TemplateId: {templateId}", "");
+                                     doc.Add("SupplierCode", template.OcrTemplates.Name);
                                  }
                                  
                                  // Add Name if missing
                                  if (!doc.ContainsKey("Name"))
                                  {
                                      context.Logger?.Verbose("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
-                                         nameof(Execute), "AddingName", "Adding Name to document.", $"Name: '{template.OcrInvoices.Name}', FilePath: {filePath}, TemplateId: {templateId}", "");
-                                     doc.Add("Name", template.OcrInvoices.Name);
+                                         nameof(Execute), "AddingName", "Adding Name to document.", $"Name: '{template.OcrTemplates.Name}', FilePath: {filePath}, TemplateId: {templateId}", "");
+                                     doc.Add("Name", template.OcrTemplates.Name);
                                  }
                              }
                               context.Logger?.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",

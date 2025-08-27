@@ -8,12 +8,12 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
     public partial class HandleErrorStateStep
     {
-        private static void AddExistingFailedLines(ILogger logger, Invoice template, List<Line> failedlines) // Add logger parameter
+        private static void AddExistingFailedLines(ILogger logger, Template template, List<Line> failedlines) // Add logger parameter
         {
           
 
 
-                int? templateId = template?.OcrInvoices?.Id;
+                int? templateId = template?.OcrTemplates?.Id;
                 logger?.Verbose("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
                     nameof(AddExistingFailedLines), "Processing", "Adding existing failed lines from template parts.", $"TemplateId: {templateId}", "");
                 // Null checks

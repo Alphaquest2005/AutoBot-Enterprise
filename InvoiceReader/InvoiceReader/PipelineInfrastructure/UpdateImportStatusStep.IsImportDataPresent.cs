@@ -23,10 +23,10 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
             // Corrected logging for null OcrInvoices
             foreach (var template in context.MatchedTemplates)
             {
-                if (template?.OcrInvoices == null)
+                if (template?.OcrTemplates == null)
                 {
                     logger?.Warning("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
-                        nameof(IsImportDataPresent), "Validation", "Required data missing: A template's OcrInvoices is null.", $"TemplateId: {template?.OcrInvoices?.Id ?? -1}", "");
+                        nameof(IsImportDataPresent), "Validation", "Required data missing: A template's OcrInvoices is null.", $"TemplateId: {template?.OcrTemplates?.Id ?? -1}", "");
                     // Decide if this should cause the whole step to fail or just skip this template.
                     // Based on Execute logic, missing data for a template causes 'continue', so return false here.
                     return false;

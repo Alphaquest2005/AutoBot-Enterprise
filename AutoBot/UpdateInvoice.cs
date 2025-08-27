@@ -1,19 +1,20 @@
-﻿using System;
+﻿using CoreEntities.Business.Entities;
+using MoreLinq;
+using OCR.Business.Entities;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks; // Added for Task
-using CoreEntities.Business.Entities;
-using MoreLinq;
-using OCR.Business.Entities;
 using TrackableEntities;
 using WaterNut.Business.Services.Utils;
 using WaterNut.DataSpace;
 
 namespace AutoBot
 {
+    
     using Serilog;
 
     public class UpdateInvoice
@@ -303,10 +304,10 @@ namespace AutoBot
                     var pIsMultiLine = paramInfo.ContainsKey("IsMultiLine") ? bool.Parse(paramInfo["IsMultiLine"]) : (bool?)null;
 
                     var line = ctx.Lines.Include(x => x.Fields).FirstOrDefault(x =>
-                        x.Parts.Invoices.Name == pInvoice && x.Parts.PartTypes.Name == pPart && x.Name == pLine);
+                        x.Parts.Templates.Name == pInvoice && x.Parts.PartTypes.Name == pPart && x.Name == pLine);
                     if (line == null) return;
-                    var part = ctx.Parts.FirstOrDefault(x => x.Invoices.Name == pInvoice && x.PartTypes.Name == pPart);
-                    var invoice = ctx.Invoices.FirstOrDefault(x => x.Name == pInvoice);
+                    var part = ctx.Parts.FirstOrDefault(x => x.Templates.Name == pInvoice && x.PartTypes.Name == pPart);
+                    var invoice = ctx.Templates.FirstOrDefault(x => x.Name == pInvoice);
 
                     if (part == null) return;
                     if (invoice == null) return;
@@ -395,11 +396,11 @@ namespace AutoBot
                         : (bool?)null;
 
                     var line = ctx.Lines.FirstOrDefault(x =>
-                        x.Parts.Invoices.Name == pInvoice && x.Parts.PartTypes.Name == pPart && x.Name == pLine);
+                        x.Parts.Templates.Name == pInvoice && x.Parts.PartTypes.Name == pPart && x.Name == pLine);
 
 
-                    var part = ctx.Parts.FirstOrDefault(x => x.Invoices.Name == pInvoice && x.PartTypes.Name == pPart);
-                    var invoice = ctx.Invoices.FirstOrDefault(x => x.Name == pInvoice);
+                    var part = ctx.Parts.FirstOrDefault(x => x.Templates.Name == pInvoice && x.PartTypes.Name == pPart);
+                    var invoice = ctx.Templates.FirstOrDefault(x => x.Name == pInvoice);
 
                     if (part == null) return;
                     if (invoice == null) return;
@@ -485,13 +486,13 @@ namespace AutoBot
                     var pParentPart = paramInfo.ContainsKey("ParentPart") ? paramInfo["ParentPart"] : null;
 
                     var part = ctx.Parts.Include(x => x.Start)
-                        .FirstOrDefault(x => x.Invoices.Name == pInvoice && x.PartTypes.Name == pPart);
-                    var invoice = ctx.Invoices.FirstOrDefault(x => x.Name == pInvoice);
+                        .FirstOrDefault(x => x.Templates.Name == pInvoice && x.PartTypes.Name == pPart);
+                    var invoice = ctx.Templates.FirstOrDefault(x => x.Name == pInvoice);
 
                     if (part != null) return;
                     if (invoice == null) return;
                     var parentPart = ctx.Parts.FirstOrDefault(x =>
-                        x.PartTypes.Name == pParentPart && x.Invoices.Name == pInvoice);
+                        x.PartTypes.Name == pParentPart && x.Templates.Name == pInvoice);
 
                     if (pParentPart != null && parentPart == null) return;
 
@@ -505,7 +506,7 @@ namespace AutoBot
                     part = new Parts(true) {
                         TrackingState = TrackingState.Added,
                         PartTypes = partType,
-                        Invoices =invoice,
+                        Templates =invoice,
                         Start = new List<Start>(){new Start(true){TrackingState = TrackingState.Added, RegularExpressions = startRegex}},
 
                     };
@@ -544,7 +545,7 @@ namespace AutoBot
                     // 🔍 **COMPREHENSIVE_LOGGING**: Track AddInvoice execution
                     Console.WriteLine($"🔍 **ADDINVOICE_ENTRY**: AddInvoice method ENTERED for Name='{pInvoice}', IDRegex='{pIDRegex}', DocumentType='{pDocumentType}'");
                     
-                    var invoice = ctx.Invoices.Include(x => x.InvoiceIdentificatonRegEx)
+                    var invoice = ctx.Templates.Include(x => x.TemplateIdentificatonRegEx)
                         .FirstOrDefault(x => x.Name == pInvoice);
                         
                     if (invoice != null) 
@@ -554,10 +555,10 @@ namespace AutoBot
                     }
                     
                     Console.WriteLine($"🔍 **ADDINVOICE_CREATING**: Creating new invoice template for '{pInvoice}'");
-                    invoice = new Invoices() {Name = pInvoice,
-                        InvoiceIdentificatonRegEx = new List<InvoiceIdentificatonRegEx>()
+                    invoice = new Templates() {Name = pInvoice,
+                        TemplateIdentificatonRegEx = new List<TemplateIdentificatonRegEx>()
                         {
-                            new InvoiceIdentificatonRegEx(true)
+                            new TemplateIdentificatonRegEx(true)
                             {
                                 OCR_RegularExpressions = new RegularExpressions(true)
                                 {
@@ -575,7 +576,7 @@ namespace AutoBot
                             && x.FileImporterInfos.EntryType == (pDocumentType??FileTypeManager.EntryTypes.ShipmentInvoice) && x.FileImporterInfos.Format == FileTypeManager.FileFormats.PDF).Id
 
                     };
-                    ctx.Invoices.Add(invoice);
+                    ctx.Templates.Add(invoice);
                     Console.WriteLine($"🔍 **ADDINVOICE_SAVING**: Saving invoice '{pInvoice}' to database");
                     ctx.SaveChanges();
                     Console.WriteLine($"🔍 **ADDINVOICE_SUCCESS**: Invoice '{pInvoice}' successfully created with ID={invoice.Id}");
@@ -599,7 +600,7 @@ namespace AutoBot
                 using (var ctx = new OCRContext())
                 {
                     var iname = paramInfo["Name"];
-                    var invoices = ctx.Invoices.Include("InvoiceIdentificatonRegEx.OCR_RegularExpressions").Where(x => x.Name.Contains(iname)).ToList();
+                    var invoices = ctx.Templates.Include("TemplateIdentificatonRegEx.OCR_RegularExpressions").Where(x => x.Name.Contains(iname)).ToList();
 
                     var pdfs = new DirectoryInfo(fileTypes.FilePath).GetFiles("*.pdf");
                     var files = new Dictionary<string, string>();
@@ -611,16 +612,16 @@ namespace AutoBot
                     }
                     foreach (var invoice in invoices)
                     {
-                        lines.AddRange(ctx.Parts.Where(x => x.Invoices.Name == invoice.Name).SelectMany(z => z.Start)
+                        lines.AddRange(ctx.Parts.Where(x => x.Templates.Name == invoice.Name).SelectMany(z => z.Start)
                             .Select(q => q.RegularExpressions).ToList());
 
-                        lines.AddRange(ctx.Parts.Where(x => x.Invoices.Name == invoice.Name).SelectMany(z => z.ChildParts)
+                        lines.AddRange(ctx.Parts.Where(x => x.Templates.Name == invoice.Name).SelectMany(z => z.ChildParts)
                             .SelectMany(q => q.ChildPart.Start.Select(p => p.RegularExpressions)).ToList());
 
-                        lines.AddRange(ctx.Parts.Where(x => x.Invoices.Name == invoice.Name).SelectMany(z => z.Lines)
+                        lines.AddRange(ctx.Parts.Where(x => x.Templates.Name == invoice.Name).SelectMany(z => z.Lines)
                             .Select(q => q.RegularExpressions).ToList());
 
-                        lines.AddRange(ctx.Parts.Where(x => x.Invoices.Name == invoice.Name).SelectMany(z => z.ChildParts)
+                        lines.AddRange(ctx.Parts.Where(x => x.Templates.Name == invoice.Name).SelectMany(z => z.ChildParts)
                             .SelectMany(q => q.ChildPart.Lines.Select(p => p.RegularExpressions)).ToList());
 
 

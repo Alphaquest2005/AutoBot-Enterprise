@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using Serilog;
@@ -60,20 +61,25 @@ namespace AutoBotUtilities.Tests
 
             // **STEP 2**: Create template using the consolidated production method
             _logger.Information("🚀 **TEMPLATE_CREATION_START**: Creating MANGO template from DeepSeek analysis");
-            var template = await _ocrService.CreateInvoiceTemplateAsync(mangoOcrText, mangoTextPath).ConfigureAwait(false);
+            var templates = await _ocrService.CreateInvoiceTemplateAsync(mangoOcrText, mangoTextPath).ConfigureAwait(false);
 
             // **STEP 3**: Verify results and log comprehensive details
-            if (template != null)
+            if (templates != null && templates.Any())
             {
-                _logger.Information("✅ **VERIFICATION_SUCCESS**: Template created successfully");
-                _logger.Information("   - Template ID: {TemplateId}", template.OcrInvoices?.Id);
-                _logger.Information("   - Template Name: {TemplateName}", template.OcrInvoices?.Name);
+                _logger.Information("✅ **VERIFICATION_SUCCESS**: Templates created successfully");
+                _logger.Information("   - Templates Count: {TemplateCount}", templates.Count);
+                
+                // Use first template for existing single-template test logic
+                var template = templates.First();
+                
+                _logger.Information("   - Template ID: {TemplateId}", template.OcrTemplates?.Id);
+                _logger.Information("   - Template Name: {TemplateName}", template.OcrTemplates?.Name);
                 _logger.Information("   - Parts Count: {PartsCount}", template.Parts?.Count ?? 0);
                 _logger.Information("   - Lines Count: {LinesCount}", template.Lines?.Count ?? 0);
                 _logger.Information("   - FileType: {FileType}", template.FileType?.FileImporterInfos?.EntryType);
 
                 // Verify minimum expected entities were created
-                Assert.That(template.OcrInvoices?.Id, Is.Not.Null, "Template should have been created with an ID");
+                Assert.That(template.OcrTemplates?.Id, Is.Not.Null, "Template should have been created with an ID");
                 Assert.That(template.Parts?.Count ?? 0, Is.GreaterThan(0), "At least one part should have been created");
                 Assert.That(template.Lines?.Count ?? 0, Is.GreaterThan(0), "At least one line should have been created");
 
@@ -81,8 +87,8 @@ namespace AutoBotUtilities.Tests
             }
             else
             {
-                _logger.Error("❌ **TEMPLATE_CREATION_FAILED**: CreateInvoiceTemplateAsync returned null");
-                Assert.Fail("Template creation failed: CreateInvoiceTemplateAsync returned null");
+                _logger.Error("❌ **TEMPLATE_CREATION_FAILED**: CreateInvoiceTemplateAsync returned null or empty");
+                Assert.Fail("Template creation failed: CreateInvoiceTemplateAsync returned null or empty");
             }
         }
 
@@ -119,12 +125,15 @@ namespace AutoBotUtilities.Tests
                 supplierName, ocrText.Length, sampleInvoice.InvoiceNo);
 
             // 4. Create the template (this is the main production call)
-            var template = await _ocrService.CreateInvoiceTemplateAsync(ocrText, "production_sample.pdf").ConfigureAwait(false);
+            var templates = await _ocrService.CreateInvoiceTemplateAsync(ocrText, "production_sample.pdf").ConfigureAwait(false);
 
             // 5. Handle the result (production error handling)
-            if (template != null)
+            if (templates != null && templates.Any())
             {
-                _logger.Information("🎯 **PRODUCTION_SUCCESS**: Template '{TemplateName}' created for future invoice processing", template.OcrInvoices?.Name);
+                _logger.Information("🎯 **PRODUCTION_SUCCESS**: {TemplateCount} templates created for future invoice processing", templates.Count);
+                
+                // Use first template for existing single-template test logic
+                var template = templates.First();
                 
                 // In production, you might:
                 // - Log the template creation for audit
@@ -132,18 +141,18 @@ namespace AutoBotUtilities.Tests
                 // - Notify administrators of the new supplier
                 // - Re-process the original invoice with the new template
                 
-                Assert.Pass($"Template created successfully: ID={template.OcrInvoices?.Id}, Name={template.OcrInvoices?.Name}");
+                Assert.Pass($"Templates created successfully: Count={templates.Count}, First Template: ID={template.OcrTemplates?.Id}, Name={template.OcrTemplates?.Name}");
             }
             else
             {
-                _logger.Error("❌ **PRODUCTION_FAILURE**: Template creation failed - CreateInvoiceTemplateAsync returned null");
+                _logger.Error("❌ **PRODUCTION_FAILURE**: Template creation failed - CreateInvoiceTemplateAsync returned null or empty");
                 
                 // In production, you might:
                 // - Alert administrators to manual template creation needed
                 // - Queue the invoice for manual processing
                 // - Log the failure for analysis
                 
-                Assert.Fail("Production template creation failed: CreateInvoiceTemplateAsync returned null");
+                Assert.Fail("Production template creation failed: CreateInvoiceTemplateAsync returned null or empty");
             }
         }
 

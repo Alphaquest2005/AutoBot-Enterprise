@@ -209,23 +209,6 @@ public Nullable<double> Confidence
        
        
                 
-                [MaxLength(100, ErrorMessage = "InvoiceType has a max length of 100 letters ")]
-public string InvoiceType
-		{ 
-		    get { return this.ocrcorrectionlearning.InvoiceType; }
-			set
-			{
-			    if (value == this.ocrcorrectionlearning.InvoiceType) return;
-				this.ocrcorrectionlearning.InvoiceType = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("InvoiceType");
-			}
-		}
-     
-
-       
-       
-                
                 [MaxLength(500, ErrorMessage = "FilePath has a max length of 500 letters ")]
 public string FilePath
 		{ 
@@ -394,6 +377,57 @@ public Nullable<int> RegexId
 				this.ocrcorrectionlearning.RegexId = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
 				NotifyPropertyChanged("RegexId");
+			}
+		}
+     
+
+       
+       
+                
+                
+public string SuggestedRegex
+		{ 
+		    get { return this.ocrcorrectionlearning.SuggestedRegex; }
+			set
+			{
+			    if (value == this.ocrcorrectionlearning.SuggestedRegex) return;
+				this.ocrcorrectionlearning.SuggestedRegex = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("SuggestedRegex");
+			}
+		}
+     
+
+       
+       
+                
+                [MaxLength(450, ErrorMessage = "SuggestedRegex_Indexed has a max length of 450 letters ")]
+public string SuggestedRegex_Indexed
+		{ 
+		    get { return this.ocrcorrectionlearning.SuggestedRegex_Indexed; }
+			set
+			{
+			    if (value == this.ocrcorrectionlearning.SuggestedRegex_Indexed) return;
+				this.ocrcorrectionlearning.SuggestedRegex_Indexed = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("SuggestedRegex_Indexed");
+			}
+		}
+     
+
+       
+       
+                
+                [MaxLength(100, ErrorMessage = "DocumentType has a max length of 100 letters ")]
+public string DocumentType
+		{ 
+		    get { return this.ocrcorrectionlearning.DocumentType; }
+			set
+			{
+			    if (value == this.ocrcorrectionlearning.DocumentType) return;
+				this.ocrcorrectionlearning.DocumentType = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("DocumentType");
 			}
 		}
      

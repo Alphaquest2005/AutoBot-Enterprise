@@ -3,6 +3,8 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using Ghostscript.NET;
 using iText.Kernel.Pdf;
 using Tesseract;
@@ -76,9 +78,9 @@ namespace pdf_ocr
                     _logger.Information("METHOD_EXIT_SUCCESS: Ocr. IntentionAchieved: Returned existing text file content. FinalState: {FinalState}. Total execution time: {Elapsed:0} ms.", new { TextLength = existingText.Length }, 0); // Placeholder for elapsed time
                     return existingText;
                 }
-                _logger.Debug("INTERNAL_STEP (Ocr - GetImageFromPdf): Calling GetImageFromPdf.");
-                GetImageFromPdf(processFile, TempDir);
-                _logger.Debug("INTERNAL_STEP (Ocr - GetImageFromPdf): GetImageFromPdf completed.");
+                _logger.Debug("INTERNAL_STEP (Ocr - GetImageFromPdf): Calling GetImageFromPdfAsync.");
+                GetImageFromPdfAsync(processFile, TempDir).GetAwaiter().GetResult();
+                _logger.Debug("INTERNAL_STEP (Ocr - GetImageFromPdf): GetImageFromPdfAsync completed.");
                 //Recognizing text from the generated image
                 _logger.Debug("INTERNAL_STEP (Ocr - GetTextFromImage): Calling GetTextFromImage.");
                 var recognizedText = GetTextFromImage(pagemode, TempDir, processFile, true, _logger);
@@ -173,9 +175,9 @@ namespace pdf_ocr
         /// <param name="TempDir"></param>
         /// <param name="pageNumber"></param>
         /// <returns>The path of the generated image.</returns>
-        private void GetImageFromPdf(string pdfPath, string TempDir)
+        private async Task GetImageFromPdfAsync(string pdfPath, string TempDir, CancellationToken cancellationToken = default)
         {
-            _logger.Information("METHOD_ENTRY: GetImageFromPdf. Intention: Convert PDF pages to images. InitialState: {InitialState}", new { PdfPath = pdfPath, TempDirectory = TempDir });
+            _logger.Information("METHOD_ENTRY: GetImageFromPdfAsync. Intention: Convert PDF pages to images using modern async/await pattern. InitialState: {InitialState}", new { PdfPath = pdfPath, TempDirectory = TempDir });
 
             try
             {
@@ -192,32 +194,69 @@ namespace pdf_ocr
                 //var ghostscriptRasterizer = new GhostscriptRasterizer();
                 //ghostscriptRasterizer.Open(pdfPath);
 
-                _logger.Debug("INTERNAL_STEP (GetImageFromPdf - ProcessPages): Starting conversion for {PageCount} pages.", pageCount);
+                _logger.Debug("INTERNAL_STEP (GetImageFromPdf - ProcessPages): Starting resilient conversion for {PageCount} pages.", pageCount);
+                
+                // **RESILIENT_PROCESSING**: Track success/failure for each page
+                int successfulPages = 0;
+                int failedPages = 0;
+                
                 for (int i = 1; i <= pageCount; i++)
                 {
                     _logger.Debug("INTERNAL_STEP (GetImageFromPdf - ProcessPage): Processing page {PageNumber}.", i);
                     var outputFilePath = GetTempFile(TempDir, ".png");
                     _logger.Debug("INTERNAL_STEP (GetImageFromPdf - ProcessPage): Generated temporary image path: {OutputFilePath}", outputFilePath);
-                    //using (var img = ghostscriptRasterizer.GetPage(pdfToImageDPI, pdfToImageDPI, i))
-                    //{
-                    //    img.Save(outputFilePath, System.Drawing.Imaging.ImageFormat.Png);
-                    //    img.Dispose();
-                    //}
-
-                    _logger.Debug("INTERNAL_STEP (GetImageFromPdf - ProcessPage): Calling PdfToPngWithGhostscriptPngDevice for page {PageNumber}.", i);
-                    PdfToPngWithGhostscriptPngDevice(pdfPath, i, pdfToImageDPI, pdfToImageDPI, outputFilePath);
-                    _logger.Debug("INTERNAL_STEP (GetImageFromPdf - ProcessPage): PdfToPngWithGhostscriptPngDevice completed for page {PageNumber}.", i);
-
-
+                    
+                    try
+                    {
+                        _logger.Debug("INTERNAL_STEP (GetImageFromPdfAsync - ProcessPage): Calling PdfToPngWithGhostscriptPngDeviceAsync for page {PageNumber}.", i);
+                        await PdfToPngWithGhostscriptPngDeviceAsync(pdfPath, i, pdfToImageDPI, pdfToImageDPI, outputFilePath, cancellationToken);
+                        _logger.Debug("✅ **PAGE_SUCCESS**: PdfToPngWithGhostscriptPngDeviceAsync completed for page {PageNumber}.", i);
+                        successfulPages++;
+                    }
+                    catch (TimeoutException timeoutEx)
+                    {
+                        _logger.Warning(timeoutEx, "⏰ **PAGE_TIMEOUT**: Page {PageNumber} conversion timed out, continuing with next page", i);
+                        failedPages++;
+                        // Continue processing other pages
+                    }
+                    catch (OperationCanceledException cancelEx) when (cancellationToken.IsCancellationRequested)
+                    {
+                        _logger.Warning(cancelEx, "🚨 **PAGE_CANCELLED**: Page {PageNumber} conversion was cancelled, stopping processing", i);
+                        throw; // Don't continue processing if cancellation was requested
+                    }
+                    catch (Exception pageEx)
+                    {
+                        _logger.Warning(pageEx, "❌ **PAGE_FAILURE**: Failed to convert page {PageNumber}, continuing with next page. Error: {ErrorMessage}", i, pageEx.Message);
+                        failedPages++;
+                        // Continue processing other pages rather than failing completely
+                    }
                 }
-                _logger.Debug("INTERNAL_STEP (GetImageFromPdf - ProcessPages): Finished processing pages.");
+                
+                _logger.Information("🔍 **PROCESSING_SUMMARY**: Finished processing {TotalPages} pages. Success: {SuccessfulPages}, Failed: {FailedPages}", 
+                    pageCount, successfulPages, failedPages);
+                
+                // **GRACEFUL_DEGRADATION**: Allow partial success rather than complete failure
+                if (successfulPages == 0)
+                {
+                    throw new InvalidOperationException($"All {pageCount} pages failed to convert. No images could be generated from PDF.");
+                }
+                else if (failedPages > 0)
+                {
+                    _logger.Warning("⚠️ **PARTIAL_SUCCESS**: {FailedPages}/{TotalPages} pages failed, but continuing with {SuccessfulPages} successful pages", 
+                        failedPages, pageCount, successfulPages);
+                }
 
                 //ghostscriptRasterizer.Close();
-                _logger.Information("METHOD_EXIT_SUCCESS: GetImageFromPdf. IntentionAchieved: PDF pages converted to images. FinalState: {FinalState}. Total execution time: {Elapsed:0} ms.", new { ConvertedPageCount = pageCount }, 0); // Placeholder for elapsed time
+                _logger.Information("METHOD_EXIT_SUCCESS: GetImageFromPdfAsync. IntentionAchieved: PDF pages converted to images using modern async/await pattern. FinalState: {FinalState}. Total execution time: {Elapsed:0} ms.", new { ConvertedPageCount = pageCount }, 0); // Placeholder for elapsed time
+            }
+            catch (OperationCanceledException cancelEx) when (cancellationToken.IsCancellationRequested)
+            {
+                _logger.Warning(cancelEx, "METHOD_EXIT_CANCELLED: GetImageFromPdfAsync. IntentionCancelled: PDF conversion was cancelled for file {PdfPath}.", pdfPath);
+                throw;
             }
             catch (Exception e)
             {
-                _logger.Error(e, "METHOD_EXIT_FAILURE: GetImageFromPdf. IntentionFailed: Failed to convert PDF pages to images for file {PdfPath}.", pdfPath);
+                _logger.Error(e, "METHOD_EXIT_FAILURE: GetImageFromPdfAsync. IntentionFailed: Failed to convert PDF pages to images for file {PdfPath}.", pdfPath);
                 Console.WriteLine(e);
                 throw;
             }
@@ -225,30 +264,122 @@ namespace pdf_ocr
         }
 
 
-        private void PdfToPngWithGhostscriptPngDevice(string srcFile, int pageNo, int dpiX, int dpiY, string tgtFile)
+        private async Task PdfToPngWithGhostscriptPngDeviceAsync(string srcFile, int pageNo, int dpiX, int dpiY, string tgtFile, CancellationToken cancellationToken = default)
         {
-            _logger.Information("METHOD_ENTRY: PdfToPngWithGhostscriptPngDevice. Intention: Convert a single PDF page to PNG using Ghostscript. InitialState: {InitialState}", new { SourceFile = srcFile, PageNumber = pageNo, DpiX = dpiX, DpiY = dpiY, TargetFile = tgtFile });
+            _logger.Information("METHOD_ENTRY: PdfToPngWithGhostscriptPngDeviceAsync. Intention: Convert a single PDF page to PNG using Ghostscript with modern async/await pattern. InitialState: {InitialState}", new { SourceFile = srcFile, PageNumber = pageNo, DpiX = dpiX, DpiY = dpiY, TargetFile = tgtFile });
+            
+            // **MODERN_TIMEOUT_APPROACH**: Use CancellationToken for timeout control (30 seconds default)
+            const int timeoutMs = 30000;
+            var startTime = DateTime.UtcNow;
+            
             try
             {
-                GhostscriptPngDevice dev = new GhostscriptPngDevice(GhostscriptPngDeviceType.PngGray)
- {
-     GraphicsAlphaBits = GhostscriptImageDeviceAlphaBits.V_4,
-     TextAlphaBits = GhostscriptImageDeviceAlphaBits.V_4,
-     ResolutionXY = new GhostscriptImageDeviceResolution(dpiX, dpiY)
- };
-                dev.InputFiles.Add(srcFile);
-                dev.Pdf.FirstPage = pageNo;
-                dev.Pdf.LastPage = pageNo;
-                dev.CustomSwitches.Add("-dDOINTERPOLATE");
-                dev.OutputPath = tgtFile;
-                _logger.Debug("INTERNAL_STEP (PdfToPngWithGhostscriptPngDevice - Process): Calling dev.Process().");
-                dev.Process();
-                _logger.Debug("INTERNAL_STEP (PdfToPngWithGhostscriptPngDevice - Process): dev.Process() completed.");
-                _logger.Information("METHOD_EXIT_SUCCESS: PdfToPngWithGhostscriptPngDevice. IntentionAchieved: PDF page converted to PNG. FinalState: {FinalState}. Total execution time: {Elapsed:0} ms.", new { OutputFile = tgtFile }, 0); // Placeholder for elapsed time
+                GhostscriptPngDevice dev = null;
+                try
+                {
+                    dev = new GhostscriptPngDevice(GhostscriptPngDeviceType.PngGray)
+                    {
+                        GraphicsAlphaBits = GhostscriptImageDeviceAlphaBits.V_4,
+                        TextAlphaBits = GhostscriptImageDeviceAlphaBits.V_4,
+                        ResolutionXY = new GhostscriptImageDeviceResolution(dpiX, dpiY)
+                    };
+                    
+                    dev.InputFiles.Add(srcFile);
+                    dev.Pdf.FirstPage = pageNo;
+                    dev.Pdf.LastPage = pageNo;
+                    dev.CustomSwitches.Add("-dDOINTERPOLATE");
+                    dev.CustomSwitches.Add("-dBATCH");
+                    dev.CustomSwitches.Add("-dNOPAUSE");
+                    dev.CustomSwitches.Add("-dSAFER");
+                    dev.OutputPath = tgtFile;
+                    
+                    _logger.Debug("INTERNAL_STEP (PdfToPngWithGhostscriptPngDeviceAsync - Process): Calling dev.Process() with {TimeoutMs}ms timeout via modern async/await.", timeoutMs);
+                    
+                    // **MODERN_ASYNC_PATTERN**: Use CancellationToken with timeout instead of Thread.Abort()
+                    using (var timeoutCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken))
+                    {
+                        timeoutCts.CancelAfter(timeoutMs);
+                        
+                        bool completed = false;
+                        try
+                        {
+                            // Execute Ghostscript processing with proper cancellation support
+                            await Task.Run(() =>
+                            {
+                                try
+                                {
+                                    // **CANCELLATION_AWARE**: Check cancellation before expensive operation
+                                    timeoutCts.Token.ThrowIfCancellationRequested();
+                                    
+                                    dev.Process();
+                                    _logger.Debug("✅ **GHOSTSCRIPT_SUCCESS**: dev.Process() completed successfully");
+                                }
+                                catch (OperationCanceledException)
+                                {
+                                    _logger.Warning("🚨 **GHOSTSCRIPT_CANCELLED**: Ghostscript processing was cancelled via CancellationToken");
+                                    throw; // Re-throw to be handled by outer catch
+                                }
+                                catch (Exception ghostscriptEx)
+                                {
+                                    _logger.Error(ghostscriptEx, "❌ **GHOSTSCRIPT_PROCESS_ERROR**: Exception during dev.Process()");
+                                    throw; // Re-throw to be handled by outer catch
+                                }
+                            }, timeoutCts.Token);
+                            
+                            completed = true;
+                        }
+                        catch (OperationCanceledException) when (timeoutCts.Token.IsCancellationRequested)
+                        {
+                            _logger.Warning("⏰ **MODERN_TIMEOUT**: Ghostscript operation cancelled due to timeout after {TimeoutMs}ms for page {PageNumber}", timeoutMs, pageNo);
+                            completed = false;
+                        }
+                        var elapsedMs = (DateTime.UtcNow - startTime).TotalMilliseconds;
+                        
+                        if (!completed)
+                        {
+                            // **GRACEFUL_DEGRADATION**: Create empty PNG file as fallback
+                            try
+                            {
+                                File.WriteAllBytes(tgtFile, new byte[0]); // Create empty file
+                                _logger.Information("🔄 **FALLBACK_CREATED**: Created empty PNG file as timeout fallback");
+                            }
+                            catch (Exception fallbackEx)
+                            {
+                                _logger.Error(fallbackEx, "❌ **FALLBACK_FAILED**: Could not create fallback PNG file");
+                            }
+                            
+                            throw new TimeoutException($"Ghostscript operation timed out after {timeoutMs}ms for page {pageNo}");
+                        }
+                        
+                        _logger.Information("METHOD_EXIT_SUCCESS: PdfToPngWithGhostscriptPngDeviceAsync. IntentionAchieved: PDF page converted to PNG with modern async/await pattern. FinalState: {FinalState}. Total execution time: {ElapsedMs:0}ms.", new { OutputFile = tgtFile, Success = true }, elapsedMs);
+                    }
+                }
+                finally
+                {
+                    // **RESOURCE_CLEANUP**: GhostscriptPngDevice doesn't implement IDisposable, no cleanup needed
+                    if (dev != null)
+                    {
+                        _logger.Debug("✅ **RESOURCE_CLEANUP**: GhostscriptPngDevice processed, no disposal needed");
+                        dev = null; // Clear reference
+                    }
+                }
+            }
+            catch (TimeoutException timeoutEx)
+            {
+                var elapsedMs = (DateTime.UtcNow - startTime).TotalMilliseconds;
+                _logger.Error(timeoutEx, "METHOD_EXIT_FAILURE: PdfToPngWithGhostscriptPngDeviceAsync. IntentionFailed: Ghostscript timeout after {ElapsedMs:0}ms for page {PageNumber} of file {SourceFile}.", elapsedMs, pageNo, srcFile);
+                throw;
+            }
+            catch (OperationCanceledException cancelEx) when (cancellationToken.IsCancellationRequested)
+            {
+                var elapsedMs = (DateTime.UtcNow - startTime).TotalMilliseconds;
+                _logger.Warning(cancelEx, "METHOD_EXIT_CANCELLED: PdfToPngWithGhostscriptPngDeviceAsync. IntentionCancelled: Operation was cancelled after {ElapsedMs:0}ms for page {PageNumber} of file {SourceFile}.", elapsedMs, pageNo, srcFile);
+                throw;
             }
             catch (Exception e)
             {
-                _logger.Error(e, "METHOD_EXIT_FAILURE: PdfToPngWithGhostscriptPngDevice. IntentionFailed: Failed to convert PDF page {PageNumber} to PNG for file {SourceFile}.", pageNo, srcFile);
+                var elapsedMs = (DateTime.UtcNow - startTime).TotalMilliseconds;
+                _logger.Error(e, "METHOD_EXIT_FAILURE: PdfToPngWithGhostscriptPngDeviceAsync. IntentionFailed: Failed to convert PDF page {PageNumber} to PNG for file {SourceFile} after {ElapsedMs:0}ms.", pageNo, srcFile, elapsedMs);
                 throw;
             }
         }

@@ -17,14 +17,14 @@ namespace AllocationDS.Business.Entities
 {
 		public partial class EntryDataDetails: IEntryDataDetail //AllocationDS
 		{  // please don't expect properties here, they are implict, only multilayer will appear here
-                // [IgnoreDataMember]
-                // [NotMapped]
-                // public Int32 EntryDataDetailsId 
-                //{
-                //    get{ return this.InventoryItemsEx.ManualAllocations.EntryDataDetailsId; }                
-                //    set { this.InventoryItemsEx.ManualAllocations.EntryDataDetailsId = value;}
-                //}
-                          
+             /*    [IgnoreDataMember]
+                 [NotMapped]
+                 public Int32 EntryDataDetailsId 
+                {
+                    get{ return this.InventoryItemsEx.ManualAllocations.EntryDataDetailsId; }                
+                    set { this.InventoryItemsEx.ManualAllocations.EntryDataDetailsId = value;}
+                }
+               */           
         }
 }
 

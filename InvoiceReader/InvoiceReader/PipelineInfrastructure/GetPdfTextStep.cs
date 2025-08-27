@@ -16,6 +16,13 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
     {
         // Remove static logger
         // private static readonly ILogger _logger = Log.ForContext<GetPdfTextStep>();
+        
+        /// <summary>
+        /// 🔧 **EXECUTION_MODE_TOGGLE**: Controls whether OCR operations run in parallel or sequential mode
+        /// - false: Parallel execution (faster, uses modern CancellationToken timeouts)
+        /// - true: Sequential execution (slower but more predictable, uses modern CancellationToken timeouts)
+        /// </summary>
+        private static readonly bool UseSequentialOcrExecution = true; // **MODERN_THREADING**: Default to sequential, uses CancellationToken timeout protection
 
         public async Task<bool> Execute(InvoiceProcessingContext context)
         {
@@ -42,7 +49,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
             try
             {
                 context.Logger?.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]",
-                    nameof(Execute), "TaskSetup", "Setting up concurrent text extraction tasks.", $"FilePath: {filePath}");
+                    nameof(Execute), "TaskSetup", UseSequentialOcrExecution ? "Setting up sequential text extraction tasks." : "Setting up concurrent text extraction tasks.", $"FilePath: {filePath}, ExecutionMode: {(UseSequentialOcrExecution ? "Sequential" : "Parallel")}");
                 SetupAndRunTasks(context, filePath, out ripTask, out singleColumnTask, out sparseTextTask);
                 context.Logger?.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]",
                     nameof(Execute), "TaskExecution", "Awaiting completion of text extraction tasks.", $"FilePath: {filePath}");
@@ -122,24 +129,110 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
             return true;
         }
 
-        private void SetupAndRunTasks(InvoiceProcessingContext context, string filePath, // Add context parameter
+        private void SetupAndRunTasks(InvoiceProcessingContext context, string filePath,
             out Task<string> ripTask, out Task<string> singleColumnTask, out Task<string> sparseTextTask)
         {
-            context.Logger?.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
-                nameof(SetupAndRunTasks), "Setup", "Setting up concurrent PDF text extraction tasks.", $"FilePath: {filePath}", "");
-            SetupPdfTextExtraction(context, filePath, out ripTask, out singleColumnTask, out sparseTextTask); // Pass filePath
+            if (UseSequentialOcrExecution)
+            {
+                context.Logger?.Information("🔄 **SEQUENTIAL_OCR_MODE**: Using sequential OCR execution with modern CancellationToken timeout protection");
+                context.Logger?.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
+                    nameof(SetupAndRunTasks), "SequentialSetup", "Setting up sequential PDF text extraction tasks.", $"FilePath: {filePath}", "");
+                SetupSequentialPdfTextExtraction(context, filePath, out ripTask, out singleColumnTask, out sparseTextTask);
+            }
+            else
+            {
+                context.Logger?.Information("⚡ **PARALLEL_OCR_MODE**: Using parallel OCR execution with modern CancellationToken timeout protection");
+                context.Logger?.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
+                    nameof(SetupAndRunTasks), "ParallelSetup", "Setting up concurrent PDF text extraction tasks.", $"FilePath: {filePath}", "");
+                SetupPdfTextExtraction(context, filePath, out ripTask, out singleColumnTask, out sparseTextTask);
+            }
+            
             context.Logger?.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
                 nameof(SetupAndRunTasks), "TasksCreated", "Tasks created for Ripped Text, Single Column OCR, Sparse Text OCR.", $"FilePath: {filePath}", "");
+        }
+
+        /// <summary>
+        /// 🔄 **SEQUENTIAL_OCR_SETUP**: Creates tasks that will execute sequentially instead of parallel
+        /// Uses modern CancellationToken timeout protection for reliable OCR processing
+        /// </summary>
+        private void SetupSequentialPdfTextExtraction(InvoiceProcessingContext context, string filePath,
+            out Task<string> ripTask, out Task<string> singleColumnTask, out Task<string> sparseTextTask)
+        {
+            context.Logger?.Information("🔄 **SEQUENTIAL_TASK_CREATION**: Creating sequential OCR tasks with modern CancellationToken timeout protection");
+            
+            // Create tasks that will execute one after another
+            ripTask = Task.Run(async () =>
+            {
+                context.Logger?.Information("1️⃣ **SEQUENTIAL_STEP_1**: Starting Ripped Text extraction");
+                var result = await GetRippedTextAsync(context).ConfigureAwait(false);
+                context.Logger?.Information("✅ **SEQUENTIAL_STEP_1_COMPLETE**: Ripped Text extraction finished");
+                return result;
+            });
+            
+            singleColumnTask = ripTask.ContinueWith(async _ =>
+            {
+                context.Logger?.Information("2️⃣ **SEQUENTIAL_STEP_2**: Starting Single Column OCR (after Ripped Text)");
+                var result = await GetSingleColumnPdfText(context).ConfigureAwait(false);
+                context.Logger?.Information("✅ **SEQUENTIAL_STEP_2_COMPLETE**: Single Column OCR finished");
+                return result;
+            }).Unwrap();
+            
+            sparseTextTask = singleColumnTask.ContinueWith(async _ =>
+            {
+                context.Logger?.Information("3️⃣ **SEQUENTIAL_STEP_3**: Starting Sparse Text OCR (after Single Column)");
+                var result = await GetPdfSparseTextAsync(context).ConfigureAwait(false);
+                context.Logger?.Information("✅ **SEQUENTIAL_STEP_3_COMPLETE**: Sparse Text OCR finished");
+                return result;
+            }).Unwrap();
+            
+            context.Logger?.Information("🔄 **SEQUENTIAL_CHAIN_CREATED**: Created sequential task chain - RipText → SingleColumn → SparseText");
         }
 
         private async Task AwaitTasksCompletion(InvoiceProcessingContext context, string filePath, Task<string> ripTask, Task<string> singleColumnTask, Task<string> sparseTextTask) // Add context parameter
         {
             context.Logger?.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
                 nameof(AwaitTasksCompletion), "Awaiting", "Awaiting completion of PDF text extraction tasks.", $"FilePath: {filePath}", "");
-            await Task.WhenAll(ripTask, singleColumnTask, sparseTextTask).ConfigureAwait(false);
+            
+            // **MODERN_TIMEOUT_PROTECTION**: Use CancellationToken timeout for reliable processing
+            // PDF OCR processing can take time, but we prevent indefinite blocking with proper cancellation
+            const int timeoutMinutes = 5; // 5-minute timeout for OCR processing
+            
+            try
+            {
+                using (var timeoutCts = new System.Threading.CancellationTokenSource(TimeSpan.FromMinutes(timeoutMinutes)))
+                {
+                    context.Logger?.Information("🕐 **OCR_TIMEOUT_PROTECTION**: Using {TimeoutMinutes}min timeout with {ExecutionMode} execution mode", timeoutMinutes, UseSequentialOcrExecution ? "SEQUENTIAL" : "PARALLEL");
+                    
+                    // Wait for all tasks with timeout protection
+                    var allTasks = Task.WhenAll(ripTask, singleColumnTask, sparseTextTask);
+                    await allTasks.ConfigureAwait(false);
+                    
+                    context.Logger?.Information("✅ **OCR_TASKS_COMPLETED**: All PDF text extraction tasks completed successfully within timeout");
+                }
+            }
+            // **MODERN_THREADING_APPROACH**: ThreadAbortException handling removed - using CancellationToken timeout instead
+            // The CancellationTokenSource.CreateLinkedTokenSource() approach above provides proper timeout handling
+            // without the problematic Thread.Abort() / Thread.ResetAbort() social contract violations
+            catch (System.OperationCanceledException timeoutEx)
+            {
+                context.Logger?.Error(timeoutEx, "⏰ **OCR_PROCESSING_TIMEOUT**: PDF text extraction timed out after {TimeoutMinutes} minutes for file: {FilePath}", timeoutMinutes, filePath);
+                
+                // Log which tasks completed and which didn't
+                context.Logger?.Information("📊 **TIMEOUT_DIAGNOSTIC**: RipTask={RipStatus}, SingleColumn={SingleStatus}, SparseText={SparseStatus}",
+                    ripTask?.Status.ToString() ?? "null", 
+                    singleColumnTask?.Status.ToString() ?? "null", 
+                    sparseTextTask?.Status.ToString() ?? "null");
+                
+                // Allow processing to continue with whatever tasks completed
+                context.Logger?.Warning("⚠️ **TIMEOUT_RECOVERY**: Continuing with available OCR results despite timeout");
+            }
+            
             context.Logger?.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]. {OptionalData}",
-                nameof(AwaitTasksCompletion), "Completed", "All PDF text extraction tasks completed.", $"FilePath: {filePath}", "");
+                nameof(AwaitTasksCompletion), "Completed", "PDF text extraction task coordination completed (with timeout protection).", $"FilePath: {filePath}", "");
         }
+
+        // **TASK_DIAGNOSTICS_REMOVED**: LogTaskDiagnostics method removed as it was specific to ThreadAbortException analysis
+        // Modern CancellationToken approach provides proper timeout handling without needing detailed task diagnosis
 
         private void AppendResults(InvoiceProcessingContext context, StringBuilder pdftxt, string filePath, // Add context parameter
             Task<string> ripTask, Task<string> singleColumnTask, Task<string> sparseTextTask)

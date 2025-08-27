@@ -9,7 +9,7 @@ using Core.Common; // Added for BetterExpando if needed elsewhere
 
 namespace WaterNut.DataSpace
 {
-    public partial class Invoice
+    public partial class Template
     {
         // Logger instance is defined in the main Template.cs partial class file.
 
@@ -78,7 +78,7 @@ namespace WaterNut.DataSpace
 
         private dynamic GetValue(string field)
         {
-            int? invoiceId = this.OcrInvoices?.Id;
+            int? invoiceId = this.OcrTemplates?.Id;
             _logger.Debug("Entering GetValue(string field) for Field: '{Field}', InvoiceId: {InvoiceId}", field,
                 invoiceId);
             try

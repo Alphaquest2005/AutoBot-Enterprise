@@ -61,10 +61,10 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
 
 
-        public IEnumerable<Invoice> Templates { get; set; } = Enumerable.Empty<Invoice>();
+        public IEnumerable<Template> Templates { get; set; } = Enumerable.Empty<Template>();
 
         // Added to store templates identified as matching the document
-        public IEnumerable<Invoice> MatchedTemplates { get; set; } = Enumerable.Empty<Invoice>();
+        public IEnumerable<Template> MatchedTemplates { get; set; } = Enumerable.Empty<Template>();
 
 
         public Dictionary<string, (string file, string, ImportStatus Success)> Imports { get; set; } = new Dictionary<string, (string file, string, ImportStatus Success)>();

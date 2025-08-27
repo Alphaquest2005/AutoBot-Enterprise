@@ -157,7 +157,7 @@
 //            {
 //                templates = ctx.Invoices
 //                    .Include(x => x.Parts)
-//                    .Include("InvoiceIdentificatonRegEx.OCR_RegularExpressions")
+//                    .Include("TemplateIdentificatonRegEx.OCR_RegularExpressions")
 //                    .Include("RegEx.RegEx")
 //                    .Include("RegEx.ReplacementRegEx")
 //                    .Include("Parts.RecuringPart")
@@ -321,7 +321,7 @@
 
 //        public static bool IsInvoiceDocument(Invoices invoice, string fileText)
 //        {
-//            return invoice.InvoiceIdentificatonRegEx.Any() && invoice.InvoiceIdentificatonRegEx.Any(x =>
+//            return invoice.TemplateIdentificatonRegEx.Any() && invoice.TemplateIdentificatonRegEx.Any(x =>
 //                Regex.IsMatch(fileText,
 //                    x.OCR_RegularExpressions.RegEx,
 //                    RegexOptions.IgnoreCase |RegexOptions.Multiline | RegexOptions.ExplicitCapture));

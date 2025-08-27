@@ -1,0 +1,16 @@
+{
+  "deepseek": {
+    "Endpoint": "https://api.deepseek.com/v1/chat/completions",
+    "Model": "deepseek-chat",
+    "ApiKeyEnvVar": "DEEPSEEK_API_KEY",
+    "MaxTokens": 8192,
+    "Temperature": 0.3
+  },
+  "gemini": {
+    "Endpoint": "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent",
+    "Model": "gemini-pro", 
+    "ApiKeyEnvVar": "GEMINI_API_KEY",
+    "MaxTokens": 8192,
+    "Temperature": 0.3
+  }
+}

@@ -216,5 +216,67 @@ namespace WaterNut.Business.Services.Utils.LlmApi
             var error = responseObj?["error"]?["message"]?.Value<string>();
             if (!string.IsNullOrEmpty(error)) { Logger.Error("[Gemini] API returned an error message in response body: {ErrorMessage}", error); } // Changed LogError to Error
         }
+
+        /// <summary>
+        /// Raw prompt method for OCR correction integration.
+        /// Provides Gemini fallback capability when DeepSeek fails.
+        /// Matches the interface for seamless provider switching.
+        /// </summary>
+        public async Task<string> GetResponseAsync(string prompt, double? temperature = null, int? maxTokens = null, CancellationToken cancellationToken = default)
+        {
+            if (string.IsNullOrWhiteSpace(prompt))
+                throw new ArgumentException("Prompt cannot be null or empty", nameof(prompt));
+
+            Logger.Information("[{Provider}] Raw prompt request (FALLBACK) - Length: {PromptLength}, Temperature: {Temperature}, MaxTokens: {MaxTokens}", 
+                ProviderType, prompt.Length, temperature ?? DefaultTemperature, maxTokens ?? DefaultMaxTokens);
+
+            try
+            {
+                // Use provided values or defaults
+                var temp = temperature ?? DefaultTemperature;
+                var tokens = maxTokens ?? DefaultMaxTokens;
+                
+                // Create request body matching Gemini API format
+                var requestBody = new
+                {
+                    contents = new[]
+                    {
+                        new
+                        {
+                            parts = new[] { new { text = prompt } }
+                        }
+                    },
+                    generationConfig = new
+                    {
+                        temperature = temp,
+                        maxOutputTokens = tokens
+                    }
+                };
+                
+                // Use base class PostRequestAsync with proper error handling and retry
+                var apiUrl = GetApiUrl(Model);
+                var responseJson = await PostRequestAsync(apiUrl, requestBody, AddAuthentication, cancellationToken);
+                
+                // Parse Gemini response format and extract content
+                var responseObj = JObject.Parse(responseJson);
+                CheckAndLogApiError(responseObj); // Check for API errors
+                
+                var content = responseObj["candidates"]?[0]?["content"]?["parts"]?[0]?["text"]?.Value<string>();
+                
+                if (string.IsNullOrEmpty(content))
+                {
+                    Logger.Error("[{Provider}] No content found in API response", ProviderType);
+                    throw new InvalidOperationException($"{ProviderType} API returned empty content");
+                }
+                
+                Logger.Information("[{Provider}] Raw prompt response received (FALLBACK SUCCESS) - Length: {ResponseLength}", ProviderType, content.Length);
+                return content;
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex, "[{Provider}] Raw prompt request failed: {ErrorMessage}", ProviderType, ex.Message);
+                throw; // Re-throw for retry policy handling
+            }
+        }
     }
 }

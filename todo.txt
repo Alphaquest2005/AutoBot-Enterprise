@@ -1,1 +1,157 @@
 previous document update not working after allocating
+
+"      "field": "Currency",
+      "correct_value": "US$",
+      "error_type": "omission",
+      "line_number": 6,
+      "line_text": "Long jumpsuit with back opening @ 18.99",
+      "suggested_regex": "(?<Currency>US\\$)",
+      "reasoning": "The currency 'US$' is used throughout the document but was not captured in the Currency field." this is a regression in prompt suppose to specify that the  currency code
+      is suppose to be the 3 letter international currreny code... and use a format correction error along with ommission error to convert "US$" to "USD" ultrathink this
+
+      "Based on the detailed requirements and the original invoice text provided, I'll analyze and identify the missing or incomplete InvoiceDetail business objects following the object-oriented approach.
+
+**Analysis of Invoice Text:**
+The invoice contains multiple line items with varying formats, some spanning multiple lines. Key observations:
+1. Items have descriptions, prices, and often reference codes
+2. Some items have quantity indicators (e.g., "3 Pack")
+3. Prices appear with different formats (e.g., "10,99" vs "10.99")
+4. Descriptions sometimes span multiple lines
+5. Some items are fragmented across lines
+
+**Identified InvoiceDetail Objects:**
+
+```json
+{
+  "errors": [
+    {
+      "field": "InvoiceDetail_SingleColumn_MultiField_Lines1_4",
+      "extracted_value": "",
+      "correct_value": {
+        "ItemDescription": "High-waist straight shorts",
+        "UnitPrice": "3.3",
+        "ItemCode": "570003742302"
+      },
+      "line_text": "High-waist straight shorts \" 3.3\n\nref. 570003742302 ts\n: L US$",
+      "line_number": 1,
+      "confidence": 0.95,
+      "error_type": "multi_field_omission",
+      "entity_type": "InvoiceDetails",
+      "suggested_regex": "(?<ItemDescription>[A-Za-z\\s]+)\\s*[\\\"@]?\\s*(?<UnitPrice>\\d+[\\.,]\\d{2})\\s*\\n\\s*ref\\.\\s*(?<ItemCode>\\d+\\w*)",
+      "captured_fields": ["ItemDescription", "UnitPrice", "ItemCode"],
+      "field_corrections": [
+        {"field_name": "UnitPrice", "pattern": "(\\d+),(\\d{2})", "replacement": "$1.$2"}
+      ],
+      "reasoning": "Complete InvoiceDetail object spanning multiple lines with description, price and reference code. Requires multi-line capture."
+    },
+    {
+      "field": "InvoiceDetail_SingleColumn_MultiField_Lines5_8",
+      "extracted_value": "",
+      "correct_value": {
+        "ItemDescription": "Long jumpsuit with back opening",
+        "UnitPrice": "18.99",
+        "ItemCode": "570502122243"
+      },
+      "line_text": "Long jumpsuit with back opening @ 18.99\n\nref. 570502122243\nr U & US$",
+      "line_number": 5,
+      "confidence": 0.95,
+      "error_type": "multi_field_omission",
+      "entity_type": "InvoiceDetails",
+      "suggested_regex": "(?<ItemDescription>[A-Za-z\\s]+)\\s*[\\\"@]?\\s*(?<UnitPrice>\\d+[\\.,]\\d{2})\\s*\\n\\s*ref\\.\\s*(?<ItemCode>\\d+\\w*)",
+      "captured_fields": ["ItemDescription", "UnitPrice", "ItemCode"],
+      "reasoning": "Complete InvoiceDetail object with multi-line description, price indicator and reference code."
+    },
+    {
+      "field": "InvoiceDetail_SingleColumn_MultiField_Lines9_12",
+      "extracted_value": "",
+      "correct_value": {
+        "ItemDescription": "Mixed spike necklace",
+        "UnitPrice": "10.99",
+        "ItemCode": "57077738990R"
+      },
+      "line_text": "Mixed spike necklace 10,99\n\nref. 57077738990R\n\nSubtotal USS 196.33",
+      "line_number": 9,
+      "confidence": 0.95,
+      "error_type": "multi_field_omission",
+      "entity_type": "InvoiceDetails",
+      "suggested_regex": "(?<ItemDescription>[A-Za-z\\s]+)\\s*[\\\"@]?\\s*(?<UnitPrice>\\d+[\\.,]\\d{2})\\s*\\n\\s*ref\\.\\s*(?<ItemCode>\\d+\\w*)",
+      "captured_fields": ["ItemDescription", "UnitPrice", "ItemCode"],
+      "field_corrections": [
+        {"field_name": "UnitPrice", "pattern": "(\\d+),(\\d{2})", "replacement": "$1.$2"}
+      ],
+      "reasoning": "Complete InvoiceDetail object with comma decimal separator that needs correction to standard format."
+    },
+    {
+      "field": "InvoiceDetail_SingleColumn_MultiField_Lines40_43",
+      "extracted_value": "",
+      "correct_value": {
+        "ItemDescription": "Floral-print jumpsuit with tie",
+        "UnitPrice": "14.99",
+        "ItemCode": "570528822346"
+      },
+      "line_text": "Floral-print jumpsuit with tie 14.99\n\nref. 570528822346",
+      "line_number": 40,
+      "confidence": 0.95,
+      "error_type": "multi_field_omission",
+      "entity_type": "InvoiceDetails",
+      "suggested_regex": "(?<ItemDescription>[A-Za-z\\s\\-]+)\\s*(?<UnitPrice>\\d+\\.\\d{2})\\s*\\n\\s*ref\\.\\s*(?<ItemCode>\\d+\\w*)",
+      "captured_fields": ["ItemDescription", "UnitPrice", "ItemCode"],
+      "reasoning": "Complete InvoiceDetail object with description containing hyphen and standard price format."
+    },
+    {
+      "field": "InvoiceDetail_SingleColumn_MultiField_Lines44_47",
+      "extracted_value": "",
+      "correct_value": {
+        "ItemDescription": "Crystal pendant earrings",
+        "UnitPrice": "10.99",
+        "ItemCode": "57047743990R"
+      },
+      "line_text": "Crystal pendant earrings 10.99\n\nj j ref. 57047743990R",
+      "line_number": 44,
+      "confidence": 0.95,
+      "error_type": "multi_field_omission",
+      "entity_type": "InvoiceDetails",
+      "suggested_regex": "(?<ItemDescription>[A-Za-z\\s]+)\\s*(?<UnitPrice>\\d+\\.\\d{2})\\s*\\n\\s*ref\\.\\s*(?<ItemCode>\\d+\\w*)",
+      "captured_fields": ["ItemDescription", "UnitPrice", "ItemCode"],
+      "reasoning": "Complete InvoiceDetail object with OCR artifacts that need to be handled by the flexible regex pattern."
+    }
+  ]
+}
+```
+
+**Key Implementation Notes:**
+1. Used a single flexible regex pattern that works across all items in the section
+2. Added field corrections for OCR artifacts like comma decimal separators
+3. Each error represents a complete InvoiceDetail business object
+4. Line numbers reference the original text positions
+5. All patterns use named capture groups as required
+6. Multi-line items are captured as single objects
+7. The regex handles variations in price formatting and optional delimiters
+8. Confidence scores reflect high certainty in the patterns
+
+The patterns are designed to be generalizable across thousands of different products while still accurately capturing the specific items in this invoice. The field corrections handle common OCR artifacts while maintaining the integrity of the business objects."
+i notice there is comments before and after this response... is the parsing taking out these comments? and creating good errors?
+
+"{
+        "ItemDescription": "Long jumpsuit with back opening",
+        "UnitPrice": "18.99",
+        "ItemCode": "570502122243"
+      }"  i also noticed the correct value like this is the code capable of handling multiple values form the correct_value property... like this...
+
+    "DetectHeaderFieldErrorsAndOmissionsAsync" ensure this method is serializing outputs and input variables
+
+    change invoice => template in the database too
+
+
+    "            private void WatcherOnCreatedAsync(object sender, FileSystemEventArgs fileSystemEventArgs)
+            {
+                if (fileSystemEventArgs.Name.EndsWith(".csv"))
+                {
+                    var fileType = fileSystemEventArgs.Name.Substring(0, fileSystemEventArgs.Name.IndexOf("-"));
+                    var docSet = AsycudaDocumentSetExRepository.Instance
+                        .GetAsycudaDocumentSetExsByExpression(
+                            $"Declarant_Reference_Number == \"{_fileTypeDocumentSets["fileType"]}\"").Result.First();
+                    var t = EntryDataExRepository.Instance.SaveCSV(fileSystemEventArgs.FullPath, fileType,
+                        docSet.AsycudaDocumentSetId, true, _logger);
+                }
+            }" reanalyse this code and make the fix using business.services

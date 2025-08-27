@@ -39,7 +39,7 @@ namespace AutoBotUtilities.Tests.Production
             {
                 // Clean up any existing test corrections first
                 var existingCorrections = ctx.OCRCorrectionLearning
-                    .Where(x => x.CreatedBy == "PresetTest" && x.InvoiceType == "Amazon")
+                    .Where(x => x.CreatedBy == "PresetTest" && x.DocumentType == "Amazon")
                     .ToList();
                 
                 if (existingCorrections.Any())
@@ -63,7 +63,7 @@ namespace AutoBotUtilities.Tests.Production
                     Success = true,
                     LineNumber = 35, // From Amazon invoice text
                     LineText = "Gift Card Amount: -$6.99",
-                    InvoiceType = "Amazon",
+                    DocumentType = "Amazon",
                     FilePath = "Amazon.com - Order 112-9126443-1163432.pdf",
                     CreatedDate = DateTime.Now,
                     CreatedBy = "PresetTest",
@@ -90,7 +90,7 @@ namespace AutoBotUtilities.Tests.Production
                     Success = true,
                     LineNumber = 32, // From Amazon invoice text
                     LineText = "Free Shipping: -$0.46\nFree Shipping: -$6.53",
-                    InvoiceType = "Amazon",
+                    DocumentType = "Amazon",
                     FilePath = "Amazon.com - Order 112-9126443-1163432.pdf",
                     CreatedDate = DateTime.Now,
                     CreatedBy = "PresetTest",
@@ -120,7 +120,7 @@ namespace AutoBotUtilities.Tests.Production
 
                 // Verify they were saved correctly
                 var savedCorrections = ctx.OCRCorrectionLearning
-                    .Where(x => x.CreatedBy == "PresetTest" && x.InvoiceType == "Amazon")
+                    .Where(x => x.CreatedBy == "PresetTest" && x.DocumentType == "Amazon")
                     .ToList();
 
                 Assert.That(savedCorrections.Count, Is.EqualTo(2), "Should have saved 2 preset corrections");
@@ -147,7 +147,7 @@ namespace AutoBotUtilities.Tests.Production
             using (var ctx = new OCRContext())
             {
                 var corrections = ctx.OCRCorrectionLearning
-                    .Where(x => x.CreatedBy == "PresetTest" && x.InvoiceType == "Amazon")
+                    .Where(x => x.CreatedBy == "PresetTest" && x.DocumentType == "Amazon")
                     .OrderBy(x => x.FieldName)
                     .ToList();
 

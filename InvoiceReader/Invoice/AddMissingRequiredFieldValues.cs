@@ -7,14 +7,14 @@ using MoreLinq; // Added for DistinctBy
 
 namespace WaterNut.DataSpace
 {
-    public partial class Invoice
+    public partial class Template
     {
         // Logger instance is defined in the main Template.cs partial class file.
 
         private void AddMissingRequiredFieldValues()
         {
             // Use instance property for logging context if available (e.g., OcrInvoices.Id)
-            int? invoiceId = this.OcrInvoices?.Id;
+            int? invoiceId = this.OcrTemplates?.Id;
             _logger.Debug("Starting AddMissingRequiredFieldValues for InvoiceId: {InvoiceId}", invoiceId);
 
             try

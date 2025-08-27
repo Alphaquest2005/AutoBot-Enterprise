@@ -40,10 +40,10 @@ namespace AutoBotUtilities.Tests
                     // Load Amazon template (ID 5) from database with comprehensive logging
                     using (var ocrContext = new OCRContext())
                     {
-                        var amazonTemplate = ocrContext.Invoices.FirstOrDefault(x => x.Id == 5);
+                        var amazonTemplate = ocrContext.Templates.FirstOrDefault(x => x.Id == 5);
                         Assert.That(amazonTemplate, Is.Not.Null, "Amazon template (ID 5) should exist in database");
 
-                        var template = new Invoice(amazonTemplate, _logger);
+                        var template = new Template(amazonTemplate, _logger);
                         _logger.Information("✅ **TEMPLATE_LOADED**: Amazon template loaded with {PartCount} parts and {LineCount} lines", 
                             template.Parts?.Count ?? 0, template.Lines?.Count ?? 0);
 
@@ -135,7 +135,7 @@ Amazon.com Services, Inc
 SupplierCode: Amazon.com";
         }
 
-        private void LogTemplateRegexPatterns(Invoice template, string stage, ILogger log)
+        private void LogTemplateRegexPatterns(Template template, string stage, ILogger log)
         {
             log.Information("📋 **TEMPLATE_REGEX_PATTERNS_{Stage}**: Analyzing template patterns", stage);
             
@@ -176,7 +176,7 @@ SupplierCode: Amazon.com";
             }
         }
 
-        private void LogComprehensiveLineValuesState(Invoice template, string stage, ILogger log)
+        private void LogComprehensiveLineValuesState(Template template, string stage, ILogger log)
         {
             log.Information("📊 **LINES_VALUES_STATE_{Stage}**: Comprehensive Lines.Values analysis", stage);
 
@@ -238,7 +238,7 @@ SupplierCode: Amazon.com";
                 stage, totalLines, linesWithValues, totalValueEntries);
         }
 
-        private void GeneratePathway1TestDataSummary(Invoice template, List<string> textLines, List<dynamic> initialResults, List<dynamic> rereadResults, ILogger log)
+        private void GeneratePathway1TestDataSummary(Template template, List<string> textLines, List<dynamic> initialResults, List<dynamic> rereadResults, ILogger log)
         {
             log.Information("📋 **PATHWAY_1_TEST_DATA_SUMMARY**: Generating test data summary for Pathway 1");
 

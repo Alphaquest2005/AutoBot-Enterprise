@@ -205,11 +205,11 @@ namespace OCR.Client.Repositories
                      // End = new System.Collections.ObjectModel.ObservableCollection<End>(res.End.Select(y => new End(y))),    
                      // Lines = new System.Collections.ObjectModel.ObservableCollection<Lines>(res.Lines.Select(y => new Lines(y))),    
                      // Start = new System.Collections.ObjectModel.ObservableCollection<Start>(res.Start.Select(y => new Start(y))),    
-                     // InvoiceRegEx = new System.Collections.ObjectModel.ObservableCollection<InvoiceRegEx>(res.InvoiceRegEx.Select(y => new InvoiceRegEx(y))),    
-                     // InvoiceRepRegEx = new System.Collections.ObjectModel.ObservableCollection<InvoiceRegEx>(res.InvoiceRepRegEx.Select(y => new InvoiceRegEx(y))),    
+                     // TemplateRegEx = new System.Collections.ObjectModel.ObservableCollection<TemplateRegEx>(res.TemplateRegEx.Select(y => new TemplateRegEx(y))),    
+                     // TemplateRepRegEx = new System.Collections.ObjectModel.ObservableCollection<TemplateRegEx>(res.TemplateRepRegEx.Select(y => new TemplateRegEx(y))),    
                      // FieldFormatRegEx = new System.Collections.ObjectModel.ObservableCollection<FieldFormatRegEx>(res.FieldFormatRegEx.Select(y => new FieldFormatRegEx(y))),    
                      // FieldFormatRepRegEx = new System.Collections.ObjectModel.ObservableCollection<FieldFormatRegEx>(res.FieldFormatRepRegEx.Select(y => new FieldFormatRegEx(y))),    
-                     // InvoiceIdentificatonRegEx = new System.Collections.ObjectModel.ObservableCollection<InvoiceIdentificatonRegEx>(res.InvoiceIdentificatonRegEx.Select(y => new InvoiceIdentificatonRegEx(y)))    
+                     // TemplateIdentificatonRegEx = new System.Collections.ObjectModel.ObservableCollection<TemplateIdentificatonRegEx>(res.TemplateIdentificatonRegEx.Select(y => new TemplateIdentificatonRegEx(y)))    
                   };
                     }
                     else

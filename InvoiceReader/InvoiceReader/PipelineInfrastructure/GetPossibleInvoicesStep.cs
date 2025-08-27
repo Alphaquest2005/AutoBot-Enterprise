@@ -23,10 +23,8 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
 
         public async Task<bool> Execute(InvoiceProcessingContext context)
         {
-            using (LogLevelOverride.Begin(LogEventLevel.Verbose))
-            {
-                var methodStopwatch = Stopwatch.StartNew(); // Start stopwatch for method execution
-                string filePath = context?.FilePath ?? "Unknown";
+            var methodStopwatch = Stopwatch.StartNew(); // Start stopwatch for method execution
+            string filePath = context?.FilePath ?? "Unknown";
                 context.Logger?.Information(
                     "METHOD_ENTRY: {MethodName}. Intention: {MethodIntention}. InitialState: [{InitialStateContext}]",
                     nameof(Execute),
@@ -88,18 +86,18 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                             ", ",
                             context.MatchedTemplates?.Select(
                                 t =>
-                                    $"{t.OcrInvoices?.Name ?? "NULL"}({t.FileType?.FileImporterInfos?.EntryType ?? "NULL_ENTRYTYPE"})")
+                                    $"{t.OcrTemplates?.Name ?? "NULL"}({t.FileType?.FileImporterInfos?.EntryType ?? "NULL_ENTRYTYPE"})")
                             ?? new string[0]));
 
                     // **VERIFICATION_LOGGING**: Add detailed logging to verify FileType and EntryType mappings
                     context.Logger?.Information(
                         "🔍 **TEMPLATE_VERIFICATION_START**: Detailed analysis of each matched template");
-                    foreach (var template in context.MatchedTemplates ?? Enumerable.Empty<Invoice>())
+                    foreach (var template in context.MatchedTemplates ?? Enumerable.Empty<Template>())
                     {
                         context.Logger?.Information(
                             "   - **TEMPLATE_DETAIL**: '{TemplateName}' (ID: {TemplateId})",
-                            template.OcrInvoices?.Name ?? "NULL",
-                            template.OcrInvoices?.Id ?? 0);
+                            template.OcrTemplates?.Name ?? "NULL",
+                            template.OcrTemplates?.Id ?? 0);
                         context.Logger?.Information(
                             "     └── **FILETYPE_ID**: {FileTypeId}",
                             template.FileType?.Id ?? 0);
@@ -203,7 +201,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                             string.Join(
                                 ", ",
                                 context.MatchedTemplates?.Select(
-                                    t => $"{t.OcrInvoices?.Name}({t.FileType?.FileImporterInfos?.EntryType})")
+                                    t => $"{t.OcrTemplates?.Name}({t.FileType?.FileImporterInfos?.EntryType})")
                                 ?? new string[0]));
 
                         var containsInvoiceKeywords = ContainsInvoiceKeywords(pdfTextString, context.Logger);
@@ -260,7 +258,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                                     context.Logger?.Information(
                                         "✅ **OCR_SERVICE_CREATED**: Service instantiated successfully, calling CreateInvoiceTemplateAsync");
 
-                                    var ocrTemplate =
+                                    var ocrTemplates =
                                         await ocrService.CreateInvoiceTemplateAsync(pdfTextString, filePath)
                                             .ConfigureAwait(false);
 
@@ -269,67 +267,72 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                                         "📊 **POST_CALL_STATE_CAPTURE**: CreateInvoiceTemplateAsync returned, analyzing result");
                                     context.Logger?.Information(
                                         "🔍 **OCR_SERVICE_RESULT**: OCR template result = {Result}",
-                                        ocrTemplate != null ? $"SUCCESS: {ocrTemplate.GetType().Name}" : "NULL");
+                                        ocrTemplates != null && ocrTemplates.Any() ? $"SUCCESS: {ocrTemplates.Count} templates" : "NULL or EMPTY");
 
-                                    if (ocrTemplate != null)
+                                    if (ocrTemplates != null && ocrTemplates.Any())
                                     {
                                         context.Logger?.Information(
-                                            "✅ **HYBRID_TEMPLATE_SUCCESS**: OCR correction service created Invoice template successfully");
+                                            "✅ **HYBRID_TEMPLATE_SUCCESS**: OCR correction service created Invoice templates successfully");
                                         context.Logger?.Information(
-                                            "   - **RETURNED_TEMPLATE_NAME**: '{TemplateName}'",
-                                            ocrTemplate.OcrInvoices?.Name ?? "NULL");
-                                        context.Logger?.Information(
-                                            "   - **RETURNED_TEMPLATE_ID**: {TemplateId}",
-                                            ocrTemplate.OcrInvoices?.Id.ToString() ?? "NULL");
-                                        context.Logger?.Information(
-                                            "   - **RETURNED_FILE_TYPE**: {FileType}",
-                                            ocrTemplate.FileType?.FileImporterInfos?.EntryType ?? "NULL");
-                                        context.Logger?.Information(
-                                            "   - **RETURNED_FILE_TYPE_ID**: {FileTypeId}",
-                                            ocrTemplate.FileType?.Id ?? 0);
-                                        context.Logger?.Information(
-                                            "   - **RETURNED_PARTS_COUNT**: {PartsCount}",
-                                            ocrTemplate.Parts?.Count ?? 0);
-                                        context.Logger?.Information(
-                                            "   - **RETURNED_LINES_COUNT**: {LinesCount}",
-                                            ocrTemplate.Lines?.Count ?? 0);
-                                        context.Logger?.Information(
-                                            "   - **PDF_TEXT_ASSIGNED**: {HasPdfText} ({Length} chars)",
-                                            !string.IsNullOrEmpty(ocrTemplate.FormattedPdfText),
-                                            ocrTemplate.FormattedPdfText?.Length ?? 0);
+                                            "   - **RETURNED_TEMPLATES**: {TemplateCount}", ocrTemplates.Count);
+                                        foreach (var template in ocrTemplates)
+                                        {
+                                            context.Logger?.Information(
+                                                "   - Template: '{Name}' (ID: {Id})",
+                                                template.OcrTemplates?.Name ?? "NULL", template.OcrTemplates?.Id ?? 0);
+                                            context.Logger?.Information(
+                                                "     └── **FILE_TYPE**: {FileType}",
+                                                template.FileType?.FileImporterInfos?.EntryType ?? "NULL");
+                                            context.Logger?.Information(
+                                                "     └── **FILE_TYPE_ID**: {FileTypeId}",
+                                                template.FileType?.Id ?? 0);
+                                            context.Logger?.Information(
+                                                "     └── **PARTS_COUNT**: {PartsCount}",
+                                                template.Parts?.Count ?? 0);
+                                            context.Logger?.Information(
+                                                "     └── **LINES_COUNT**: {LinesCount}",
+                                                template.Lines?.Count ?? 0);
+                                            context.Logger?.Information(
+                                                "     └── **PDF_TEXT_ASSIGNED**: {HasPdfText} ({Length} chars)",
+                                                !string.IsNullOrEmpty(template.FormattedPdfText),
+                                                template.FormattedPdfText?.Length ?? 0);
+                                        }
 
                                         // **CRITICAL**: Use GetContextTemplates method to properly assign context properties
                                         context.Logger?.Information(
-                                            "🔧 **CONTEXT_PROPERTY_ASSIGNMENT**: Using GetContextTemplates pattern for OCR template");
+                                            "🔧 **CONTEXT_PROPERTY_ASSIGNMENT**: Using GetContextTemplates pattern for OCR templates");
 
-                                        // Apply the same context property assignment pattern as GetContextTemplates
-                                        ocrTemplate.DocSet = context.DocSet;
-                                        ocrTemplate.FilePath = context.FilePath;
-                                        ocrTemplate.EmailId = context.EmailId;
+                                        // Apply the same context property assignment pattern as GetContextTemplates to all templates
+                                        foreach (var ocrTemplate in ocrTemplates)
+                                        {
+                                            ocrTemplate.DocSet = context.DocSet;
+                                            ocrTemplate.FilePath = context.FilePath;
+                                            ocrTemplate.EmailId = context.EmailId;
+                                        }
 
                                         context.Logger?.Information(
-                                            "   - **DOCSET_ASSIGNED**: {DocSetCount} document sets",
-                                            ocrTemplate.DocSet?.Count ?? 0);
+                                            "   - **DOCSET_ASSIGNED**: {DocSetCount} document sets to {TemplateCount} templates",
+                                            context.DocSet?.Count ?? 0, ocrTemplates.Count);
                                         context.Logger?.Information(
-                                            "   - **FILEPATH_ASSIGNED**: '{FilePath}'",
-                                            ocrTemplate.FilePath ?? "NULL");
+                                            "   - **FILEPATH_ASSIGNED**: '{FilePath}' to {TemplateCount} templates",
+                                            context.FilePath ?? "NULL", ocrTemplates.Count);
                                         context.Logger?.Information(
-                                            "   - **EMAILID_ASSIGNED**: '{EmailId}'",
-                                            ocrTemplate.EmailId ?? "NULL");
+                                            "   - **EMAILID_ASSIGNED**: '{EmailId}' to {TemplateCount} templates",
+                                            context.EmailId ?? "NULL", ocrTemplates.Count);
 
                                         // **INTEGRATION**: Add to MatchedTemplates for pipeline processing
                                         context.Logger?.Information(
-                                            "🔗 **TEMPLATE_INTEGRATION_START**: Adding OCR template to MatchedTemplates for pipeline processing");
+                                            "🔗 **TEMPLATE_INTEGRATION_START**: Adding OCR templates to MatchedTemplates for pipeline processing");
                                         context.Logger?.Information(
                                             "   - **BEFORE_INTEGRATION_COUNT**: {Count}",
                                             context.MatchedTemplates?.Count() ?? 0);
 
-                                        var templateList = context.MatchedTemplates?.ToList() ?? new List<Invoice>();
-                                        templateList.Add(ocrTemplate);
+                                        var templateList = context.MatchedTemplates?.ToList() ?? new List<Template>();
+                                        templateList.AddRange(ocrTemplates);
                                         context.MatchedTemplates = templateList;
 
                                         context.Logger?.Information(
-                                            "✅ **TEMPLATE_INTEGRATION_COMPLETE**: OCR template successfully added to MatchedTemplates");
+                                            "✅ **TEMPLATE_INTEGRATION_COMPLETE**: OCR templates successfully added to MatchedTemplates");
                                         context.Logger?.Information(
                                             "   - **AFTER_INTEGRATION_COUNT**: {Count} templates will be processed",
                                             context.MatchedTemplates.Count());
@@ -339,25 +342,27 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                                                 ", ",
                                                 context.MatchedTemplates.Select(
                                                     t =>
-                                                        $"{t.OcrInvoices?.Name ?? "NULL"}({t.FileType?.FileImporterInfos?.EntryType ?? "NULL"})")));
+                                                        $"{t.OcrTemplates?.Name ?? "NULL"}({t.FileType?.FileImporterInfos?.EntryType ?? "NULL"})")));
 
                                         context.Logger?.Information(
                                             "🎯 **TEMPLATE_CREATION_SUCCESS_SUMMARY**: OCR template creation and integration completed successfully");
                                         context.Logger?.Information(
-                                            "   - **NEW_TEMPLATE_NAME**: '{Name}'",
-                                            ocrTemplate.OcrInvoices?.Name);
+                                            "   - **NEW_TEMPLATES_COUNT**: {Count} templates created", ocrTemplates.Count);
+                                        foreach (var template in ocrTemplates)
+                                        {
+                                            context.Logger?.Information(
+                                                "   - **NEW_TEMPLATE**: '{Name}' ({Type})",
+                                                template.OcrTemplates?.Name, template.FileType?.FileImporterInfos?.EntryType);
+                                        }
                                         context.Logger?.Information(
-                                            "   - **NEW_TEMPLATE_TYPE**: '{Type}'",
-                                            ocrTemplate.FileType?.FileImporterInfos?.EntryType);
-                                        context.Logger?.Information(
-                                            "   - **PIPELINE_READY**: Template is now part of MatchedTemplates and ready for downstream processing");
+                                            "   - **PIPELINE_READY**: Templates are now part of MatchedTemplates and ready for downstream processing");
                                     }
                                     else
                                     {
                                         context.Logger?.Error(
-                                            "❌ **OCR_TEMPLATE_CREATION_FAILED**: CreateInvoiceTemplateAsync returned NULL");
+                                            "❌ **OCR_TEMPLATE_CREATION_FAILED**: CreateInvoiceTemplateAsync returned NULL or empty list");
                                         context.Logger?.Error(
-                                            "   - **FAILURE_IMPACT**: No new template will be added to MatchedTemplates");
+                                            "   - **FAILURE_IMPACT**: No new templates will be added to MatchedTemplates");
                                         context.Logger?.Error(
                                             "   - **PIPELINE_CONTINUATION**: Will proceed with existing {Count} templates",
                                             context.MatchedTemplates?.Count() ?? 0);
@@ -408,7 +413,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                                     .Where(
                                         t => t.FileType?.FileImporterInfos?.EntryType
                                              == FileTypeManager.EntryTypes.ShipmentInvoice)
-                                    .Select(t => t.OcrInvoices?.Name)));
+                                    .Select(t => t.OcrTemplates?.Name)));
                         context.Logger?.Information(
                             "   - **REASON**: No template creation needed - ShipmentInvoice already present");
                     }
@@ -474,11 +479,9 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                         methodStopwatch.ElapsedMilliseconds,
                         errorMessage);
                     context.AddError(errorMessage);
-                    context.MatchedTemplates = new List<Invoice>();
+                    context.MatchedTemplates = new List<Template>();
                     return false;
                 }
-
-            } // Close LogLevelOverride for template creation - APPLICATION TERMINATES HERE
         }
 
         private bool ValidateContext(InvoiceProcessingContext context, string filePath)
@@ -492,7 +495,7 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
             {
                 context.Logger?.Warning("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}] Expected templates for processing.",
                     nameof(ValidateContext), "Validation", "Skipping GetPossibleInvoicesStep: Templates collection is null.", $"FilePath: {filePath}");
-                context.Templates = new List<Invoice>();
+                context.Templates = new List<Template>();
                 return true; // Treat as successful validation but no work done
             }
 
@@ -511,14 +514,14 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
             return true;
         }
 
-        private async Task<List<Invoice>> GetPossibleInvoices(InvoiceProcessingContext context, string pdfTextString, string filePath)
+        private async Task<List<Template>> GetPossibleInvoices(InvoiceProcessingContext context, string pdfTextString, string filePath)
         {
             context.Logger?.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]",
                 nameof(GetPossibleInvoices), "Filtering", "Ordering templates and filtering based on PDF text match.", $"FilePath: {filePath}");
 
             var possibleInvoices = context.Templates
-                .OrderBy(x => !(x?.OcrInvoices?.Name?.ToUpperInvariant().Contains("TROPICAL") ?? false))
-                .ThenBy(x => x?.OcrInvoices?.Id ?? int.MaxValue)
+                .OrderBy(x => !(x?.OcrTemplates?.Name?.ToUpperInvariant().Contains("TROPICAL") ?? false))
+                .ThenBy(x => x?.OcrTemplates?.Id ?? int.MaxValue)
                 .Where(tmp =>
                 {
                     if (tmp == null)
@@ -528,27 +531,27 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                         return false;
                     }
 
-                    if (tmp.OcrInvoices == null)
+                    if (tmp.OcrTemplates == null)
                     {
                         context.Logger?.Verbose("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]",
-                            nameof(GetPossibleInvoices), "Filtering", "Skipping template with null OcrInvoices.", $"TemplateId: {tmp.OcrInvoices.Id}");
+                            nameof(GetPossibleInvoices), "Filtering", "Skipping template with null OcrInvoices.", $"TemplateId: {tmp.OcrTemplates.Id}");
                         return false;
                     }
 
                     context.Logger?.Debug("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]",
-                        nameof(GetPossibleInvoices), "Filtering", "Checking template match.", $"TemplateId: {tmp.OcrInvoices.Id}, TemplateName: {tmp.OcrInvoices.Name}");
+                        nameof(GetPossibleInvoices), "Filtering", "Checking template match.", $"TemplateId: {tmp.OcrTemplates.Id}, TemplateName: {tmp.OcrTemplates.Name}");
 
                     // Call the partial method IsInvoiceDocument
                     context.Logger?.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})",
-                        $"IsInvoiceDocument for Template {tmp.OcrInvoices.Id}", "SYNC_EXPECTED");
+                        $"IsInvoiceDocument for Template {tmp.OcrTemplates.Id}", "SYNC_EXPECTED");
                     var isMatchStopwatch = Stopwatch.StartNew();
                     bool isMatch = IsInvoiceDocument(tmp, pdfTextString, filePath, context.Logger);
                     isMatchStopwatch.Stop();
                     context.Logger?.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
-                        $"IsInvoiceDocument for Template {tmp.OcrInvoices.Id}", isMatchStopwatch.ElapsedMilliseconds, "Sync call returned");
+                        $"IsInvoiceDocument for Template {tmp.OcrTemplates.Id}", isMatchStopwatch.ElapsedMilliseconds, "Sync call returned");
 
                     context.Logger?.Verbose("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]",
-                        nameof(GetPossibleInvoices), "Filtering", "Template match result.", $"TemplateId: {tmp.OcrInvoices.Id}, IsMatch: {isMatch}");
+                        nameof(GetPossibleInvoices), "Filtering", "Template match result.", $"TemplateId: {tmp.OcrTemplates.Id}, IsMatch: {isMatch}");
                     return isMatch;
                 })
                 // .Select(x =>
@@ -572,18 +575,18 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                 nameof(GetPossibleInvoices), "Filtering", "Finished filtering templates.", $"PossibleInvoiceCount: {possibleInvoices.Count}, FilePath: {filePath}");
 
             // need to get fresh templates
-            var lst = possibleInvoices.Select(x => x.OcrInvoices.Id).ToList();
+            var lst = possibleInvoices.Select(x => x.OcrTemplates.Id).ToList();
             if (!lst.Any())
             {
                  context.Logger?.Warning("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}] Expected at least one possible invoice.",
                      nameof(GetPossibleInvoices), "TemplateRefresh", "No possible invoices found, skipping template refresh.", $"FilePath: {filePath}");
-                 return new List<Invoice>(); // Return empty list if no possible invoices
+                 return new List<Template>(); // Return empty list if no possible invoices
             }
 
             context.Logger?.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})",
                 "GetTemplatesStep.GetTemplates (Refresh)", "ASYNC_EXPECTED");
             var getTemplatesStopwatch = Stopwatch.StartNew();
-            var res = await GetTemplatesStep.GetTemplates(context, invoices => lst.Contains(invoices.OcrInvoices.Id)).ConfigureAwait(false);
+            var res = await GetTemplatesStep.GetTemplates(context, invoices => lst.Contains(invoices.OcrTemplates.Id)).ConfigureAwait(false);
             getTemplatesStopwatch.Stop();
             context.Logger?.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
                 "GetTemplatesStep.GetTemplates (Refresh)", getTemplatesStopwatch.ElapsedMilliseconds, "If ASYNC_EXPECTED, this is pre-await return");
@@ -594,14 +597,14 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
             return res;
         }
 
-        private void LogPossibleInvoices(InvoiceProcessingContext context, List<Invoice> possibleInvoices, int totalTemplateCount, string filePath)
+        private void LogPossibleInvoices(InvoiceProcessingContext context, List<Template> possibleInvoices, int totalTemplateCount, string filePath)
         {
             context.Logger?.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}]",
                 nameof(GetPossibleInvoicesStep), "Summary", "Possible invoices found.", $"PossibleInvoiceCount: {possibleInvoices.Count}, TotalTemplateCount: {totalTemplateCount}, FilePath: {filePath}");
 
             if (possibleInvoices.Any())
             {
-                var invoiceDetails = possibleInvoices.Select(inv => new { Name = inv.OcrInvoices?.Name, Id = inv.OcrInvoices?.Id }).ToList();
+                var invoiceDetails = possibleInvoices.Select(inv => new { Name = inv.OcrTemplates?.Name, Id = inv.OcrTemplates?.Id }).ToList();
                 context.Logger?.Information("INTERNAL_STEP ({OperationName} - {Stage}): {StepMessage}. CurrentState: [{CurrentStateContext}] {OptionalData}",
                     nameof(GetPossibleInvoicesStep), "Summary", "Details of possible invoices.", $"FilePath: {filePath}", new { InvoiceDetails = invoiceDetails });
             }

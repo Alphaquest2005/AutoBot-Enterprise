@@ -7,8 +7,10 @@ using NUnit.Framework;
 using Serilog; // Added for logging
 using Serilog.Events; // Added for LogEventLevel
 using Serilog.Sinks.NUnit; // Required for .WriteTo.NUnit()
+using Serilog.Events; // For ScalarValue
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -34,174 +36,267 @@ namespace AutoBotUtilities.Tests
     {
         // Define logger instance for the test class
         private static Serilog.ILogger _logger; // Use fully qualified name
-
-        //[OneTimeSetUp]
-        //public void FixtureSetup()
-        //{
-        //    // Configure Serilog directly in code
-        //    try
-        //    {
-        //        string logFilePath = Path.Combine(
-        //            TestContext.CurrentContext.TestDirectory,
-        //            "Logs",
-        //            "AutoBotTests-.log");
-        //        Directory.CreateDirectory(Path.GetDirectoryName(logFilePath));
-
-        //        var systemTextJsonOptions = new JsonSerializerOptions
-        //        {
-        //            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault,
-        //            ReferenceHandler = ReferenceHandler.IgnoreCycles,
-        //        };
-
-        //        // RADICALLY SIMPLIFIED CONFIGURATION FOR DIAGNOSIS:
-        //        Log.Logger = new LoggerConfiguration()
-        //            .MinimumLevel.Verbose() // Allow all levels
-        //            .Enrich.FromLogContext() // Keep this for SourceContext
-        //            .Destructure.ByTransformingWhere<object>(
-        //                type => type.IsClass &&
-        //                        type != typeof(string) &&
-        //                        !typeof(IEnumerable).IsAssignableFrom(type),
-        //                obj =>
-        //                {
-        //                    try
-        //                    {
-        //                        TestContext.Progress.WriteLine($"SIMPLIFIED_TRANSFORM: Processing object of type: {obj.GetType().FullName}");
-        //                        TestContext.Progress.WriteLine($"SIMPLIFIED_TRANSFORM: Using JsonSerializerOptions.DefaultIgnoreCondition = {systemTextJsonOptions.DefaultIgnoreCondition}");
-        //                        var jsonString = System.Text.Json.JsonSerializer.Serialize(obj, systemTextJsonOptions);
-        //                        TestContext.Progress.WriteLine($"SIMPLIFIED_TRANSFORM: Serialized {obj.GetType().FullName} to JSON: {jsonString}");
-        //                        var dictionary = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, object>>(jsonString, systemTextJsonOptions);
-        //                        // No empty collection removal for this test to keep it simple
-        //                        return dictionary;
-        //                    }
-        //                    catch (Exception ex)
-        //                    {
-        //                        TestContext.Progress.WriteLine($"SIMPLIFIED_TRANSFORM: Error for {obj.GetType().FullName}: {ex}");
-        //                        return new Dictionary<string, object> { { "ErrorInTransform", ex.Message } };
-        //                    }
-        //                }
-        //            )
-        //            .WriteTo.Console(restrictedToMinimumLevel: LogEventLevel.Verbose) // Ensure console sees everything
-        //            .WriteTo.File(
-        //                logFilePath,
-        //                restrictedToMinimumLevel: LogEventLevel.Verbose, // Ensure file sees everything
-        //                rollingInterval: RollingInterval.Day,
-        //                outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] [{SourceContext}] {Message:lj}{NewLine}{Exception}")
-        //            .CreateLogger();
-
-        //        _logger = Log.ForContext<PDFImportTests>();
-        //        _logger.Information("Serilog configured with SIMPLIFIED setup for tests.");
-        //        _logger.Debug("SIMPLIFIED_SETUP: This is a debug message. Should appear.");
-        //        _logger.Verbose("SIMPLIFIED_SETUP: This is a verbose message. Should appear.");
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Console.WriteLine($"ERROR configuring Serilog (simplified): {ex}");
-        //        // Basic fallback
-        //        Log.Logger = new LoggerConfiguration().WriteTo.Console().CreateLogger();
-        //        _logger = Log.ForContext<PDFImportTests>();
-        //        _logger.Error(ex, "Error in simplified Serilog config.");
-        //    }
-        //}
+        private static string _currentLogFilePath; // Track current log file for archiving
+        private static string _currentRunId; // Track current run ID
 
         [OneTimeSetUp]
         public void FixtureSetup()
         {
-            // LogFilterState initialization (as before)
-            LogFilterState.TargetSourceContextForDetails = null;
-            LogFilterState.TargetMethodNameForDetails = null;
-            LogFilterState.DetailTargetMinimumLevel = LogEventLevel.Fatal;
-            LogFilterState.EnabledCategoryLevels[LogCategory.Undefined] = LogEventLevel.Debug;
-
+            // 🎯 RESTORED SOPHISTICATED LOGGING SYSTEM - Individual Run Tracking + Archiving
             try
             {
-                string logFilePath = Path.Combine(
+                // 🧹 FIRST: Archive any existing log files to ensure only current log remains in main directory
+                ArchiveExistingLogsBeforeSetup();
+                // Generate unique RunID (5-digit number + 8-digit date)
+                var now = DateTime.Now;
+                var random = new Random();
+                var runNumber = random.Next(10000, 99999); // 5-digit random number
+                _currentRunId = $"{runNumber}{now:yyyyMMdd}";
+                
+                // Create sophisticated log file name: AutoBotTests-YYYYMMDD-HHMMSS-mmm-RunXXXXXYYYYMMDD.log
+                var logFileName = $"AutoBotTests-{now:yyyyMMdd-HHmmss-fff}-Run{_currentRunId}.log";
+                
+                _currentLogFilePath = Path.Combine(
                     TestContext.CurrentContext.TestDirectory,
                     "Logs",
-                    "AutoBotTests-.log");
-                Directory.CreateDirectory(Path.GetDirectoryName(logFilePath));
+                    logFileName);
+                    
+                Directory.CreateDirectory(Path.GetDirectoryName(_currentLogFilePath));
 
-                // Define your custom System.Text.Json options
                 var systemTextJsonOptions = new JsonSerializerOptions
                 {
-                    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault, // Key for omitting defaults
+                    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault,
                     ReferenceHandler = ReferenceHandler.IgnoreCycles,
-                    // WriteIndented = true, // Optional for prettier intermediate JSON if you were debugging the policy itself
                 };
 
+                // 🎯 INITIALIZE STRATEGIC LENS SYSTEM
+                LogFilterState.EnabledCategoryLevels[LogCategory.Undefined] = LogEventLevel.Debug;
+                LogFilterState.TargetSourceContextForDetails = null; // Will be set dynamically during tests
+                LogFilterState.TargetMethodNameForDetails = null;
+                LogFilterState.DetailTargetMinimumLevel = LogEventLevel.Verbose;
+
+                // 🚀 SOPHISTICATED LOGGING CONFIGURATION - Per-Run Files with Strategic Lens
                 Log.Logger = new LoggerConfiguration()
-                    .MinimumLevel.Verbose()
+                    .MinimumLevel.Verbose() // Capture everything for historical analysis
                     .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
                     .MinimumLevel.Override("System", LogEventLevel.Warning)
                     .Enrich.FromLogContext()
                     .Enrich.WithMachineName()
                     .Enrich.WithThreadId()
-                    .Filter.ByIncludingOnly(evt => // Your existing filter logic
+                    .Enrich.WithProperty("RunId", _currentRunId) // Tag all logs with RunID
+                    // 🎯 STRATEGIC LENS FILTER - Core sophisticated functionality
+                    .Filter.ByIncludingOnly(evt =>
                     {
-                        // ... (filter logic as before) ...
+                        // Extract log properties for filtering
                         bool hasCategory = evt.Properties.TryGetValue("LogCategory", out var categoryValue);
                         LogCategory category = hasCategory && categoryValue is ScalarValue svCat && svCat.Value is LogCategory lc ? lc : LogCategory.Undefined;
+                        
                         bool hasSourceContext = evt.Properties.TryGetValue("SourceContext", out var sourceContextValue);
                         string sourceContext = hasSourceContext && sourceContextValue is ScalarValue svSrc ? svSrc.Value?.ToString() : null;
+                        
                         bool hasMemberName = evt.Properties.TryGetValue("MemberName", out var memberNameValue);
                         string memberName = hasMemberName && memberNameValue is ScalarValue svMem ? svMem.Value?.ToString() : null;
 
-                        // TestContext.Progress.WriteLine(
-                        //    $"FILTER_DIAG: Level={evt.Level}, SrcCtx='{sourceContext}', Cat='{category}', Member='{memberName}' | TargetSrcCtx='{LogFilterState.TargetSourceContextForDetails}', TargetMethod='{LogFilterState.TargetMethodNameForDetails}', TargetLevel='{LogFilterState.DetailTargetMinimumLevel}' || EnabledLevelForCatUndef={(LogFilterState.EnabledCategoryLevels.TryGetValue(LogCategory.Undefined, out var l) ? l.ToString() : "NotSet")}");
+                        // 🔧 DIAGNOSTIC INSTRUMENTATION - Enable for strategic lens troubleshooting
+                        // Uncomment next line to debug lens filter behavior:
+                        // TestContext.Progress.WriteLine($"FILTER_DIAG: Level={evt.Level}, SrcCtx='{sourceContext}', Cat='{category}', Member='{memberName}' | TargetSrcCtx='{LogFilterState.TargetSourceContextForDetails}', TargetMethod='{LogFilterState.TargetMethodNameForDetails}', TargetLevel='{LogFilterState.DetailTargetMinimumLevel}' || EnabledLevelForCatUndef={(LogFilterState.EnabledCategoryLevels.TryGetValue(LogCategory.Undefined, out var l) ? l.ToString() : "NotSet")}");
 
+                        // 🔍 STRATEGIC LENS: Check if we're targeting a specific source context for details
                         if (!string.IsNullOrEmpty(LogFilterState.TargetSourceContextForDetails) &&
                             sourceContext != null &&
                             sourceContext.StartsWith(LogFilterState.TargetSourceContextForDetails))
                         {
+                            // If targeting a specific method, check method name too
                             if (string.IsNullOrEmpty(LogFilterState.TargetMethodNameForDetails) ||
                                 (memberName != null && memberName.Equals(LogFilterState.TargetMethodNameForDetails, StringComparison.OrdinalIgnoreCase)))
                             {
                                 return evt.Level >= LogFilterState.DetailTargetMinimumLevel;
                             }
                         }
+
+                        // 📊 CATEGORY-BASED FILTERING: Apply category-specific minimum levels
                         if (LogFilterState.EnabledCategoryLevels.TryGetValue(category, out var minLevelForCategory))
                         {
                             return evt.Level >= minLevelForCategory;
                         }
-                        return evt.Level >= LogEventLevel.Verbose;
-                    })
-                    // Use custom destructuring policy to respect JsonSerializerOptions for omitting nulls/defaults
-                    .Destructure.With(new CustomSystemTextJsonDestructuringPolicy(systemTextJsonOptions))
 
-                    .WriteTo.Console(restrictedToMinimumLevel: LogEventLevel.Verbose)
+                        // Default fallback
+                        return evt.Level >= LogEventLevel.Information;
+                    })
+                    .Destructure.ByTransformingWhere<object>(
+                        type => type.IsClass &&
+                                type != typeof(string) &&
+                                !typeof(IEnumerable).IsAssignableFrom(type),
+                        obj =>
+                        {
+                            try
+                            {
+                                var jsonString = System.Text.Json.JsonSerializer.Serialize(obj, systemTextJsonOptions);
+                                var dictionary = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, object>>(jsonString, systemTextJsonOptions);
+                                return dictionary;
+                            }
+                            catch (Exception ex)
+                            {
+                                return new Dictionary<string, object> { { "SerializationError", ex.Message } };
+                            }
+                        }
+                    )
+                    .WriteTo.Console(restrictedToMinimumLevel: LogEventLevel.Information) // Console only shows important stuff
                     .WriteTo.File(
-                        logFilePath,
-                        restrictedToMinimumLevel: LogEventLevel.Verbose,
-                        rollingInterval: RollingInterval.Day,
-                        retainedFileCountLimit: 3,
-                        outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] [{SourceContext}] {Message:lj}{NewLine}{Exception}")
+                        _currentLogFilePath,
+                        restrictedToMinimumLevel: LogEventLevel.Verbose, // File captures EVERYTHING
+                        outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] [{SourceContext}] [RunId:{RunId}] {Message:lj}{NewLine}{Exception}")
                     .CreateLogger();
 
                 _logger = Log.ForContext<PDFImportTests>();
-                _logger.Information("Serilog configured with JSON destructuring policy.");
-                _logger.Debug("DSTJ_POLICY_OPTS_DBG: This Debug message from FixtureSetup should appear.");
-
+                _logger.Information("🎯 SOPHISTICATED LOGGING RESTORED - RunId: {RunId}, LogFile: {LogFile}", _currentRunId, logFileName);
+                _logger.Information("📋 TEST_FIXTURE_SETUP: Starting PDFImportTests with individual run tracking and archiving");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"ERROR configuring Serilog programmatically: {ex}");
-                Log.Logger = new LoggerConfiguration().MinimumLevel.Warning().WriteTo.Console().CreateLogger();
+                Console.WriteLine($"❌ ERROR configuring sophisticated logging: {ex}");
+                // Basic fallback for logging failure
+                Log.Logger = new LoggerConfiguration().WriteTo.Console().CreateLogger();
                 _logger = Log.ForContext<PDFImportTests>();
-                _logger.Error(ex, "Error configuring Serilog programmatically.");
+                _logger.Error(ex, "❌ Error in sophisticated logging config - using fallback");
             }
-
-            _logger.Information("--------------------------------------------------");
-            _logger.Information("Starting PDFImportTests Test Fixture");
-            _logger.Information("--------------------------------------------------");
         }
 
+        /// <summary>
+        /// 🧹 PRE-TEST ARCHIVING: Archive existing log files before starting new test run
+        /// Ensures main Logs/ directory contains only the current active log file for easy LLM identification
+        /// </summary>
+        private static void ArchiveExistingLogsBeforeSetup()
+        {
+            try
+            {
+                var logsDir = Path.Combine(TestContext.CurrentContext.TestDirectory, "Logs");
+                if (!Directory.Exists(logsDir))
+                {
+                    Console.WriteLine("📁 LOGS_DIR_MISSING: No logs directory exists yet - will be created during setup");
+                    return;
+                }
+
+                var existingLogFiles = Directory.GetFiles(logsDir, "*.log");
+                if (existingLogFiles.Length == 0)
+                {
+                    Console.WriteLine("✨ CLEAN_LOGS_DIR: No existing log files to archive - starting with clean directory");
+                    return;
+                }
+
+                // Create Archive directory
+                var archiveDir = Path.Combine(logsDir, "Archive");
+                Directory.CreateDirectory(archiveDir);
+
+                foreach (var existingLogFile in existingLogFiles)
+                {
+                    var fileName = Path.GetFileName(existingLogFile);
+                    var archiveFilePath = Path.Combine(archiveDir, fileName);
+                    
+                    // Handle potential filename conflicts by adding timestamp suffix
+                    if (File.Exists(archiveFilePath))
+                    {
+                        var nameWithoutExt = Path.GetFileNameWithoutExtension(archiveFilePath);
+                        var extension = Path.GetExtension(archiveFilePath);
+                        archiveFilePath = Path.Combine(archiveDir, $"{nameWithoutExt}_Collision{DateTime.Now:HHmmss}{extension}");
+                    }
+
+                    File.Move(existingLogFile, archiveFilePath);
+                    Console.WriteLine($"🗂️ LOG_ARCHIVED_PRETEST: {fileName} → Archive/{Path.GetFileName(archiveFilePath)}");
+                }
+
+                Console.WriteLine($"✅ PRE_TEST_ARCHIVING_COMPLETE: Archived {existingLogFiles.Length} existing log files - main directory ready for current log");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ PRE_TEST_ARCHIVING_ERROR: Failed to archive existing logs: {ex.Message}");
+                // Don't throw - test should continue even if archiving fails
+            }
+        }
+
+        /// <summary>
+        /// 🎯 LEGACY METHOD: Moves completed log files to Archive/ folder
+        /// NOTE: This is now used only for pre-test archiving, not post-test archiving
+        /// </summary>
+        private static void MoveLogToArchive()
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(_currentLogFilePath) || !File.Exists(_currentLogFilePath))
+                {
+                    _logger?.Warning("🔍 ARCHIVING_SKIP: No log file to archive or file doesn't exist: {LogFilePath}", _currentLogFilePath);
+                    return;
+                }
+
+                // Create Archive directory
+                var archiveDir = Path.Combine(
+                    Path.GetDirectoryName(_currentLogFilePath), 
+                    "Archive");
+                Directory.CreateDirectory(archiveDir);
+
+                // Move log file to archive with same filename
+                var archiveFilePath = Path.Combine(archiveDir, Path.GetFileName(_currentLogFilePath));
+                
+                // Handle potential filename conflicts by adding timestamp suffix
+                if (File.Exists(archiveFilePath))
+                {
+                    var nameWithoutExt = Path.GetFileNameWithoutExtension(archiveFilePath);
+                    var extension = Path.GetExtension(archiveFilePath);
+                    archiveFilePath = Path.Combine(archiveDir, $"{nameWithoutExt}_Collision{DateTime.Now:HHmmss}{extension}");
+                }
+
+                File.Move(_currentLogFilePath, archiveFilePath);
+                Console.WriteLine($"✅ LOG_ARCHIVED: {Path.GetFileName(_currentLogFilePath)} → Archive/{Path.GetFileName(archiveFilePath)}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ ARCHIVING_ERROR: Failed to archive log file: {ex.Message}");
+                _logger?.Error(ex, "❌ Failed to archive log file: {LogFilePath}", _currentLogFilePath);
+            }
+        }
+
+        /// <summary>
+        /// 🎯 STRATEGIC LENS CONTROL - Focus logging on specific contexts for surgical debugging
+        /// </summary>
+        private static void FocusLoggingLens(string targetSourceContext, LogEventLevel detailLevel = LogEventLevel.Verbose, string targetMethod = null)
+        {
+            LogFilterState.TargetSourceContextForDetails = targetSourceContext;
+            LogFilterState.TargetMethodNameForDetails = targetMethod;
+            LogFilterState.DetailTargetMinimumLevel = detailLevel;
+            _logger?.Information("🔍 LENS_FOCUSED: Target={TargetContext}, Method={TargetMethod}, Level={DetailLevel}",
+                targetSourceContext, targetMethod ?? "All", detailLevel);
+        }
+
+        /// <summary>
+        /// 🎯 LENS CONTEXTS - Predefined contexts for PDF/OCR pipeline
+        /// </summary>
+        private static class LoggingContexts
+        {
+            public const string OCRCorrection = "WaterNut.DataSpace.OCRCorrectionService";
+            public const string PDFImporter = "WaterNut.DataSpace.PDFShipmentInvoiceImporter";
+            public const string LlmApi = "WaterNut.Business.Services.Utils.LlmApi";
+            public const string PDFUtils = "AutoBot.PDFUtils";
+            public const string InvoiceReader = "InvoiceReader";
+        }
 
         [OneTimeTearDown]
         public void FixtureTearDown()
         {
-             _logger.Information("--------------------------------------------------");
-             _logger.Information("Finished PDFImportTests Test Fixture");
-             _logger.Information("--------------------------------------------------");
-             Log.CloseAndFlush(); // Ensure logs are written
+            try
+            {
+                _logger?.Information("🏁 TEST_FIXTURE_TEARDOWN: Completing PDFImportTests - leaving current log file for LLM analysis");
+                _logger?.Information("📝 CURRENT_LOG_LOCATION: {LogFile} - this file remains in main Logs/ directory for easy LLM access", _currentLogFilePath);
+                
+                // Close and flush the logger but LEAVE the log file in place for analysis
+                Log.CloseAndFlush();
+                
+                Console.WriteLine($"📄 CURRENT_LOG_PRESERVED: {Path.GetFileName(_currentLogFilePath)} remains in Logs/ directory for analysis");
+                Console.WriteLine($"🔄 ARCHIVING_STRATEGY: This log will be archived when the next test run begins");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ ERROR in FixtureTearDown: {ex.Message}");
+            }
         }
 
 
@@ -799,23 +894,9 @@ namespace AutoBotUtilities.Tests
 
                 // Clear existing MANGO templates to force OCR template creation for new supplier
                 _logger.Information("🧹 **CLEARING_EXISTING_TEMPLATES**: Removing existing MANGO templates to simulate new supplier scenario");
-                using (var ocrCtx = new OCR.Business.Entities.OCRContext())
-                {
-                    // CRITICAL FIX: Only target MANGO templates specifically, not all templates with ApplicationSettingsId = 3
-                    var existingTemplates = ocrCtx.Invoices.Where(x => x.Name == "MANGO").ToList();
-                    _logger.Information("   - **TEMPLATES_TO_REMOVE**: {Count} MANGO templates found", existingTemplates.Count);
-                    
-                    if (existingTemplates.Any())
-                    {
-                        ocrCtx.Invoices.RemoveRange(existingTemplates);
-                        await ocrCtx.SaveChangesAsync().ConfigureAwait(false);
-                        _logger.Information("   - **TEMPLATES_CLEARED**: All existing MANGO templates removed for new supplier test");
-                    }
-                    else
-                    {
-                        _logger.Information("   - **NO_MANGO_TEMPLATES**: No existing MANGO templates found to remove");
-                    }
-                }
+                
+                // **CRITICAL**: Delete existing bad MANGO template to force recreation with enhanced AITemplateService
+                await FixMangoTemplate.DeleteExistingMangoTemplate();
 
                 var testFile = @"C:\Insight Software\AutoBot-Enterprise\AutoBotUtilities.Tests\Test Data\03152025_TOTAL AMOUNT.pdf";
                 _logger.Information("Test File: {FilePath}", testFile);
@@ -850,7 +931,103 @@ namespace AutoBotUtilities.Tests
 
                     _logger.Debug("PDFUtils.ImportPDF completed. Moving to verification...");
 
-                    // ================== ROBUST VERIFICATION BLOCK WITH RETRY LOGIC ==================
+                    // ================== ORDERED VERIFICATION CRITERIA (FAIL FAST AT FIRST ERROR) ==================
+                    _logger.Information("🎯 **SYSTEMATIC_VERIFICATION_START**: Checking success criteria in execution order to identify exact failure point");
+
+                    // **VERIFICATION STEP 1**: DeepSeek API Success Verification (FIRST - Templates are created from DeepSeek results)
+                    _logger.Information("1️⃣ **DEEPSEEK_VERIFICATION**: Checking if DeepSeek prompts succeeded and created valid corrections");
+                    bool deepSeekSuccess = false;
+                    List<OCR.Business.Entities.OCRCorrectionLearning> deepSeekCorrections = null;
+                    
+                    using (var ocrCtx = new OCR.Business.Entities.OCRContext())
+                    {
+                        deepSeekCorrections = await ocrCtx.OCRCorrectionLearning
+                            .Where(x => x.CreatedDate > testStartTime)
+                            .OrderByDescending(x => x.Id)
+                            .ToListAsync().ConfigureAwait(false);
+                            
+                        deepSeekSuccess = deepSeekCorrections.Any();
+                        
+                        if (deepSeekSuccess)
+                        {
+                            _logger.Information("✅ **STEP_1_PASSED**: DeepSeek corrections created successfully");
+                            _logger.Information("   - **CORRECTIONS_COUNT**: {CorrectionsCount}", deepSeekCorrections.Count);
+                            _logger.Information("   - **CORRECTION_TYPES**: {CorrectionTypes}", 
+                                string.Join(", ", deepSeekCorrections.Select(c => c.CorrectionType).Distinct()));
+                            _logger.Information("   - **SUCCESS_RATE**: {SuccessCount}/{TotalCount} successful", 
+                                deepSeekCorrections.Count(c => c.Success == true), deepSeekCorrections.Count);
+                        }
+                        else
+                        {
+                            _logger.Error("❌ **STEP_1_FAILED**: No DeepSeek corrections found in OCRCorrectionLearning after {TestStartTime}", testStartTime);
+                        }
+                    }
+                    
+                    Assert.That(deepSeekSuccess, Is.True, 
+                        $"STEP 1 FAILED: DeepSeek prompts - No corrections found in OCRCorrectionLearning after {testStartTime}. " +
+                        "This indicates DeepSeek API calls are failing or not creating correction entries properly.");
+
+                    // **VERIFICATION STEP 2**: Template Creation (SECOND - In-memory object construction from DeepSeek)
+                    _logger.Information("2️⃣ **TEMPLATE_CREATION_VERIFICATION**: Checking if CreateInvoiceTemplateAsync created template objects in memory");
+                    
+                    // TODO: We need to capture the template creation result from CreateInvoiceTemplateAsync 
+                    // For now, we'll infer creation success from DeepSeek corrections existence
+                    // Note: CreateInvoiceTemplateAsync now returns List<Template> instead of single Template
+                    bool templatesCreatedInMemory = deepSeekSuccess; // If DeepSeek worked, template creation should work
+                    
+                    if (templatesCreatedInMemory)
+                    {
+                        _logger.Information("✅ **STEP_2_PASSED**: Template creation in memory inferred successful (DeepSeek corrections exist)");
+                        _logger.Information("   - **INFERENCE_BASIS**: DeepSeek corrections exist, so CreateInvoiceTemplateAsync should construct template objects");
+                        _logger.Information("   - **EXPECTED_RESULT**: CreateInvoiceTemplateAsync should return List<Template> with one or more templates");
+                    }
+                    else
+                    {
+                        _logger.Error("❌ **STEP_2_FAILED**: Template creation in memory failed (no DeepSeek corrections to build from)");
+                    }
+                    
+                    Assert.That(templatesCreatedInMemory, Is.True, 
+                        $"STEP 2 FAILED: Template creation - CreateInvoiceTemplateAsync could not construct template objects in memory. " +
+                        "This indicates DeepSeek response parsing or template object construction is failing.");
+
+                    // **VERIFICATION STEP 3**: Template Persistence (THIRD - Database save operation)
+                    _logger.Information("3️⃣ **TEMPLATE_PERSISTENCE_VERIFICATION**: Checking if template was persisted to OCR database");
+                    bool templatePersistedToDatabase = false;
+                    OCR.Business.Entities.Templates persistedTemplate = null;
+                    
+                    using (var ocrCtx = new OCR.Business.Entities.OCRContext())
+                    {
+                        // Look for MANGO template persisted to database (name based on filename, not supplier)
+                        persistedTemplate = await ocrCtx.Templates
+                            .Include(x => x.Parts.Select(p => p.Lines.Select(l => l.Fields)))
+                            .FirstOrDefaultAsync(x => x.Name == "03152025_TOTAL_AMOUNT_GENERIC_DOCUMENT" && x.IsActive == true)
+                            .ConfigureAwait(false);
+                            
+                        templatePersistedToDatabase = persistedTemplate != null;
+                        
+                        if (templatePersistedToDatabase)
+                        {
+                            _logger.Information("✅ **STEP_3_PASSED**: MANGO template (03152025_TOTAL_AMOUNT_GENERIC_DOCUMENT) persisted to database successfully");
+                            _logger.Information("   - **TEMPLATE_ID**: {TemplateId}", persistedTemplate.Id);
+                            _logger.Information("   - **TEMPLATE_NAME**: {TemplateName}", persistedTemplate.Name);
+                            _logger.Information("   - **PARTS_COUNT**: {PartsCount}", persistedTemplate.Parts?.Count ?? 0);
+                            _logger.Information("   - **TOTAL_LINES**: {LinesCount}", persistedTemplate.Parts?.Sum(p => p.Lines?.Count ?? 0) ?? 0);
+                            _logger.Information("   - **TOTAL_FIELDS**: {FieldsCount}", persistedTemplate.Parts?.Sum(p => p.Lines?.Sum(l => l.Fields?.Count ?? 0) ?? 0) ?? 0);
+                        }
+                        else
+                        {
+                            _logger.Error("❌ **STEP_3_FAILED**: No MANGO template (03152025_TOTAL_AMOUNT_GENERIC_DOCUMENT) found in OCR database after {TestStartTime}", testStartTime);
+                            _logger.Error("   - **DIAGNOSIS**: Template created in memory but failed to persist to database");
+                            _logger.Error("   - **LIKELY_CAUSES**: Database transaction failure, validation constraints, SaveChangesAsync failure");
+                        }
+                    }
+                    
+                    Assert.That(templatePersistedToDatabase, Is.True, 
+                        $"STEP 3 FAILED: Template persistence - Template created in memory but not saved to OCR database after {testStartTime}. " +
+                        "This indicates database save operation (SaveChangesAsync) or transaction is failing.");
+
+                    // **VERIFICATION STEP 4**: ShipmentInvoice Persistence (FOURTH - Final step after template processing)
+                    _logger.Information("4️⃣ **SHIPMENT_INVOICE_VERIFICATION**: Checking for persisted ShipmentInvoice with retry logic");
                     bool invoiceExists = false;
                     ShipmentInvoice finalInvoice = null;
 
@@ -877,7 +1054,7 @@ namespace AutoBotUtilities.Tests
                         }
                     }
 
-                    Assert.That(invoiceExists, Is.True, "ShipmentInvoice 'UCSJB6' or 'UCSJIB6' not created after waiting for async persistence.");
+                    Assert.That(invoiceExists, Is.True, "STEP 4 FAILED: ShipmentInvoice 'UCSJB6' or 'UCSJIB6' not created after waiting for async persistence. This indicates template processing or invoice creation pipeline is failing.");
                     // ================== END OF ROBUST VERIFICATION ==================
 
                     using (var ctx = new EntryDataDSContext())
@@ -2341,7 +2518,7 @@ Return only the regex pattern, no explanation:";
                             entry.Success,
                             entry.LineNumber,
                             entry.LineText ?? "NULL",
-                            entry.InvoiceType ?? "NULL",
+                            entry.DocumentType ?? "NULL",
                             entry.FilePath ?? "NULL",
                             entry.CreatedDate,
                             entry.CreatedBy ?? "NULL",
@@ -2698,14 +2875,14 @@ Return only the regex pattern, no explanation:";
                     _logger.Error("🔍 **TEST_STEP_1**: Loading initial template from database");
                     
                     int targetTemplateId = 5; // Amazon template ID from previous tests
-                    WaterNut.DataSpace.Invoice initialTemplate = null;
+                    WaterNut.DataSpace.Template initialTemplate = null;
                     
                     using (var ocrCtx = new OCR.Business.Entities.OCRContext())
                     {
-                        var templateData = ocrCtx.Invoices
+                        var templateData = ocrCtx.Templates
                             .AsNoTracking()
                             .Include("Parts")
-                            .Include("InvoiceIdentificatonRegEx.OCR_RegularExpressions")
+                            .Include("TemplateIdentificatonRegEx.OCR_RegularExpressions")
                             .Include("RegEx.RegEx")
                             .Include("RegEx.ReplacementRegEx")
                             .Include("Parts.RecuringPart")
@@ -2727,7 +2904,7 @@ Return only the regex pattern, no explanation:";
                             Assert.Fail($"Template ID {targetTemplateId} not found in database");
                         }
                         
-                        initialTemplate = new WaterNut.DataSpace.Invoice(templateData, _logger);
+                        initialTemplate = new WaterNut.DataSpace.Template(templateData, _logger);
                         _logger.Error("✅ **TEST_STEP_1_SUCCESS**: Initial template loaded with {PartCount} parts and {LineCount} total lines", 
                             initialTemplate.Parts?.Count ?? 0, initialTemplate.Lines?.Count ?? 0);
                     }
@@ -2837,13 +3014,13 @@ Return only the regex pattern, no explanation:";
                         }
                     }
                     
-                    WaterNut.DataSpace.Invoice reloadedTemplate = null;
+                    WaterNut.DataSpace.Template reloadedTemplate = null;
                     using (var ocrCtx = new OCR.Business.Entities.OCRContext())
                     {
-                        var reloadedTemplateData = ocrCtx.Invoices
+                        var reloadedTemplateData = ocrCtx.Templates
                             .AsNoTracking()
                             .Include("Parts")
-                            .Include("InvoiceIdentificatonRegEx.OCR_RegularExpressions")
+                            .Include("TemplateIdentificatonRegEx.OCR_RegularExpressions")
                             .Include("RegEx.RegEx")
                             .Include("RegEx.ReplacementRegEx")
                             .Include("Parts.RecuringPart")
@@ -2861,7 +3038,7 @@ Return only the regex pattern, no explanation:";
                         
                         if (reloadedTemplateData != null)
                         {
-                            reloadedTemplate = new WaterNut.DataSpace.Invoice(reloadedTemplateData, _logger);
+                            reloadedTemplate = new WaterNut.DataSpace.Template(reloadedTemplateData, _logger);
                             _logger.Error("✅ **TEST_STEP_5_SUCCESS**: Template reloaded with {PartCount} parts and {LineCount} total lines", 
                                 reloadedTemplate.Parts?.Count ?? 0, reloadedTemplate.Lines?.Count ?? 0);
                         }

@@ -75,20 +75,20 @@ namespace OCR.Client.DTO
         private ChangeTrackingCollection<End> _End = new ChangeTrackingCollection<End>();
 
         [DataMember]
-        public Invoices Invoices
+        public Templates Templates
 		{
-		    get { return _Invoices; }
+		    get { return _Templates; }
 			set
 			{
-			    if (value == _Invoices) return;
-				_Invoices = value;
-                InvoicesChangeTracker = _Invoices == null ? null
-                    : new ChangeTrackingCollection<Invoices> { _Invoices };
-				NotifyPropertyChanged();//m => this.Invoices
+			    if (value == _Templates) return;
+				_Templates = value;
+                TemplatesChangeTracker = _Templates == null ? null
+                    : new ChangeTrackingCollection<Templates> { _Templates };
+				NotifyPropertyChanged();//m => this.Templates
 			}
 		}
-        private Invoices _Invoices;
-        private ChangeTrackingCollection<Invoices> InvoicesChangeTracker { get; set; }
+        private Templates _Templates;
+        private ChangeTrackingCollection<Templates> TemplatesChangeTracker { get; set; }
 
         [DataMember]
         public PartTypes PartTypes

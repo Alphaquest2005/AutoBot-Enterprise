@@ -1,0 +1,80 @@
+SYSTEMATIC OBJECT-ORIENTED INVOICE ANALYSIS (V14.0 - DeepSeek Logical Framework):
+
+**ANALYTICAL CONTEXT:**
+You are performing systematic analysis of a structured business document using logical reasoning and object-oriented methodologies. Apply step-by-step analytical thinking to identify omissions and format inconsistencies.
+
+**1. EXTRACTED FIELDS:**
+{{invoiceJson}}
+
+**2. CONTEXTUAL ANNOTATIONS:**
+{{annotatedContext}}
+
+**3. MATHEMATICAL BALANCE VERIFICATION:**
+{{balanceCheckContext}}
+
+**4. COMPLETE OCR TEXT FOR ANALYSIS:**
+{{fileText}}
+
+**🎯 DEEPSEEK V14.0 SYSTEMATIC COMPLETION REQUIREMENTS:**
+
+**CRITICAL LOGICAL FRAMEWORK**: FOR EVERY ERROR YOU REPORT, YOU MUST PROVIDE ALL OF THE FOLLOWING COMPONENTS:
+
+1. ✅ **field**: The exact field name from the business object schema (NEVER null)
+2. ✅ **correct_value**: The actual value extracted from the OCR text (NEVER null)  
+3. ✅ **error_type**: Classification as "omission" or "format_correction" or "multi_field_omission" (NEVER null)
+4. ✅ **line_number**: The precise line number where the value appears in OCR text (NEVER 0 or null)
+5. ✅ **line_text**: The complete text of that specific line from the OCR (NEVER null)
+6. ✅ **suggested_regex**: A logically constructed regex pattern that captures the value (NEVER null)
+7. ✅ **reasoning**: Systematic explanation of why this value was missed by the current extraction (NEVER null)
+8. ✅ **group_id**: Unique identifier for transformation group (e.g., "invoice_total_1", "currency_transform_1") (NEVER null)
+9. ✅ **sequence_order**: Order within the group, starting from 1 (NEVER null or 0)
+10. ✅ **transformation_input**: Input source - "ocr_text" for first step, "previous_output" for subsequent steps (NEVER null)
+
+**❌ ABSOLUTELY FORBIDDEN LOGICAL VIOLATIONS**:
+   - "Reasoning": null
+   - "LineNumber": 0  
+   - "LineText": null
+   - "SuggestedRegex": null
+
+**🚨 CRITICAL REGEX CONSTRUCTION REQUIREMENTS FOR PRODUCTION:**
+⚠️ **MANDATORY LOGICAL PATTERN**: ALL regex patterns MUST use named capture groups: (?<FieldName>pattern)
+⚠️ **FORBIDDEN ANTI-PATTERN**: Never use numbered capture groups: (pattern) - these will fail in production systems
+
+**🚨 CRITICAL TRANSFORMATION GROUP STANDARDS:**
+
+**SINGLE ERROR EXAMPLE**: For standalone fields (like InvoiceTotal):
+   - `field` = "InvoiceTotal", `correct_value` = "123.45", `error_type` = "omission"
+   - `group_id` = "invoice_total_1", `sequence_order` = 1, `transformation_input` = "ocr_text"
+
+**MULTI-STEP TRANSFORMATION CHAIN**: For currency fields requiring transformation:
+   **Action 1 - Omission Error**: 
+   - `field` = "Currency", `correct_value` = "US$", `error_type` = "omission"
+   - `group_id` = "currency_transform_1", `sequence_order` = 1, `transformation_input` = "ocr_text"
+   **Action 2 - Format Correction**: 
+   - `field` = "Currency", `correct_value` = "USD", `error_type` = "format_correction"  
+   - `group_id` = "currency_transform_1", `sequence_order` = 2, `transformation_input` = "previous_output"
+
+**UNIVERSAL PRINCIPLE**: EVERY error is a grouped error - single errors are just groups with one item. This creates unified processing where all errors flow through the same transformation pipeline.
+
+**LOGICAL REASONING APPROACH:**
+1. **Systematic Field Verification**: Compare each extracted field against OCR text using logical pattern matching
+2. **Balance Equation Analysis**: Apply mathematical reasoning to identify missing components
+3. **Pattern Recognition**: Use systematic pattern analysis to construct reliable extraction rules
+4. **Error Classification**: Categorize each issue using logical taxonomy
+
+**MANDATORY RESPONSE FORMAT:**
+- **If logical analysis finds errors**: { "errors": [complete error objects with all 7 required fields] }
+- **If systematic verification finds NO errors**: { "errors": [], "explanation": "Detailed logical explanation of why no corrections are needed" }
+
+**🚨 CRITICAL TOKEN MANAGEMENT (DeepSeek API Limit: 8,000 tokens):**
+- **Maximum Response Size**: Your response must fit within 8,000 tokens
+- **Token Efficiency**: If you approach token limits, prioritize the most critical errors first
+- **Response Strategy**: For large error sets, provide complete errors for highest priority items, then stop gracefully
+- **Graceful Termination**: If nearing token limit, end with: "Additional errors detected but truncated due to token limits"
+
+**DEEPSEEK OPTIMIZATION NOTES:**
+- Apply step-by-step logical reasoning to each field
+- Use systematic pattern recognition for regex construction  
+- Provide clear causal explanations for each identified issue
+- Ensure mathematical consistency in balance verification
+- Structure responses efficiently to maximize information density within token constraints

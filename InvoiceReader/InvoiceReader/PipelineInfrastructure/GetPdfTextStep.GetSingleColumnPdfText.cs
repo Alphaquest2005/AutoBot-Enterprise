@@ -24,10 +24,31 @@ namespace WaterNut.DataSpace.PipelineInfrastructure
                     var txt = "------------------------------------------Single Column-------------------------\r\n";
                     context.Logger?.Information("INVOKING_OPERATION: {OperationDescription} ({AsyncExpectation})", "PdfOcr().Ocr with SingleColumn", "SYNC_EXPECTED"); // Use logger from context
                     var ocrStopwatch = Stopwatch.StartNew();
-                    txt += new PdfOcr(context.Logger).Ocr(filePath, PageSegMode.SingleColumn); // Pass logger
+                    
+                    // **MODERN_OCR_APPROACH**: PdfOcr now uses CancellationToken - no ThreadAbortException handling needed
+                    try
+                    {
+                        txt += new PdfOcr(context.Logger).Ocr(filePath, PageSegMode.SingleColumn); // Pass logger
+                        context.Logger?.Information("✅ **SINGLECOLUMN_OCR_SUCCESS**: Single column OCR completed successfully");
+                    }
+                    catch (OperationCanceledException cancelEx)
+                    {
+                        context.Logger?.Warning(cancelEx, "🚨 **SINGLECOLUMN_CANCELLED**: Single Column OCR was cancelled - using fallback text");
+                        txt += "------------------------------------------Single Column (Cancelled Recovery)-------------------------\r\n";
+                        txt += "** OCR processing was cancelled - partial results may be available **\r\n";
+                        // Don't re-throw - allow processing to continue with partial results
+                    }
+                    catch (Exception ocrEx)
+                    {
+                        context.Logger?.Warning(ocrEx, "🚨 **SINGLECOLUMN_ERROR**: Single Column OCR failed - using fallback text");
+                        txt += "------------------------------------------Single Column (Error Recovery)-------------------------\r\n";
+                        txt += $"** OCR processing failed: {ocrEx.Message} - partial results may be available **\r\n";
+                        // Don't re-throw - allow processing to continue with partial results
+                    }
+                    
                     ocrStopwatch.Stop();
                     context.Logger?.Information("OPERATION_INVOKED_AND_CONTROL_RETURNED: {OperationDescription}. Initial call took {InitialCallDurationMs}ms. ({AsyncGuidance})",
-                        "PdfOcr().Ocr with SingleColumn", ocrStopwatch.ElapsedMilliseconds, "Sync call returned"); // Use logger from context
+                        "PdfOcr().Ocr with SingleColumn", ocrStopwatch.ElapsedMilliseconds, "Sync call returned with ThreadAbort protection"); // Use logger from context
  
                     methodStopwatch.Stop(); // Stop stopwatch on success
                     context.Logger?.Information("ACTION_END_SUCCESS: {ActionName}. Outcome: {ActionOutcome}. Total observed duration: {TotalObservedDurationMs}ms.",

@@ -152,19 +152,6 @@ namespace OCR.Client.DTO
         private Nullable<double> _Confidence;
 
         [DataMember]
-        public string InvoiceType
-		{ 
-		    get { return _InvoiceType; }
-			set
-			{
-			    if (value == _InvoiceType) return;
-				_InvoiceType = value;
-				NotifyPropertyChanged();//m => this.InvoiceType
-			}
-		}
-        private string _InvoiceType;
-
-        [DataMember]
         public string FilePath
 		{ 
 		    get { return _FilePath; }
@@ -306,6 +293,45 @@ namespace OCR.Client.DTO
 			}
 		}
         private Nullable<int> _RegexId;
+
+        [DataMember]
+        public string SuggestedRegex
+		{ 
+		    get { return _SuggestedRegex; }
+			set
+			{
+			    if (value == _SuggestedRegex) return;
+				_SuggestedRegex = value;
+				NotifyPropertyChanged();//m => this.SuggestedRegex
+			}
+		}
+        private string _SuggestedRegex;
+
+        [DataMember]
+        public string SuggestedRegex_Indexed
+		{ 
+		    get { return _SuggestedRegex_Indexed; }
+			set
+			{
+			    if (value == _SuggestedRegex_Indexed) return;
+				_SuggestedRegex_Indexed = value;
+				NotifyPropertyChanged();//m => this.SuggestedRegex_Indexed
+			}
+		}
+        private string _SuggestedRegex_Indexed;
+
+        [DataMember]
+        public string DocumentType
+		{ 
+		    get { return _DocumentType; }
+			set
+			{
+			    if (value == _DocumentType) return;
+				_DocumentType = value;
+				NotifyPropertyChanged();//m => this.DocumentType
+			}
+		}
+        private string _DocumentType;
 
        
    //     [DataMember]

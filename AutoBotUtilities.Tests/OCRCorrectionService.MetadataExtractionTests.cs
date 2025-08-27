@@ -11,7 +11,6 @@ using System.Data.Entity;            // For Include in GetFieldFormatRegexesFrom
 
 namespace AutoBotUtilities.Tests.Production
 {
-    using Invoices = OCR.Business.Entities.Invoices;
     using OCRCorrectionService = WaterNut.DataSpace.OCRCorrectionService;
 
     /// <summary>
@@ -27,7 +26,7 @@ namespace AutoBotUtilities.Tests.Production
 
         private static ILogger _logger;
         private OCRCorrectionService _service;
-        private Invoice _mockOcrTemplate; // OCR.Business.Entities.Invoice
+        private Template _mockOcrTemplate; // OCR.Business.Entities.Invoice
 
         [OneTimeSetUp]
         public void OneTimeSetUp()
@@ -60,12 +59,12 @@ namespace AutoBotUtilities.Tests.Production
         }
 
         // Helper to create a more detailed mock OCR Template
-        private Invoice CreateDetailedMockOcrTemplate()
+        private Template CreateDetailedMockOcrTemplate()
         {
-            var ocrInvoiceEntity = new Invoices { Id = 1, Name = "DetailedTestTemplate" };
-            var template = new Invoice(ocrInvoiceEntity, _logger) { FilePath = "detailed_test.pdf" };
+            var ocrInvoiceEntity = new Templates { Id = 1, Name = "DetailedTestTemplate" };
+            var template = new Template(ocrInvoiceEntity, _logger) { FilePath = "detailed_test.pdf" };
 
-            var headerPartEntity = new Parts { Id = 10, Invoices= ocrInvoiceEntity, PartTypeId = 1, PartTypes = new PartTypes { Id = 1, Name = "Header" } };
+            var headerPartEntity = new Parts { Id = 10, Templates = ocrInvoiceEntity, PartTypeId = 1, PartTypes = new PartTypes { Id = 1, Name = "Header" } };
             template.Parts.Add(new Part(headerPartEntity, _logger));
 
             var lineDefHeader1 = new Lines { Id = 100, PartId = 10, Name = "InvoiceNoLine", RegExId = 1000, RegularExpressions = new RegularExpressions { Id = 1000, RegEx = "Invoice No: (?<InvoiceKey>\\w+)" }, Fields = new List<Fields>() };
@@ -79,7 +78,7 @@ namespace AutoBotUtilities.Tests.Production
             headerPartEntity.Lines.Add(lineDefHeader2);
 
 
-            var lineItemPartEntity = new Parts { Id = 20, Invoices = ocrInvoiceEntity, PartTypeId = 2, PartTypes = new PartTypes { Id = 2, Name = "LineItem" } };
+            var lineItemPartEntity = new Parts { Id = 20, Templates = ocrInvoiceEntity, PartTypeId = 2, PartTypes = new PartTypes { Id = 2, Name = "LineItem" } };
             template.Parts.Add(new Part(lineItemPartEntity, _logger));
 
             var lineDefItem1 = new Lines { Id = 200, PartId = 20, Name = "ItemDescLine", RegExId = 2000, RegularExpressions = new RegularExpressions { Id = 2000, RegEx = "Item: (?<ItemDescKey>.+) Qty" }, Fields = new List<Fields>() };

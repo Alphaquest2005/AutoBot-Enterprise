@@ -1,0 +1,70 @@
+MANGO SUPPLIER SYSTEMATIC ANALYSIS (V14.0 - DeepSeek MANGO-Specialized Framework):
+
+**SPECIALIZED CONTEXT:**
+You are analyzing a MANGO fashion retailer invoice using systematic logical reasoning optimized for European supplier document patterns. Apply specialized MANGO invoice intelligence combined with step-by-step analytical thinking.
+
+**MANGO SUPPLIER INTELLIGENCE:**
+- **Supplier**: {{supplierName}} (Fashion/Retail Industry)
+- **Currency Patterns**: EUR formatting with comma/decimal variations
+- **Date Formats**: European DD/MM/YYYY and variants
+- **Field Patterns**: "TOTAL AMOUNT" instead of "Invoice Total"
+- **Multi-Language**: Spanish/English mixed content possible
+
+**1. EXTRACTED MANGO INVOICE FIELDS:**
+{{invoiceJson}}
+
+**2. MANGO-SPECIFIC CONTEXTUAL ANNOTATIONS:**
+{{annotatedContext}}
+
+**3. MANGO BALANCE VERIFICATION:**
+{{balanceCheckContext}}
+
+**4. COMPLETE MANGO OCR TEXT (Multiple Formats):**
+{{fileText}}
+
+**🥭 MANGO-SPECIFIC DEEPSEEK V14.0 REQUIREMENTS:**
+
+**CRITICAL MANGO FIELD MAPPING:**
+- "TOTAL AMOUNT" → InvoiceTotal (not "Invoice Total")
+- "Tax" / "IVA" → TotalOtherCost  
+- "Subtotal" / "Importe" → SubTotal
+- Date patterns: "15/03/2025", "15-03-2025", "March 15, 2025"
+- Invoice patterns: "MANGO-XXXXXXXX", "Invoice No: MANGO XXXXXXXX"
+
+**SYSTEMATIC MANGO ANALYSIS FRAMEWORK**: FOR EVERY ERROR YOU REPORT, PROVIDE ALL COMPONENTS:
+
+1. ✅ **field**: Exact field name from MANGO invoice schema (NEVER null)
+2. ✅ **correct_value**: Actual value from MANGO OCR text (NEVER null)  
+3. ✅ **error_type**: "omission" or "format_correction" or "multi_field_omission" (NEVER null)
+4. ✅ **line_number**: Precise line number in MANGO OCR text (NEVER 0 or null)
+5. ✅ **line_text**: Complete line text from MANGO invoice (NEVER null)
+6. ✅ **suggested_regex**: MANGO-optimized regex pattern with named capture groups (NEVER null)
+7. ✅ **reasoning**: Logical explanation specific to MANGO invoice patterns (NEVER null)
+
+**🚨 CRITICAL MANGO REGEX PATTERNS:**
+⚠️ **MANGO TOTAL AMOUNT**: `TOTAL\\s+AMOUNT[:\\s]*€?\\s*(?<InvoiceTotal>[\\d,]+\\.?\\d*)`
+⚠️ **MANGO INVOICE NUMBER**: `(?:Invoice\\s+No[:\\s]*)?MANGO[\\s-]*(?<InvoiceNo>[\\d]{8})`
+⚠️ **MANGO DATE FORMATS**: `(?<InvoiceDate>\\d{1,2}[\\/-]\\d{1,2}[\\/-]\\d{4})|(?<InvoiceDate>\\w+\\s+\\d{1,2},?\\s+\\d{4})`
+⚠️ **MANGO CURRENCY**: `€\\s*(?<Amount>[\\d,]+\\.?\\d*)|(?<Amount>[\\d,]+\\.?\\d*)\\s*€`
+
+**MANGO OCR SECTION ANALYSIS:**
+Current OCR Sections: {{ocrSections}}
+- **Single Column**: Standard MANGO invoice format - look for aligned EUR amounts
+- **Ripped Text**: MANGO invoice with spacing issues - check for split "TOTAL AMOUNT"
+- **SparseText**: Character-separated format - reconstruct "T O T A L   A M O U N T"
+
+**LOGICAL MANGO REASONING APPROACH:**
+1. **MANGO Pattern Recognition**: Apply MANGO-specific field name variations
+2. **European Currency Logic**: Handle EUR formatting with commas as thousands separators
+3. **Multi-Format Support**: Analyze across Single Column, Ripped Text, and SparseText sections
+4. **Fashion Retail Context**: Consider typical MANGO product and pricing patterns
+
+**MANDATORY RESPONSE FORMAT:**
+- **If MANGO analysis finds errors**: { "errors": [complete error objects with MANGO-specific patterns] }
+- **If MANGO verification finds NO errors**: { "errors": [], "explanation": "Detailed explanation specific to MANGO invoice structure validation" }
+
+**DEEPSEEK MANGO OPTIMIZATION NOTES:**
+- Apply systematic logical reasoning to MANGO-specific field patterns
+- Use step-by-step analysis for European formatting conventions
+- Provide clear causal explanations for MANGO invoice omissions
+- Ensure mathematical consistency with European currency formatting

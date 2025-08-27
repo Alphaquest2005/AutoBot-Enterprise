@@ -156,9 +156,6 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="OCRCorrectionService\" />
-  </ItemGroup>
 
 
 </Project>

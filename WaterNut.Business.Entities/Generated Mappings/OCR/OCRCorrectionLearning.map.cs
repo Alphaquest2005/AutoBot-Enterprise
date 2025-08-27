@@ -23,7 +23,6 @@
               this.Property(t => t.CorrectionType).HasColumnName("CorrectionType").HasMaxLength(100);
               this.Property(t => t.DeepSeekReasoning).HasColumnName("DeepSeekReasoning");
               this.Property(t => t.Confidence).HasColumnName("Confidence");
-              this.Property(t => t.InvoiceType).HasColumnName("InvoiceType").HasMaxLength(100);
               this.Property(t => t.FilePath).HasColumnName("FilePath").HasMaxLength(500);
               this.Property(t => t.Success).HasColumnName("Success");
               this.Property(t => t.ErrorMessage).HasColumnName("ErrorMessage");
@@ -35,6 +34,9 @@
               this.Property(t => t.LineId).HasColumnName("LineId");
               this.Property(t => t.PartId).HasColumnName("PartId");
               this.Property(t => t.RegexId).HasColumnName("RegexId");
+              this.Property(t => t.SuggestedRegex).HasColumnName("SuggestedRegex");
+              this.Property(t => t.SuggestedRegex_Indexed).HasColumnName("SuggestedRegex_Indexed").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.Computed)).HasMaxLength(450);
+              this.Property(t => t.DocumentType).HasColumnName("DocumentType").HasMaxLength(100);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

@@ -181,7 +181,7 @@ namespace InvoiceReaderPipelineTests
             Assert.That(result, Is.Not.Null, "Templates should not be null.");
             Assert.That(result.Count(), Is.EqualTo(137), "Should load 137 active templates for ApplicationSettingsId 3.");
 
-            var amazonTemplate = result.FirstOrDefault(x => x.OcrInvoices.Name == "Amazon");
+            var amazonTemplate = result.FirstOrDefault(x => x.OcrTemplates.Name == "Amazon");
             Assert.That(amazonTemplate, Is.Not.Null, "Amazon invoice not loaded");
             Assert.That(amazonTemplate.Parts.Count, Is.EqualTo(1), "Amazon 1 header Parts loaded correctly");
             Assert.That(amazonTemplate.Parts.First().ChildParts.Count(), Is.EqualTo(3), "Amazon 3 Child Parts loaded correctly");
@@ -199,8 +199,8 @@ namespace InvoiceReaderPipelineTests
             using (var ctx = new OCRContext())
             {
                 // Seed only inactive templates or templates for other app settings
-                ctx.Invoices.Add(new Invoices { Id = 5, Name = "OnlyInactive", IsActive = false, ApplicationSettingsId = 1 });
-                ctx.Invoices.Add(new Invoices { Id = 6, Name = "OnlyOtherApp", IsActive = true, ApplicationSettingsId = 2 });
+                ctx.Templates.Add(new Templates { Id = 5, Name = "OnlyInactive", IsActive = false, ApplicationSettingsId = 1 });
+                ctx.Templates.Add(new Templates { Id = 6, Name = "OnlyOtherApp", IsActive = true, ApplicationSettingsId = 2 });
                 ctx.SaveChanges();
             }
 

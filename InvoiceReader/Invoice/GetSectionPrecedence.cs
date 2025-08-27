@@ -1,6 +1,6 @@
 ﻿namespace WaterNut.DataSpace
 {
-    public partial class Invoice
+    public partial class Template
     {
         private static int GetSectionPrecedence(string sectionName)
         {

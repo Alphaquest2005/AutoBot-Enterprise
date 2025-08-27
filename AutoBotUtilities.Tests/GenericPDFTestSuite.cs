@@ -233,8 +233,8 @@ namespace AutoBotUtilities.Tests
         {
             var testStartTime = DateTime.Now.AddSeconds(-5);
             
-            using (LogLevelOverride.Begin(LogEventLevel.Verbose))
-            {
+            // using (LogLevelOverride.Begin(LogEventLevel.Verbose)) // COMMENTED OUT: Preventing singleton conflicts
+            // {
                 try
                 {
                     _logger.Information("🔍 **GENERIC_TEST_START**: {TestName}", testCase.TestName);
@@ -286,7 +286,7 @@ namespace AutoBotUtilities.Tests
                     _logger.Error("🔍 **EXCEPTION_DETAILS**: Message: {Message}, StackTrace: {StackTrace}", e.Message, e.StackTrace);
                     Assert.Fail($"Test {testCase.TestName} failed: {e.Message}");
                 }
-            }
+            // }
         }
 
         /// <summary>

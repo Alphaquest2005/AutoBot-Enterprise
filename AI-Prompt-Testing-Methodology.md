@@ -1,5 +1,23 @@
 # AI Prompt Testing Methodology & DeepSeek Validation Framework
 
+## 🏠 WORKTREE ENVIRONMENT DETECTION
+
+### **🎯 Current Environment Commands**
+```bash
+# Always run this first to identify your current environment
+echo "Current Environment: $(pwd)"
+echo "Current Branch: $(git branch --show-current)"
+echo "Repository Root: $(git rev-parse --show-toplevel)"
+git worktree list
+```
+
+**Available Environments**:
+- **Main Repository**: `AutoBot-Enterprise` (primary development)
+- **Alpha Worktree**: `AutoBot-Enterprise-alpha` (experimental work)
+- **Beta Worktree**: `AutoBot-Enterprise-beta` (baseline comparison)
+
+---
+
 ## Overview
 
 This document describes a comprehensive methodology for testing and validating AI prompts (specifically DeepSeek) against diverse invoice types using the Generic PDF Test Suite framework. The goal is to ensure the OCR correction service generalizes beyond Amazon-specific patterns to handle all invoice types effectively.
@@ -450,7 +468,7 @@ SubTotal + TotalInternalFreight + TotalOtherCost + TotalInsurance - TotalDeducti
 
 **Build:**
 ```bash
-cd "/mnt/c/Insight Software/AutoBot-Enterprise"
+cd "$(git rev-parse --show-toplevel)"
 "/mnt/c/Program Files/Microsoft Visual Studio/2022/Enterprise/MSBuild/Current/Bin/MSBuild.exe" "AutoBotUtilities.Tests/AutoBotUtilities.Tests.csproj" /t:Rebuild /p:Configuration=Debug /p:Platform=x64
 ```
 

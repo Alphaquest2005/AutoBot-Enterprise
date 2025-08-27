@@ -607,6 +607,133 @@ namespace AutoBotUtilities.Tests
 
         #endregion
 
+        #region OCR Template Structure Analysis
+
+        /// <summary>
+        /// Analyze OCR template structure and FileType relationships for template specification integration
+        /// </summary>
+        [Test]
+        public async Task AnalyzeOCRTemplateStructure()
+        {
+            _logger.Information("🔍 **OCR_TEMPLATE_ANALYSIS**: Starting comprehensive OCR template structure analysis");
+
+            // 1. Check OCR_TemplateTableMapping structure
+            var templateMappingStructureScript = @"
+                SELECT 
+                    COLUMN_NAME, 
+                    DATA_TYPE, 
+                    IS_NULLABLE, 
+                    COLUMN_DEFAULT,
+                    CHARACTER_MAXIMUM_LENGTH
+                FROM INFORMATION_SCHEMA.COLUMNS 
+                WHERE TABLE_NAME = 'OCR_TemplateTableMapping' 
+                AND TABLE_SCHEMA = 'dbo'
+                ORDER BY ORDINAL_POSITION;
+            ";
+
+            await this.ExecuteSqlScript(templateMappingStructureScript, "OCR_TemplateTableMapping table structure").ConfigureAwait(false);
+
+            // 2. Check current OCR_TemplateTableMapping data
+            var templateMappingDataScript = @"
+                SELECT * FROM [WebSource-AutoBot].[dbo].[OCR_TemplateTableMapping];
+            ";
+
+            await this.ExecuteSqlScript(templateMappingDataScript, "Current OCR_TemplateTableMapping data").ConfigureAwait(false);
+
+            // 3. Check FileTypes-FileImporterInfo data (DocumentType enum mappings)
+            var fileTypesScript = @"
+                SELECT 
+                    Id as FileTypeId,
+                    EntryType as DocumentTypeEnum,
+                    CASE EntryType
+                        WHEN 0 THEN 'Invoice'
+                        WHEN 1 THEN 'PurchaseOrder'
+                        WHEN 2 THEN 'Receipt'
+                        WHEN 3 THEN 'Statement'
+                        WHEN 4 THEN 'Other'
+                        ELSE 'Unknown (' + CAST(EntryType as VARCHAR) + ')'
+                    END as DocumentTypeName,
+                    FileExtension,
+                    Description
+                FROM [WebSource-AutoBot].[dbo].[FileTypes-FileImporterInfo]
+                ORDER BY EntryType;
+            ";
+
+            await this.ExecuteSqlScript(fileTypesScript, "FileTypes-FileImporterInfo DocumentType mappings").ConfigureAwait(false);
+
+            // 4. Check if FileTypeId column exists in OCR_TemplateTableMapping
+            var columnExistsScript = @"
+                SELECT 
+                    CASE 
+                        WHEN EXISTS (
+                            SELECT 1 FROM INFORMATION_SCHEMA.COLUMNS 
+                            WHERE TABLE_NAME = 'OCR_TemplateTableMapping' 
+                            AND COLUMN_NAME = 'FileTypeId'
+                        ) THEN 'FileTypeId column EXISTS'
+                        ELSE 'FileTypeId column MISSING - needs to be added'
+                    END as FileTypeIdColumnStatus;
+            ";
+
+            await this.ExecuteSqlScript(columnExistsScript, "FileTypeId column existence check").ConfigureAwait(false);
+
+            // 5. Check OCR-PartLineFields view for EntityType analysis
+            var entityTypeAnalysisScript = @"
+                IF OBJECT_ID('OCR-PartLineFields', 'V') IS NOT NULL OR OBJECT_ID('OCR-PartLineFields', 'U') IS NOT NULL
+                BEGIN
+                    SELECT DISTINCT EntityType, COUNT(*) as FieldCount
+                    FROM [WebSource-AutoBot].[dbo].[OCR-PartLineFields]
+                    WHERE EntityType IS NOT NULL AND EntityType != ''
+                    GROUP BY EntityType 
+                    ORDER BY EntityType;
+                END
+                ELSE
+                BEGIN
+                    SELECT 'OCR-PartLineFields view/table does not exist' AS Message;
+                END
+            ";
+
+            await this.ExecuteSqlScript(entityTypeAnalysisScript, "OCR-PartLineFields EntityType analysis").ConfigureAwait(false);
+
+            // 6. Check current database relationships 
+            var relationshipsScript = @"
+                -- Show current relationship between FileTypes and OCR templates (if exists)
+                SELECT 
+                    fti.Id as FileTypeId,
+                    fti.EntryType as DocumentTypeEnum,
+                    CASE fti.EntryType
+                        WHEN 0 THEN 'Invoice'
+                        WHEN 1 THEN 'PurchaseOrder'
+                        WHEN 2 THEN 'Receipt'
+                        WHEN 3 THEN 'Statement'
+                        WHEN 4 THEN 'Other'
+                        ELSE 'Unknown'
+                    END as DocumentTypeName,
+                    fti.FileExtension,
+                    CASE 
+                        WHEN otm.Id IS NULL THEN 'MISSING - OCR Template needed'
+                        ELSE 'OCR Template exists (ID: ' + CAST(otm.Id as VARCHAR) + ')'
+                    END as TemplateStatus
+                FROM [WebSource-AutoBot].[dbo].[FileTypes-FileImporterInfo] fti
+                LEFT JOIN [WebSource-AutoBot].[dbo].[OCR_TemplateTableMapping] otm ON fti.Id = otm.FileTypeId
+                ORDER BY fti.EntryType;
+            ";
+
+            await this.ExecuteSqlScript(relationshipsScript, "Current FileType to OCR template relationships").ConfigureAwait(false);
+
+            // 7. Get all OCR and FileType related tables
+            var ocrTablesScript = @"
+                SELECT TABLE_NAME 
+                FROM INFORMATION_SCHEMA.TABLES 
+                WHERE TABLE_SCHEMA = 'dbo' 
+                AND (TABLE_NAME LIKE '%OCR%' OR TABLE_NAME LIKE '%FileType%' OR TABLE_NAME LIKE '%Template%')
+                ORDER BY TABLE_NAME;
+            ";
+
+            await this.ExecuteSqlScript(ocrTablesScript, "All OCR and FileType related tables").ConfigureAwait(false);
+        }
+
+        #endregion
+
         #region Custom Test Helpers
 
         /// <summary>
@@ -640,6 +767,167 @@ namespace AutoBotUtilities.Tests
             ";
 
             await this.ExecuteSqlScript(currentStateScript, "Current Amazon template state for Caribbean customs").ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Investigate FileTypes-FileImporterInfo table for FileTypeId=1147 to fix EntryType issue
+        /// </summary>
+        [Test]
+        [Explicit("Run manually to investigate FileTypes-FileImporterInfo")]
+        public async Task InvestigateFileTypesFileImporterInfo()
+        {
+            _logger.Information("🔍 **FILETYPES_INVESTIGATION**: Investigating FileTypes-FileImporterInfo for FileTypeId=1147");
+
+            // Check what's in FileTypes-FileImporterInfo table
+            var fileTypesScript = @"
+                SELECT Id, EntryType, FileExtension, Description, Format
+                FROM [dbo].[FileTypes-FileImporterInfo]
+                WHERE Id = 1147 OR EntryType LIKE '%Invoice%' OR EntryType LIKE '%Shipment%'
+                ORDER BY Id;
+            ";
+
+            await this.ExecuteSqlScript(fileTypesScript, "FileTypes-FileImporterInfo for 1147 and Invoice types").ConfigureAwait(false);
+
+            // Check all FileTypeIds around 1147
+            var nearbyScript = @"
+                SELECT Id, EntryType, FileExtension, Description, Format
+                FROM [dbo].[FileTypes-FileImporterInfo]
+                WHERE Id BETWEEN 1145 AND 1150
+                ORDER BY Id;
+            ";
+
+            await this.ExecuteSqlScript(nearbyScript, "FileTypes-FileImporterInfo around 1147").ConfigureAwait(false);
+
+            // Check what EntryType should be for Shipment Invoice
+            var shipmentInvoiceScript = @"
+                SELECT Id, EntryType, FileExtension, Description, Format
+                FROM [dbo].[FileTypes-FileImporterInfo]
+                WHERE EntryType = 'Shipment Invoice' OR Description LIKE '%Shipment%' OR Description LIKE '%Invoice%'
+                ORDER BY Id;
+            ";
+
+            await this.ExecuteSqlScript(shipmentInvoiceScript, "Look for Shipment Invoice EntryType").ConfigureAwait(false);
+            
+            _logger.Information("✅ **INVESTIGATION_COMPLETE**: FileTypes-FileImporterInfo investigation complete");
+        }
+
+        /// <summary>
+        /// Fix FileTypeId for existing "Shipment Invoice" mapping to match MANGO templates (FileTypeId 1147)
+        /// </summary>
+        [Test]
+        [Explicit("Run manually to fix Shipment Invoice FileTypeId")]
+        public async Task FixShipmentInvoiceFileTypeId()
+        {
+            _logger.Information("🔧 **DATABASE_FILETYPE_FIX**: Updating Shipment Invoice mapping to use correct FileTypeId=1147");
+
+            // Check current FileTypeId
+            var checkCurrentScript = @"
+                SELECT Id, DocumentType, TargetTable, FileTypeId, IsActive
+                FROM [dbo].[OCR_TemplateTableMapping]
+                WHERE DocumentType = 'Shipment Invoice';
+            ";
+
+            await this.ExecuteSqlScript(checkCurrentScript, "Current Shipment Invoice mapping").ConfigureAwait(false);
+
+            // Update FileTypeId to 1147 (matches MANGO templates)
+            var updateScript = @"
+                UPDATE [dbo].[OCR_TemplateTableMapping] 
+                SET FileTypeId = 1147
+                WHERE DocumentType = 'Shipment Invoice' AND IsActive = 1;
+            ";
+
+            await this.ExecuteSqlScript(updateScript, "Update Shipment Invoice FileTypeId to 1147").ConfigureAwait(false);
+
+            // Verify the update was successful
+            var verifyScript = @"
+                SELECT Id, DocumentType, TargetTable, FileTypeId, IsActive
+                FROM [dbo].[OCR_TemplateTableMapping]
+                WHERE DocumentType = 'Shipment Invoice';
+            ";
+
+            await this.ExecuteSqlScript(verifyScript, "Verify FileTypeId update").ConfigureAwait(false);
+            
+            _logger.Information("✅ **FILETYPE_FIX_COMPLETE**: Shipment Invoice FileTypeId updated to 1147");
+        }
+
+        /// <summary>
+        /// Insert missing "Shipment Invoice" mapping into OCR_TemplateTableMapping table
+        /// This enables EntryTypes enum compliance by providing the required database mapping
+        /// </summary>
+        [Test]
+        [Explicit("Run manually to create Shipment Invoice database mapping")]
+        public async Task CreateShipmentInvoiceMapping()
+        {
+            _logger.Information("🔧 **DATABASE_MAPPING_CREATION**: Creating missing 'Shipment Invoice' mapping");
+
+            // First check what mappings currently exist
+            var checkExistingScript = @"
+                SELECT DocumentType, TargetTable, RequiredFields, OptionalFields, FileTypeId, IsActive
+                FROM [dbo].[OCR_TemplateTableMapping]
+                WHERE DocumentType LIKE '%Invoice%'
+                ORDER BY DocumentType;
+            ";
+
+            await this.ExecuteSqlScript(checkExistingScript, "Current Invoice-related mappings").ConfigureAwait(false);
+
+            // Check if 'Shipment Invoice' mapping already exists
+            var checkSpecificScript = @"
+                SELECT COUNT(*) as ExistingCount
+                FROM [dbo].[OCR_TemplateTableMapping]
+                WHERE DocumentType = 'Shipment Invoice' AND IsActive = 1;
+            ";
+
+            var existingResult = await this.ExecuteSqlScript(checkSpecificScript, "Check if Shipment Invoice mapping exists").ConfigureAwait(false);
+            
+            if (existingResult.Rows.Count > 0 && Convert.ToInt32(existingResult.Rows[0]["ExistingCount"]) > 0)
+            {
+                _logger.Information("✅ **MAPPING_EXISTS**: Shipment Invoice mapping already exists - no action needed");
+                return;
+            }
+
+            // Find the most commonly used FileTypeId to use for our new mapping
+            var fileTypeScript = @"
+                SELECT TOP 3 FileTypeId, COUNT(*) as UsageCount 
+                FROM [dbo].[OCR_TemplateTableMapping] 
+                WHERE IsActive = 1
+                GROUP BY FileTypeId 
+                ORDER BY COUNT(*) DESC;
+            ";
+
+            var fileTypeResult = await this.ExecuteSqlScript(fileTypeScript, "Most commonly used FileTypeId values").ConfigureAwait(false);
+            
+            int fileTypeId = 1;
+            if (fileTypeResult.Rows.Count > 0)
+            {
+                fileTypeId = Convert.ToInt32(fileTypeResult.Rows[0]["FileTypeId"]);
+                _logger.Information("🎯 **FILETYPE_SELECTED**: Using FileTypeId={FileTypeId} (most common)", fileTypeId);
+            }
+
+            // Create the missing mapping
+            var insertScript = @"
+                INSERT INTO [dbo].[OCR_TemplateTableMapping] 
+                ([DocumentType], [TargetTable], [RequiredFields], [OptionalFields], [FileTypeId], [IsActive], [Keywords], [TemplatePrefix])
+                VALUES 
+                ('Shipment Invoice', 'ShipmentInvoice', 'InvoiceNo,InvoiceTotal,SupplierCode', 'InvoiceDate,Currency,SubTotal,TotalInternalFreight,TotalOtherCost,TotalInsurance,TotalDeduction', @FileTypeId, 1, 'Shipment,Invoice,Customs,Import,Export,Freight', 'SI');
+            ";
+
+            var parameters = new Dictionary<string, object>
+            {
+                { "FileTypeId", fileTypeId }
+            };
+
+            await this.ExecuteSqlScript(insertScript, "Insert Shipment Invoice mapping", parameters).ConfigureAwait(false);
+
+            // Verify the insertion was successful
+            var verifyScript = @"
+                SELECT DocumentType, TargetTable, RequiredFields, OptionalFields, FileTypeId, IsActive
+                FROM [dbo].[OCR_TemplateTableMapping]
+                WHERE DocumentType = 'Shipment Invoice';
+            ";
+
+            await this.ExecuteSqlScript(verifyScript, "Verify Shipment Invoice mapping creation").ConfigureAwait(false);
+            
+            _logger.Information("✅ **MAPPING_CREATION_COMPLETE**: Shipment Invoice mapping successfully created");
         }
 
         #endregion

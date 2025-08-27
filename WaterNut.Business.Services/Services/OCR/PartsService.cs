@@ -235,10 +235,10 @@ namespace OCR.Business.Services
                                         GetWhere<End>(dbContext, exp, itm.Value, "Parts", "Select", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
-                            case "Invoices":
+                            case "Templates":
                                 return
                                     await
-                                        GetWhere<Invoices>(dbContext, exp, itm.Value, "Parts", "SelectMany", includesLst)
+                                        GetWhere<Templates>(dbContext, exp, itm.Value, "Parts", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
                             case "PartTypes":
@@ -761,8 +761,8 @@ namespace OCR.Business.Services
                             case "End":
                                 return await CountWhere<End>(dbContext, exp, itm.Value, "Parts", "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "Invoices":
-                                return await CountWhere<Invoices>(dbContext, exp, itm.Value, "Parts", "SelectMany")
+                            case "Templates":
+                                return await CountWhere<Templates>(dbContext, exp, itm.Value, "Parts", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "PartTypes":
                                 return await CountWhere<PartTypes>(dbContext, exp, itm.Value, "Parts", "SelectMany")
@@ -890,10 +890,10 @@ namespace OCR.Business.Services
                                         LoadRangeWhere<End>(startIndex, count, dbContext, exp, itm.Value, "Parts", "Select")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
-                            case "Invoices":
+                            case "Templates":
                                 return
                                     await
-                                        LoadRangeWhere<Invoices>(startIndex, count, dbContext, exp, itm.Value, "Parts", "SelectMany")
+                                        LoadRangeWhere<Templates>(startIndex, count, dbContext, exp, itm.Value, "Parts", "SelectMany")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                             case "PartTypes":
@@ -1253,8 +1253,8 @@ namespace OCR.Business.Services
                             case "End":
                                 return await SumWhere<End>(dbContext, exp, itm.Value, "Parts", field, "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "Invoices":
-                                return await SumWhere<Invoices>(dbContext, exp, itm.Value, "Parts", field, "SelectMany")
+                            case "Templates":
+                                return await SumWhere<Templates>(dbContext, exp, itm.Value, "Parts", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "PartTypes":
                                 return await SumWhere<PartTypes>(dbContext, exp, itm.Value, "Parts", field, "SelectMany")

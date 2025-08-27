@@ -14,10 +14,10 @@ namespace WaterNut.DataSpace
         public string EmailId { get; }
         public string DroppedFilePath { get; }
         public List<dynamic> Data { get; }
-        public OCR.Business.Entities.Invoices Template { get; }
+        public OCR.Business.Entities.Templates Template { get; }
         public Dictionary<(int lineNumber, string section), Dictionary<(OCR.Business.Entities.Fields Fields, string Instance), string>> LineValues { get; }
 
-        public DataFile(FileTypes fileType, List<AsycudaDocumentSet> docSet, bool overWriteExisting, string emailId, string droppedFilePath, List<dynamic> data, OCR.Business.Entities.Invoices template)
+        public DataFile(FileTypes fileType, List<AsycudaDocumentSet> docSet, bool overWriteExisting, string emailId, string droppedFilePath, List<dynamic> data, OCR.Business.Entities.Templates template)
         {
             FileType = fileType;
             DocSet = docSet;
@@ -29,7 +29,7 @@ namespace WaterNut.DataSpace
             LineValues = new Dictionary<(int lineNumber, string section), Dictionary<(OCR.Business.Entities.Fields Fields, string Instance), string>>();
         }
 
-        public DataFile(FileTypes fileType, List<AsycudaDocumentSet> docSet, bool overWriteExisting, string emailId, string droppedFilePath, List<dynamic> data, (OCR.Business.Entities.Invoices template, Dictionary<(int lineNumber, string section), Dictionary<(OCR.Business.Entities.Fields Fields, string Instance), string>> lineValues) templateData)
+        public DataFile(FileTypes fileType, List<AsycudaDocumentSet> docSet, bool overWriteExisting, string emailId, string droppedFilePath, List<dynamic> data, (OCR.Business.Entities.Templates template, Dictionary<(int lineNumber, string section), Dictionary<(OCR.Business.Entities.Fields Fields, string Instance), string>> lineValues) templateData)
         {
             FileType = fileType;
             DocSet = docSet;

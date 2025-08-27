@@ -204,8 +204,8 @@ namespace AutoBotUtilities.Tests.Production
             // fileText should match what this template would extract initially to show an imbalance
             var fileText = "File text for LEGACY-DYN-001 where calculated total is 100 but reported is 105.";
 
-            var mockOcrInvoicesEntity = new OCR.Business.Entities.Invoices { Id = 99, Name = "LegacyTestTemplate" };
-            var template = new Invoice(mockOcrInvoicesEntity, _logger);
+            var mockOcrInvoicesEntity = new OCR.Business.Entities.Templates { Id = 99, Name = "LegacyTestTemplate" };
+            var template = new Template(mockOcrInvoicesEntity, _logger);
             // Populate template.Lines and template.Parts as needed for CreateEnhancedFieldMapping to work.
 
             // Act: This calls instance methods which call DeepSeek and DB.

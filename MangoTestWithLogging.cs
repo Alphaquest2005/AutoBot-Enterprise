@@ -21,8 +21,8 @@ namespace TestRunner
             try
             {
                 // Use surgical debugging LogLevelOverride to capture complete execution
-                using (LogLevelOverride.Begin(LogEventLevel.Verbose))
-                {
+                // using (LogLevelOverride.Begin(LogEventLevel.Verbose)) // COMMENTED OUT: Preventing singleton conflicts
+                // {
                     Log.Information("🔬 **SURGICAL_DEBUGGING_START**: Running MANGO test with comprehensive logging");
                     
                     // This scope will terminate the application when done, providing focused logs
@@ -33,7 +33,7 @@ namespace TestRunner
                     await testInstance.CanImportMango03152025TotalAmount_AfterLearning();
                     
                     Log.Information("✅ **TEST_COMPLETED**: MANGO test finished successfully");
-                }
+                // }
             }
             catch (Exception ex)
             {

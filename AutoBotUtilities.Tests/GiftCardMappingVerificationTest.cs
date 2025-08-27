@@ -37,7 +37,7 @@ namespace AutoBotUtilities.Tests
                 var giftCardFields = ctx.Fields
                     .Include(f => f.Lines)
                     .Include(f => f.Lines.Parts)
-                    .Include(f => f.Lines.Parts.Invoices)
+                    .Include(f => f.Lines.Parts.Templates)
                     .Where(f => f.LineId == 1830)
                     .ToList();
 
@@ -54,10 +54,10 @@ namespace AutoBotUtilities.Tests
                         _logger.Information("  📋 **LINE_INFO**: LineId={LineId} | Name='{LineName}' | PartId={PartId}",
                             field.Lines.Id, field.Lines.Name, field.Lines.PartId);
 
-                        if (field.Lines.Parts?.Invoices != null)
+                        if (field.Lines.Parts?.Templates != null)
                         {
                             _logger.Information("  🏷️ **TEMPLATE_INFO**: InvoiceId={InvoiceId} | TemplateName='{TemplateName}'",
-                                field.Lines.Parts.Invoices.Id, field.Lines.Parts.Invoices.Name);
+                                field.Lines.Parts.Templates.Id, field.Lines.Parts.Templates.Name);
                         }
                     }
                 }
@@ -134,8 +134,8 @@ namespace AutoBotUtilities.Tests
                 var amazonFields = ctx.Fields
                     .Include(f => f.Lines)
                     .Include(f => f.Lines.Parts)
-                    .Include(f => f.Lines.Parts.Invoices)
-                    .Where(f => f.Lines.Parts.Invoices.Id == 5) // Amazon template
+                    .Include(f => f.Lines.Parts.Templates)
+                    .Where(f => f.Lines.Parts.Templates.Id == 5) // Amazon template
                     .OrderBy(f => f.LineId)
                     .ThenBy(f => f.Field)
                     .ToList();
