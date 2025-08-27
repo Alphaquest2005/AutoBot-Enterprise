@@ -32,9 +32,10 @@ public static partial class EmailDownloader
         }
         else
         {
-            // DevMode logic for recipients (e.g., send to a specific test address)
-            // var devContacts = GetContacts("Developer");
-            // if(devContacts.Any()) message.To.Add(MailboxAddress.Parse(devContacts.First()));
+           // DevMode logic for recipients(e.g., send to a specific test address)
+
+            var devContacts = GetContacts("Developer", logger);
+             if (devContacts.Any()) message.To.Add(MailboxAddress.Parse(devContacts.First()));
         }
 
         message.Subject = subject;
