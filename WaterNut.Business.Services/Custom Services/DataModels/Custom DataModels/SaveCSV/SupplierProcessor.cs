@@ -5,6 +5,7 @@ using EntryDataDS.Business.Entities;
 using EntryDataDS.Business.Services;
 using TrackableEntities;
 using WaterNut.Business.Services.Utils;
+using Core.Common.Utils;
 
 namespace WaterNut.DataSpace
 {
@@ -29,7 +30,7 @@ namespace WaterNut.DataSpace
                         ApplicationSettingsId = applicationSettingsId,
                         SupplierCode = item.Key.SupplierCode?.ToUpper() ?? item.Key.SupplierName.ToUpper(),
                         SupplierName = item.Key.SupplierName,
-                        Street = item.Key.SupplierAddress,
+                        Street = ((string)item.Key.SupplierAddress)?.Truncate(100),
                         CountryCode = item.Key.CountryCode,
 
                         TrackingState = TrackingState.Added

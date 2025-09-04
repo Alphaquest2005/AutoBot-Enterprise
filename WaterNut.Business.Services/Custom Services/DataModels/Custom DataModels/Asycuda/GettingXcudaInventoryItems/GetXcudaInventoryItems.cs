@@ -8,20 +8,21 @@ namespace WaterNut.DataSpace
     {
         public List<xcuda_Inventory_Item> Execute(List<(string ItemNumber, int InventoryItemId)> itemList)
         {
+            if (itemList == null || itemList.Count == 0)
+            {
+                return new List<xcuda_Inventory_Item>();
+            }
+
             using (var ctx = new AllocationDSContext { StartTracking = false })
             {
                 ctx.Database.CommandTimeout = 0;
+
+                var inventoryIds = itemList.Select(z => z.InventoryItemId).Distinct().ToList();
+
                 var lst = ctx.xcuda_Inventory_Item.AsNoTracking()
-                    .Join(itemList.Select(z => z.InventoryItemId).ToList(),
-                        dbItem => dbItem.InventoryItemId, // From xcuda_Inventory_Item table
-                        inputItemId => inputItemId,       // From in-memory itemList
-                        (dbItem, inputItemId) => new xcuda_Inventory_Item { // Project to new objects
-                            Item_Id = dbItem.Item_Id,
-                            InventoryItemId = dbItem.InventoryItemId
-                            // Add any other properties of xcuda_Inventory_Item that are ABSOLUTELY essential
-                            // for the object's validity or for other potential callers not found.
-                        })
+                    .Where(x => inventoryIds.Contains(x.InventoryItemId))
                     .ToList();
+
                 return lst;
             }
         }
